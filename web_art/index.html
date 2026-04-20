@@ -1,0 +1,161 @@
+<!doctype html>
+<html>
+  <head>
+    <title>Art Design Pro</title>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta
+      name="description"
+      content="Art Design Pro - A modern admin dashboard template built with Vue 3, TypeScript, and Element Plus."
+    />
+    <link rel="shortcut icon" type="image/x-icon" href="src/assets/images/favicon.ico" />
+
+    <style>
+      /* Prevent a white flash before the app hydrates. */
+      html {
+        background-color: #fafbfc;
+      }
+
+      html.dark {
+        background-color: #070707;
+      }
+    </style>
+
+    <script>
+      ;(function () {
+        try {
+          if (typeof Storage === 'undefined' || !window.localStorage) {
+            return
+          }
+
+          const DEFAULT_SYSTEM_NAME = 'Art Design Pro'
+          const DEFAULT_FAVICON = 'src/assets/images/favicon.ico'
+          const DEFAULT_HOMEPAGE_ENABLED = 1
+          const DEFAULT_HOMEPAGE_TITLE = '项目管理平台'
+          const DEFAULT_HOMEPAGE_INTRO =
+            '这里先作为项目的简洁首页，展示项目介绍与后台入口。后续可以在系统设置中继续调整文案，不需要每次修改源码。'
+          const SYSTEM_CONFIG_STORE_KEY = 'sys-v%VITE_VERSION%-systemConfigStore'
+          const SYSTEM_SETTING_URL = '%VITE_API_URL%/system_setting/public'
+
+          const themeType = localStorage.getItem('sys-theme')
+          if (themeType === 'dark') {
+            document.documentElement.classList.add('dark')
+          }
+
+          const normalizeSetting = (payload) => ({
+            system_name: payload?.system_name?.trim?.() || DEFAULT_SYSTEM_NAME,
+            logo: payload?.logo?.trim?.() || '',
+            favicon: payload?.favicon?.trim?.() || '',
+            homepage_enabled:
+              Number(payload?.homepage_enabled ?? DEFAULT_HOMEPAGE_ENABLED) === 0 ? 0 : 1,
+            homepage_title: payload?.homepage_title?.trim?.() || DEFAULT_HOMEPAGE_TITLE,
+            homepage_intro: payload?.homepage_intro?.trim?.() || DEFAULT_HOMEPAGE_INTRO
+          })
+
+          const ensureFaviconLink = () => {
+            const faviconLink =
+              document.querySelector('link[rel="shortcut icon"]') ||
+              document.querySelector('link[rel="icon"]') ||
+              document.createElement('link')
+
+            if (!(faviconLink instanceof HTMLLinkElement)) {
+              return null
+            }
+
+            if (!faviconLink.parentNode) {
+              faviconLink.rel = 'shortcut icon'
+              document.head.appendChild(faviconLink)
+            }
+
+            return faviconLink
+          }
+
+          const applyBranding = (payload) => {
+            const setting = normalizeSetting(payload)
+            document.title = setting.system_name
+
+            const faviconLink = ensureFaviconLink()
+            if (!faviconLink) {
+              return setting
+            }
+
+            const favicon = setting.favicon || DEFAULT_FAVICON
+            faviconLink.type = favicon.endsWith('.ico') ? 'image/x-icon' : 'image/png'
+            faviconLink.href = favicon
+            return setting
+          }
+
+          const persistSetting = (payload) => {
+            localStorage.setItem(
+              SYSTEM_CONFIG_STORE_KEY,
+              JSON.stringify({
+                loaded: true,
+                systemSetting: normalizeSetting(payload)
+              })
+            )
+          }
+
+          const getCachedSetting = () => {
+            const cachedKey =
+              localStorage.getItem(SYSTEM_CONFIG_STORE_KEY) !== null
+                ? SYSTEM_CONFIG_STORE_KEY
+                : Object.keys(localStorage).find((key) => /^sys-v.*-systemConfigStore$/.test(key))
+
+            if (!cachedKey) {
+              return null
+            }
+
+            const cachedValue = localStorage.getItem(cachedKey)
+            if (!cachedValue) {
+              return null
+            }
+
+            const cachedState = JSON.parse(cachedValue)
+            const cachedSetting = cachedState?.systemSetting || cachedState
+
+            if (!cachedSetting) {
+              return null
+            }
+
+            const normalizedSetting = normalizeSetting(cachedSetting)
+
+            if (cachedKey !== SYSTEM_CONFIG_STORE_KEY) {
+              persistSetting(normalizedSetting)
+            }
+
+            return normalizedSetting
+          }
+
+          const fetchRemoteSetting = () => {
+            const request = new XMLHttpRequest()
+            request.open('GET', SYSTEM_SETTING_URL, false)
+            request.send(null)
+
+            if (request.status < 200 || request.status >= 300 || !request.responseText) {
+              return null
+            }
+
+            const response = JSON.parse(request.responseText)
+            if (Number(response?.code) !== 1 || !response?.data) {
+              return null
+            }
+
+            const normalizedSetting = normalizeSetting(response.data)
+            persistSetting(normalizedSetting)
+            return normalizedSetting
+          }
+
+          const initialSetting = getCachedSetting() || fetchRemoteSetting()
+          applyBranding(initialSetting)
+        } catch (e) {
+          console.warn('Failed to apply initial theme or branding:', e)
+        }
+      })()
+    </script>
+  </head>
+
+  <body>
+    <div id="app"></div>
+    <script type="module" src="/src/main.ts"></script>
+  </body>
+</html>

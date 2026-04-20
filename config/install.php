@@ -1,0 +1,35 @@
+<?php
+
+return [
+    'meta_path' => app()->getRootPath() . 'data/install_meta',
+    'install_dir' => app()->getRootPath() . 'public/install',
+    'sql_file' => app()->getRootPath() . 'sql/install.sql',
+    'default_table_prefix' => 'light_',
+    'admin_username' => 'admin',
+    'admin_password' => '123456',
+    'links' => [
+        'home' => '/',
+        'login' => '/#/auth/login',
+    ],
+    'required_extensions' => [
+        'ctype',
+        'curl',
+        'dom',
+        'fileinfo',
+        'gd',
+        'hash',
+        'iconv',
+        'json',
+        'libxml',
+        'openssl',
+        'pdo',
+        'pdo_mysql',
+        'simplexml',
+        'sodium',
+        'xml',
+        'xmlreader',
+        'xmlwriter',
+        'zip',
+        'zlib',
+    ],
+];
