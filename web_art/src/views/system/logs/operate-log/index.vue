@@ -3,6 +3,8 @@
     <ArtSearchBar
       v-model="searchForm"
       :items="searchItems"
+      :button-left-limit="0"
+      :show-expand="false"
       @reset="handleReset"
       @search="handleSearch"
     />
@@ -39,6 +41,7 @@
 </template>
 
 <script setup lang="ts">
+  import { markRaw } from 'vue'
   import ArtButtonTable from '@/components/core/forms/art-button-table/index.vue'
   import { useBatchDelete } from '@/hooks/core/useBatchDelete'
   import { useTable } from '@/hooks/core/useTable'
@@ -49,8 +52,41 @@
     fetchGetOperateLogList
   } from '@/api/system-manage'
   import { ElMessageBox, ElPopover } from 'element-plus'
+  import OperateLogAdvancedFilter from './modules/operate-log-advanced-filter.vue'
+  import OperateLogQuickFilter from './modules/operate-log-quick-filter.vue'
 
   defineOptions({ name: 'OperateLog' })
+
+  type OperateLogFilterOperator =
+    | 'contains'
+    | 'not_contains'
+    | 'eq'
+    | 'neq'
+    | 'gt'
+    | 'lt'
+    | 'gte'
+    | 'lte'
+    | 'empty'
+    | 'not_empty'
+
+  interface OperateLogFilterCondition {
+    field?: string
+    operator?: OperateLogFilterOperator
+    value?: string | number
+  }
+
+  interface OperateLogFilterGroup {
+    conditions?: OperateLogFilterCondition[]
+  }
+
+  interface OperateLogFilterField {
+    label: string
+    value: string
+    type: 'text' | 'number' | 'date' | 'select' | 'special-select'
+    options?: Array<{ label: string; value: string | number }>
+    placeholder?: string
+    containsPlaceholder?: string
+  }
 
   type OperateLogItem = Api.SystemManage.LogListItem & {
     user_id?: number | string
@@ -66,62 +102,109 @@
 
   const tableRef = ref()
   const userOptions = ref<Array<{ label: string; value: number | string }>>([])
+  const advancedFilterRenderer = markRaw(OperateLogAdvancedFilter)
+  const quickFilterRenderer = markRaw(OperateLogQuickFilter)
 
-  const searchForm = ref<Record<string, any>>({
-    user_id: undefined,
-    method: undefined,
-    ip: undefined,
-    create_time: undefined
+  const createEmptyFilterCondition = (): OperateLogFilterCondition => ({
+    field: undefined,
+    operator: undefined,
+    value: undefined
+  })
+
+  const createEmptyFilterGroup = (): OperateLogFilterGroup => ({
+    conditions: [createEmptyFilterCondition()]
+  })
+
+  const searchForm = ref<{
+    quickFilter: OperateLogFilterCondition
+    advancedFilters: OperateLogFilterGroup[]
+  }>({
+    quickFilter: createEmptyFilterCondition(),
+    advancedFilters: [createEmptyFilterGroup()]
   })
   const selectedRows = ref<OperateLogItem[]>([])
 
-  const searchItems = computed(() => [
+  const methodOptions = [
+    { label: 'GET', value: 'GET' },
+    { label: 'POST', value: 'POST' },
+    { label: 'PUT', value: 'PUT' },
+    { label: 'DELETE', value: 'DELETE' }
+  ]
+
+  const filterFields = computed<OperateLogFilterField[]>(() => [
     {
       label: '操作人',
-      key: 'user_id',
-      type: 'select',
-      props: {
-        clearable: true,
-        placeholder: '请选择操作人',
-        options: userOptions.value
-      }
+      value: 'user_id',
+      type: 'special-select',
+      options: userOptions.value,
+      placeholder: '请选择操作人',
+      containsPlaceholder: '请输入操作人姓名'
     },
     {
       label: '请求方式',
-      key: 'method',
+      value: 'method',
       type: 'select',
-      props: {
-        clearable: true,
-        placeholder: '请选择请求方式',
-        options: [
-          { label: 'GET', value: 'GET' },
-          { label: 'POST', value: 'POST' },
-          { label: 'PUT', value: 'PUT' },
-          { label: 'DELETE', value: 'DELETE' }
-        ]
-      }
+      options: methodOptions,
+      placeholder: '请选择请求方式'
+    },
+    {
+      label: '操作模块',
+      value: 'module',
+      type: 'text',
+      placeholder: '请输入操作模块'
+    },
+    {
+      label: '操作行为',
+      value: 'operate',
+      type: 'text',
+      placeholder: '请输入操作行为'
+    },
+    {
+      label: '权限节点',
+      value: 'route',
+      type: 'text',
+      placeholder: '请输入权限节点'
     },
     {
       label: 'IP 地址',
-      key: 'ip',
-      type: 'input',
-      props: {
-        clearable: true,
-        placeholder: '请输入 IP 地址'
-      }
+      value: 'ip',
+      type: 'text',
+      placeholder: '请输入 IP 地址'
+    },
+    {
+      label: '请求参数',
+      value: 'params',
+      type: 'text',
+      placeholder: '请输入请求参数'
     },
     {
       label: '操作时间',
-      key: 'create_time',
-      type: 'daterange',
+      value: 'create_time',
+      type: 'date',
+      placeholder: '请选择操作时间'
+    }
+  ])
+
+  const searchItems = computed(() => [
+    {
+      label: '快速过滤',
+      labelWidth: '84px',
+      key: 'quickFilter',
+      span: 12,
+      render: quickFilterRenderer,
       props: {
-        type: 'daterange',
-        clearable: true,
-        style: { width: '100%' },
-        startPlaceholder: '开始日期',
-        endPlaceholder: '结束日期',
-        rangeSeparator: '至',
-        valueFormat: 'YYYY-MM-DD'
+        fields: filterFields.value
+      }
+    },
+    {
+      label: '高级过滤',
+      labelWidth: '84px',
+      key: 'advancedFilters',
+      span: 6,
+      render: advancedFilterRenderer,
+      props: {
+        fields: filterFields.value,
+        onApply: handleAdvancedFilterApply
       }
     }
   ])
@@ -144,12 +227,12 @@
       apiFn: fetchGetOperateLogList,
       apiParams: {
         page: 1,
-        pageSize: 20,
-        ...searchForm.value
+        pageSize: 20
       },
       columnsFactory: () => [
         { type: 'selection' as const, width: 55, fixed: 'left' as const, disabled: true },
         { type: 'index', label: '序号', width: 70 },
+        { prop: 'id', label: '日志 ID', width: 90 },
         {
           prop: 'realname',
           label: '操作人',
@@ -157,8 +240,8 @@
           formatter: (row: OperateLogItem) => row.realname || row.user?.realname || '-'
         },
         { prop: 'module', label: '操作模块', minWidth: 120 },
-        { prop: 'operate', label: '操作权限', minWidth: 140 },
-        { prop: 'route', label: '权限节点', minWidth: 160 },
+        { prop: 'operate', label: '操作行为', minWidth: 140 },
+        { prop: 'route', label: '权限节点', minWidth: 180 },
         { prop: 'method', label: '请求方式', width: 100 },
         { prop: 'ip', label: 'IP 地址', minWidth: 140 },
         {
@@ -184,7 +267,7 @@
               }
             )
         },
-        { prop: 'create_time', label: '操作时间', minWidth: 160 },
+        { prop: 'create_time', label: '操作时间', minWidth: 180 },
         {
           prop: 'operation',
           label: '操作',
@@ -213,21 +296,91 @@
       clearSelection: () => tableRef.value?.elTableRef?.clearSelection?.()
     })
 
+  const isValueRequired = (operator?: OperateLogFilterOperator) =>
+    Boolean(operator && !['empty', 'not_empty'].includes(operator))
+
+  const hasFilterValue = (value: unknown) => {
+    if (Array.isArray(value)) {
+      return value.length > 0
+    }
+    return value !== '' && value !== undefined && value !== null
+  }
+
+  const normalizeFilterGroups = (groups: OperateLogFilterGroup[] = []) =>
+    groups
+      .map((group) => ({
+        conditions: (group.conditions || [])
+          .map((item) => ({
+            field: item.field,
+            operator: item.operator,
+            value: item.value
+          }))
+          .filter((item) => item.field && item.operator)
+          .filter((item) => !isValueRequired(item.operator) || hasFilterValue(item.value))
+      }))
+      .filter((group) => group.conditions.length > 0)
+
+  const normalizeQuickFilter = (filter?: OperateLogFilterCondition) => {
+    if (!filter?.field || !filter.operator) {
+      return null
+    }
+
+    if (isValueRequired(filter.operator) && !hasFilterValue(filter.value)) {
+      return null
+    }
+
+    return {
+      field: filter.field,
+      operator: filter.operator,
+      value: filter.value
+    }
+  }
+
+  const performSearch = (params: {
+    quickFilter?: OperateLogFilterCondition
+    advancedFilters?: OperateLogFilterGroup[]
+  }) => {
+    replaceSearchParams(buildSearchParams(params))
+    getData()
+  }
+
+  const buildSearchParams = (params: Record<string, any>) => {
+    const requestParams: Record<string, string> = {}
+    const quickFilter = normalizeQuickFilter(params.quickFilter as OperateLogFilterCondition)
+    const advancedFilters = normalizeFilterGroups(params.advancedFilters as OperateLogFilterGroup[])
+
+    if (quickFilter) {
+      requestParams.quick_filter = JSON.stringify(quickFilter)
+    }
+
+    if (advancedFilters.length > 0) {
+      requestParams.filters = JSON.stringify(advancedFilters)
+    }
+
+    return requestParams
+  }
+
+  const handleAdvancedFilterApply = (advancedFilters: OperateLogFilterGroup[]) => {
+    performSearch({
+      quickFilter: searchForm.value.quickFilter,
+      advancedFilters
+    })
+  }
+
   const loadUsers = async () => {
     const users = await fetchGetActiveUsers({
       page: 1,
-      pageSize: 200
+      pageSize: 500
     })
     const list = users.list || users.data || users.records || []
     userOptions.value = list.map((item: any) => ({
-      label: item.realname,
+      label: item.realname || item.username || `用户 ${item.id}`,
       value: item.id
     }))
   }
 
   const handleSearch = (params: Record<string, any>) => {
-    replaceSearchParams(params)
-    getData()
+    performSearch(params)
   }
 
   const handleReset = async () => {
