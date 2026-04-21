@@ -60,6 +60,7 @@ class UserService extends BaseService
         $user->roles = $role->column('id');
         $user->role_name = $role->column('name');
         $user->rules = $this->getRules($role->column('id'));
+        $user->is_super_admin = in_array((int) config('system.super_admin_id'), array_map('intval', $user->roles), true);
         $user->avatar = $user->avatar ?: config('system.default_avatar');
         return $user;
     }

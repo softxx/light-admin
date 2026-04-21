@@ -51,6 +51,10 @@
             <ArtSvgIcon icon="ri:lock-line" />
             <span>{{ $t('topBar.user.lockScreen') }}</span>
           </li>
+          <li class="btn-item" @click="clearCache()">
+            <ArtSvgIcon icon="ri:refresh-line" />
+            <span>{{ $t('topBar.user.clearCache') }}</span>
+          </li>
           <div class="w-full h-px my-2 bg-g-300/80"></div>
           <div class="log-out c-p" @click="loginOut">
             {{ $t('topBar.user.logout') }}
@@ -66,8 +70,8 @@
   import { useRouter } from 'vue-router'
   import { ElMessageBox } from 'element-plus'
   import defaultAvatar from '@imgs/user/avatar.webp'
-  import { fetchLogout } from '@/api/auth'
   import { useUserStore } from '@/store/modules/user'
+  import { clearBrowserCacheAndLogout, logoutCurrentSession } from '@/utils/auth/session-actions'
   import { WEB_LINKS } from '@/utils/constants'
   import { mittBus } from '@/utils/sys'
 
@@ -111,10 +115,21 @@
         cancelButtonText: t('common.cancel'),
         customClass: 'login-out-dialog'
       }).then(async () => {
-        if (userStore.refreshToken) {
-          await fetchLogout(userStore.refreshToken).catch(() => undefined)
-        }
-        userStore.logOut()
+        await logoutCurrentSession()
+      })
+    }, 200)
+  }
+
+  const clearCache = (): void => {
+    closeUserMenu()
+
+    setTimeout(() => {
+      ElMessageBox.confirm(t('common.clearCacheTips'), t('common.tips'), {
+        confirmButtonText: t('common.confirm'),
+        cancelButtonText: t('common.cancel'),
+        customClass: 'login-out-dialog'
+      }).then(async () => {
+        await clearBrowserCacheAndLogout()
       })
     }, 200)
   }

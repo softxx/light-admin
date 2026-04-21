@@ -109,6 +109,7 @@ function normalizeUserInfo(userInfo: Record<string, any>): Api.Auth.UserInfo {
     realname: userInfo?.realname || '',
     email: userInfo?.email || '',
     avatar: userInfo?.avatar || '',
+    is_super_admin: Boolean(userInfo?.is_super_admin),
     roles: Array.isArray(userInfo?.roles) ? userInfo.roles : [],
     role_name: Array.isArray(userInfo?.role_name) ? userInfo.role_name : [],
     rules: buttons,

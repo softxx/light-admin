@@ -121,6 +121,26 @@ export function fetchUpdateSystemSetting(params: Api.SystemManage.SystemSettingP
   })
 }
 
+export function fetchGetCacheOverview() {
+  return request.get<Api.SystemManage.CacheOverview>({
+    url: '/cache'
+  })
+}
+
+export function fetchRefreshDictCache() {
+  return request.post<Api.SystemManage.DictCacheRefreshResult>({
+    url: '/cache/refreshDict',
+    showSuccessMessage: true
+  })
+}
+
+export function fetchClearRuntimeCache() {
+  return request.post<Api.SystemManage.RuntimeCacheClearResult>({
+    url: '/cache/clearRuntime',
+    showSuccessMessage: true
+  })
+}
+
 export function fetchGetRoleList(params: Api.SystemManage.RoleSearchParams) {
   return request.get<Api.SystemManage.RoleList>({
     url: '/role',

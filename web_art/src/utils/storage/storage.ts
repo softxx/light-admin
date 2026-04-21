@@ -32,9 +32,9 @@
  * @module utils/storage/storage
  * @author Art Design Pro Team
  */
-import { router } from '@/router'
 import { useUserStore } from '@/store/modules/user'
 import { StorageConfig } from '@/utils/storage/storage-config'
+import { clearProjectStorage } from './project-storage'
 
 /**
  * 存储兼容性管理器
@@ -111,9 +111,8 @@ class StorageCompatibilityManager {
   private performSystemLogout(): void {
     setTimeout(() => {
       try {
-        localStorage.clear()
         useUserStore().logOut()
-        router.push({ name: 'Login' })
+        clearProjectStorage()
         console.info('[Storage] 已执行系统登出')
       } catch (error) {
         console.error('[Storage] 系统登出失败:', error)

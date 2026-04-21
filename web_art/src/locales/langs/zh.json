@@ -23,6 +23,7 @@
       "docs": "使用文档",
       "github": "Github",
       "lockScreen": "锁定屏幕",
+      "clearCache": "清理缓存",
       "logout": "退出登录"
     },
     "guide": {
@@ -36,6 +37,7 @@
     "tips": "提示",
     "cancel": "取消",
     "confirm": "确定",
+    "clearCacheTips": "清除当前浏览器缓存后将退出登录，需要重新登录，是否继续？",
     "logOutTips": "您是否要退出登录?"
   },
   "search": {

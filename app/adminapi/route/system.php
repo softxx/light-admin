@@ -10,72 +10,72 @@
 // +----------------------------------------------------------------------
 use think\facade\Route;
 
-//绯荤粺妯″潡
+//系统模块
 Route::group(function () {
-    //鑾峰彇鐢ㄦ埛淇℃伅
+    //获取用户信息
     Route::get('getUserInfo', 'system.user/getUserInfo');
-    //鑾峰彇璺敱
+    //获取路由
     Route::get('getRouter', 'system.menu/getRouter');
 
-    //鐧诲綍鏃ュ織
+    //登录日志
     Route::group('login_log', function () {
-        //娓呯┖鐧诲綍鏃ュ織
+        //清空登录日志
         Route::delete('clear', 'system.login_log/clear');
-        //鍒犻櫎鐧诲綍鏃ュ織
+        //删除登录日志
         Route::post('delete', 'system.login_log/delete');
-        //瀵煎嚭鐧诲綍鏃ュ織
+        //导出登录日志
         Route::post('export', 'system.login_log/export');
     });
 
-    //鎿嶄綔鏃ュ織
+    //操作日志
     Route::group('operate_log', function () {
-        //娓呯┖鎿嶄綔鏃ュ織
+        //清空操作日志
         Route::delete('clear', 'system.operate_log/clear');
-        //鍒犻櫎鎿嶄綔鏃ュ織
+        //删除操作日志
         Route::post('delete', 'system.operate_log/delete');
     });
 
-    //瀛楀吀
+    //字典
     Route::group('dict', function () {
-        //鏇存柊瀛楀吀缂撳瓨
+        //更新字典缓存
         Route::post('updateCache', 'system.dict/updateCache');
-        //鑾峰彇瀛楀吀
+        //获取字典
         Route::get('get', 'system.dict/get');
-        //鏇存柊鎺掑簭
+        //更新排序
         Route::post('updateSort', 'system.dict/updateSort');
-        //鏇存敼鐘舵€?
+        //更改状态
         Route::post('changeStatus/:id', 'system.dict/changeStatus');
     });
 
-    //鐢ㄦ埛
+    //用户
     Route::group('user', function () {
-        //鑾峰彇婵€娲荤殑鐢ㄦ埛
+        //获取激活的用户
         Route::get('getActiveUsers', 'system.user/getActiveUsers');
-        //淇敼鐢ㄦ埛鐘舵€?
+        //修改用户状态
         Route::put('changeStatus/:id', 'system.user/changeStatus');
-        //閲嶇疆瀵嗙爜
+        //重置密码
         Route::put('resetPassword/:id', 'system.user/resetPassword');
-        //淇敼瀵嗙爜
+        //修改密码
         Route::put('changePassword', 'system.user/changePassword');
-        //鏍规嵁id鑾峰彇鐢ㄦ埛
+        //根据id获取用户
         Route::get('getUserById', 'system.user/getUserById');
-        //鏇存柊鐢ㄦ埛淇℃伅
+        //更新用户信息
         Route::put('updateInfo', 'system.user/updateInfo');
     });
 
-    //瑙掕壊
+    //角色
     Route::group('role', function () {
-        //鑾峰彇鍏ㄩ儴瑙掕壊
+        //获取全部角色
         Route::get('all', 'system.role/all');
     });
 
-    //涓婁紶
+    //上传
     Route::group('upload', function () {
-        //鏂囦欢涓婁紶
+        //文件上传
         Route::post('file', 'system.file/uploadFile');
-        //鍥剧墖涓婁紶
+        //图片上传
         Route::post('image', 'system.file/uploadImg');
-        //闄勪欢涓婁紶
+        //附件上传
         Route::post('attachment', 'system.file/uploadAttachment');
     });
 
@@ -84,23 +84,30 @@ Route::group(function () {
         Route::post('', 'system.system_setting/update');
     });
 
-    //璧勬簮璺敱
+    //缓存管理
+    Route::group('cache', function () {
+        Route::get('', 'system.cache/index');
+        Route::post('refreshDict', 'system.cache/refreshDict');
+        Route::post('clearRuntime', 'system.cache/clearRuntime');
+    });
+
+    //资源路由
     Route::group(function () {
-        //鐢ㄦ埛
+        //用户
         Route::resource('user', 'system.user');
-        //鏉冮檺
+        //权限
         Route::resource('authAccess', 'system.authAccess')->only(['index', 'save']);
-        //瑙掕壊
+        //角色
         Route::resource('role', 'system.role');
-        //閮ㄩ棬
+        //部门
         Route::resource('department', 'system.department');
-        //瀛楀吀
+        //字典
         Route::resource('dict', 'system.dict');
-        //鑿滃崟
+        //菜单
         Route::resource('menu', 'system.menu');
-        //鎿嶄綔鏃ュ織
+        //操作日志
         Route::resource('operate_log', 'system.OperateLog');
-        //鐧诲綍鏃ュ織
+        //登录日志
         Route::resource('login_log', 'system.LoginLog');
     });
 })->middleware('auth');

@@ -65,6 +65,7 @@ declare namespace Api {
       avatar?: string
       department_name?: string
       role_name?: string[]
+      is_super_admin?: boolean
       roles: Array<number | string>
       rules: string[]
       buttons: string[]
@@ -277,6 +278,40 @@ declare namespace Api {
       homepage_enabled?: number | string | boolean
       homepage_title?: string
       homepage_intro?: string
+    }
+
+    interface CacheOverview {
+      browser: {
+        scope: string
+      }
+      dict: {
+        type_count: number
+        cached_count: number
+      }
+      runtime: {
+        supported: boolean
+        driver: string
+        path: string
+        file_count: number
+        size_bytes: number
+        protected_file_count: number
+      }
+    }
+
+    interface DictCacheRefreshResult {
+      type_count: number
+      cached_count: number
+      refreshed_count: number
+    }
+
+    interface RuntimeCacheClearResult {
+      removed_count: number
+      removed_size_bytes: number
+      skipped_count: number
+      failed_count: number
+      remaining_file_count: number
+      remaining_size_bytes: number
+      protected_file_count: number
     }
 
     interface LogListItem {

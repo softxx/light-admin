@@ -95,11 +95,13 @@ class MenuService extends BaseService
         $roleIds = User::find(request()->uid())->getRolesId();
 
         if ($this->isSuperAdmin($roleIds)) {
-            return $this->model
+            $menus = $this->model
                 ->whereIn('type', [0, 1])
                 ->order('sort', 'asc')
                 ->select()
                 ->toTree();
+
+            return $this->appendSuperAdminVirtualMenus($menus);
         }
 
         $menuIds = AuthAccess::getPermission($roleIds);
@@ -164,5 +166,64 @@ class MenuService extends BaseService
     private function isSuperAdmin(array $roleIds): bool
     {
         return in_array((int) config('system.super_admin_id'), array_map('intval', $roleIds), true);
+    }
+
+    /**
+     * 为现有库补一个仅超管可见的缓存管理入口，避免菜单表未升级时前端看不到页面
+     */
+    private function appendSuperAdminVirtualMenus(array $menus): array
+    {
+        foreach ($menus as &$menu) {
+            $path = trim((string) ($menu['path'] ?? ''), '/');
+            if ($path !== 'system') {
+                continue;
+            }
+
+            $children = isset($menu['children']) && is_array($menu['children']) ? $menu['children'] : [];
+            if ($this->hasMenuPath($children, 'cache')) {
+                return $menus;
+            }
+
+            $children[] = [
+                'id' => 900001,
+                'pid' => $menu['id'] ?? 0,
+                'path' => 'cache',
+                'component' => 'system/cache-manage/index',
+                'hidden' => 0,
+                'title' => '缓存管理',
+                'icon' => 'database-outlined',
+                'sort' => 100,
+                'type' => 1,
+                'hide_children' => 0,
+                'active_key' => '',
+                'open_type' => 0,
+                'link_url' => ''
+            ];
+
+            usort($children, function (array $left, array $right) {
+                return (int) ($left['sort'] ?? 0) <=> (int) ($right['sort'] ?? 0);
+            });
+
+            $menu['children'] = array_values($children);
+            return $menus;
+        }
+
+        return $menus;
+    }
+
+    private function hasMenuPath(array $menus, string $targetPath): bool
+    {
+        foreach ($menus as $menu) {
+            $path = trim((string) ($menu['path'] ?? ''), '/');
+            if ($path === trim($targetPath, '/')) {
+                return true;
+            }
+
+            if (!empty($menu['children']) && is_array($menu['children']) && $this->hasMenuPath($menu['children'], $targetPath)) {
+                return true;
+            }
+        }
+
+        return false;
     }
 }
