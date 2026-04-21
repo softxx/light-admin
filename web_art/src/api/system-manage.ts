@@ -114,7 +114,7 @@ export function fetchGetSystemSetting() {
 }
 
 export function fetchUpdateSystemSetting(params: Api.SystemManage.SystemSettingPayload) {
-  return request.put<Api.SystemManage.SystemSettingItem>({
+  return request.post<Api.SystemManage.SystemSettingItem>({
     url: '/system_setting',
     params,
     showSuccessMessage: true

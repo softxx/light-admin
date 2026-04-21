@@ -95,7 +95,7 @@ Route::group(function () {
 
     Route::group('system_setting', function () {
         Route::get('', 'system.system_setting/index');
-        Route::put('', 'system.system_setting/update');
+        Route::post('', 'system.system_setting/update');
     });
 
 
