@@ -3,6 +3,8 @@
     <ArtSearchBar
       v-model="searchForm"
       :items="searchItems"
+      :button-left-limit="0"
+      :show-expand="false"
       @reset="handleReset"
       @search="handleSearch"
     />
@@ -40,15 +42,19 @@
 </template>
 
 <script setup lang="ts">
+  import { markRaw } from 'vue'
   import ArtButtonTable from '@/components/core/forms/art-button-table/index.vue'
+  import { TableAdvancedFilter, TableQuickFilter } from '@/components/business/table-filters'
   import { useBatchDelete } from '@/hooks/core/useBatchDelete'
   import { useTable } from '@/hooks/core/useTable'
+  import type { TableFilterFieldSchema, TableFilterFormModel, TableFilterGroup } from '@/types'
   import {
     fetchClearLoginLog,
     fetchDeleteLoginLog,
     fetchExportLoginLog,
     fetchGetLoginLogList
   } from '@/api/system-manage'
+  import { buildDynamicTableFilterParams, createTableFilterFormModel } from '@/utils/table/filter'
   import { ElMessageBox } from 'element-plus'
 
   defineOptions({ name: 'LoginLog' })
@@ -63,38 +69,75 @@
   }
 
   const tableRef = ref()
-  const searchForm = ref<Record<string, any>>({
-    account: undefined,
-    login_ip: undefined,
-    login_time: undefined
-  })
+  const quickFilterRenderer = markRaw(TableQuickFilter)
+  const advancedFilterRenderer = markRaw(TableAdvancedFilter)
+  const searchForm = ref<TableFilterFormModel>(createTableFilterFormModel())
   const selectedRows = ref<LoginLogItem[]>([])
 
-  const searchItems = computed(() => [
+  /**
+   * Login log fields are defined once here and then reused by both the
+   * reusable search UI and the page-level serializer.
+   */
+  const filterFields = computed<TableFilterFieldSchema[]>(() => [
     {
       label: '登录账号',
-      key: 'account',
-      type: 'input',
-      props: { clearable: true, placeholder: '请输入登录账号' }
+      value: 'account',
+      type: 'text',
+      placeholder: '请输入登录账号'
+    },
+    {
+      label: '用户姓名',
+      value: 'realname',
+      type: 'text',
+      placeholder: '请输入用户姓名'
     },
     {
       label: '登录 IP',
-      key: 'login_ip',
-      type: 'input',
-      props: { clearable: true, placeholder: '请输入登录 IP' }
+      value: 'login_ip',
+      type: 'text',
+      placeholder: '请输入登录 IP'
+    },
+    {
+      label: '浏览器',
+      value: 'browser',
+      type: 'text',
+      placeholder: '请输入浏览器'
+    },
+    {
+      label: '操作系统',
+      value: 'os',
+      type: 'text',
+      placeholder: '请输入操作系统'
     },
     {
       label: '登录时间',
-      key: 'login_time',
-      type: 'daterange',
+      value: 'login_time',
+      type: 'date',
+      dateType: 'datetime',
+      placeholder: '请选择登录时间'
+    }
+  ])
+
+  const searchItems = computed(() => [
+    {
+      label: '快捷过滤',
+      labelWidth: '84px',
+      key: 'quickFilter',
+      span: 12,
+      render: quickFilterRenderer,
       props: {
-        type: 'daterange',
-        clearable: true,
-        style: { width: '100%' },
-        startPlaceholder: '开始日期',
-        endPlaceholder: '结束日期',
-        rangeSeparator: '至',
-        valueFormat: 'YYYY-MM-DD'
+        fields: filterFields.value
+      }
+    },
+    {
+      label: '高级过滤',
+      labelWidth: '84px',
+      key: 'advancedFilters',
+      span: 6,
+      render: advancedFilterRenderer,
+      props: {
+        fields: filterFields.value,
+        onApply: handleAdvancedFilterApply
       }
     }
   ])
@@ -117,8 +160,7 @@
       apiFn: fetchGetLoginLogList,
       apiParams: {
         page: 1,
-        pageSize: 20,
-        ...searchForm.value
+        pageSize: 20
       },
       columnsFactory: () => [
         { type: 'selection' as const, width: 55, fixed: 'left' as const, disabled: true },
@@ -162,9 +204,20 @@
       clearSelection: () => tableRef.value?.elTableRef?.clearSelection?.()
     })
 
-  const handleSearch = (params: Record<string, any>) => {
-    replaceSearchParams(params)
+  const performSearch = (params: Partial<TableFilterFormModel>) => {
+    replaceSearchParams(buildDynamicTableFilterParams(params, filterFields.value))
     getData()
+  }
+
+  const handleSearch = (params: Record<string, any>) => {
+    performSearch(params as TableFilterFormModel)
+  }
+
+  const handleAdvancedFilterApply = (advancedFilters: TableFilterGroup[]) => {
+    performSearch({
+      quickFilter: searchForm.value.quickFilter,
+      advancedFilters
+    })
   }
 
   const handleReset = async () => {
@@ -183,7 +236,7 @@
   }
 
   const handleClear = async () => {
-    await ElMessageBox.confirm('确定清空全部登录日志吗？', '清空确认', {
+    await ElMessageBox.confirm('确定清空全部登录日志吗？该操作不可恢复。', '清空确认', {
       type: 'warning',
       confirmButtonText: '确定',
       cancelButtonText: '取消'
@@ -194,7 +247,9 @@
   }
 
   const handleExport = async () => {
-    const blob = await fetchExportLoginLog()
+    const blob = await fetchExportLoginLog(
+      buildDynamicTableFilterParams(searchForm.value, filterFields.value)
+    )
     const url = URL.createObjectURL(blob)
     const link = document.createElement('a')
     link.href = url

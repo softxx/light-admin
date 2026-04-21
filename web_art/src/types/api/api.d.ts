@@ -138,7 +138,13 @@ declare namespace Api {
 
     type UserList = Api.Common.PaginatedResponse<UserListItem>
 
-    type UserSearchParams = Partial<{
+    type DynamicFilterSearchParams = Partial<{
+      quick_filter: string
+      filters: string
+    }>
+
+    type UserSearchParams = DynamicFilterSearchParams &
+      Partial<{
       key: string
       roles: number | string
       status: number | string
@@ -174,7 +180,8 @@ declare namespace Api {
 
     type RoleList = Api.Common.PaginatedResponse<RoleListItem>
 
-    type RoleSearchParams = Partial<{
+    type RoleSearchParams = DynamicFilterSearchParams &
+      Partial<{
       key: string
       current: number
       size: number
@@ -285,6 +292,18 @@ declare namespace Api {
     }
 
     type LogList = Api.Common.PaginatedResponse<LogListItem>
+
+    type LogSearchParams = DynamicFilterSearchParams &
+      Partial<{
+        account: string
+        realname: string
+        login_ip: string
+        login_time: string[] | [string, string]
+        current: number
+        size: number
+        page: number
+        pageSize: number
+      }>
 
     interface GeneratorListItem {
       id: number

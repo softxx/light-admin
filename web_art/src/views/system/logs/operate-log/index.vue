@@ -45,48 +45,19 @@
   import ArtButtonTable from '@/components/core/forms/art-button-table/index.vue'
   import { useBatchDelete } from '@/hooks/core/useBatchDelete'
   import { useTable } from '@/hooks/core/useTable'
+  import type { TableFilterFieldSchema, TableFilterFormModel, TableFilterGroup } from '@/types'
   import {
     fetchClearOperateLog,
     fetchDeleteOperateLog,
     fetchGetActiveUsers,
     fetchGetOperateLogList
   } from '@/api/system-manage'
+  import { buildDynamicTableFilterParams, createTableFilterFormModel } from '@/utils/table/filter'
   import { ElMessageBox, ElPopover } from 'element-plus'
   import OperateLogAdvancedFilter from './modules/operate-log-advanced-filter.vue'
   import OperateLogQuickFilter from './modules/operate-log-quick-filter.vue'
 
   defineOptions({ name: 'OperateLog' })
-
-  type OperateLogFilterOperator =
-    | 'contains'
-    | 'not_contains'
-    | 'eq'
-    | 'neq'
-    | 'gt'
-    | 'lt'
-    | 'gte'
-    | 'lte'
-    | 'empty'
-    | 'not_empty'
-
-  interface OperateLogFilterCondition {
-    field?: string
-    operator?: OperateLogFilterOperator
-    value?: string | number
-  }
-
-  interface OperateLogFilterGroup {
-    conditions?: OperateLogFilterCondition[]
-  }
-
-  interface OperateLogFilterField {
-    label: string
-    value: string
-    type: 'text' | 'number' | 'date' | 'select' | 'special-select'
-    options?: Array<{ label: string; value: string | number }>
-    placeholder?: string
-    containsPlaceholder?: string
-  }
 
   type OperateLogItem = Api.SystemManage.LogListItem & {
     user_id?: number | string
@@ -105,23 +76,7 @@
   const advancedFilterRenderer = markRaw(OperateLogAdvancedFilter)
   const quickFilterRenderer = markRaw(OperateLogQuickFilter)
 
-  const createEmptyFilterCondition = (): OperateLogFilterCondition => ({
-    field: undefined,
-    operator: undefined,
-    value: undefined
-  })
-
-  const createEmptyFilterGroup = (): OperateLogFilterGroup => ({
-    conditions: [createEmptyFilterCondition()]
-  })
-
-  const searchForm = ref<{
-    quickFilter: OperateLogFilterCondition
-    advancedFilters: OperateLogFilterGroup[]
-  }>({
-    quickFilter: createEmptyFilterCondition(),
-    advancedFilters: [createEmptyFilterGroup()]
-  })
+  const searchForm = ref<TableFilterFormModel>(createTableFilterFormModel())
   const selectedRows = ref<OperateLogItem[]>([])
 
   const methodOptions = [
@@ -131,7 +86,7 @@
     { label: 'DELETE', value: 'DELETE' }
   ]
 
-  const filterFields = computed<OperateLogFilterField[]>(() => [
+  const filterFields = computed<TableFilterFieldSchema[]>(() => [
     {
       label: '操作人',
       value: 'user_id',
@@ -296,71 +251,14 @@
       clearSelection: () => tableRef.value?.elTableRef?.clearSelection?.()
     })
 
-  const isValueRequired = (operator?: OperateLogFilterOperator) =>
-    Boolean(operator && !['empty', 'not_empty'].includes(operator))
-
-  const hasFilterValue = (value: unknown) => {
-    if (Array.isArray(value)) {
-      return value.length > 0
-    }
-    return value !== '' && value !== undefined && value !== null
-  }
-
-  const normalizeFilterGroups = (groups: OperateLogFilterGroup[] = []) =>
-    groups
-      .map((group) => ({
-        conditions: (group.conditions || [])
-          .map((item) => ({
-            field: item.field,
-            operator: item.operator,
-            value: item.value
-          }))
-          .filter((item) => item.field && item.operator)
-          .filter((item) => !isValueRequired(item.operator) || hasFilterValue(item.value))
-      }))
-      .filter((group) => group.conditions.length > 0)
-
-  const normalizeQuickFilter = (filter?: OperateLogFilterCondition) => {
-    if (!filter?.field || !filter.operator) {
-      return null
-    }
-
-    if (isValueRequired(filter.operator) && !hasFilterValue(filter.value)) {
-      return null
-    }
-
-    return {
-      field: filter.field,
-      operator: filter.operator,
-      value: filter.value
-    }
-  }
-
-  const performSearch = (params: {
-    quickFilter?: OperateLogFilterCondition
-    advancedFilters?: OperateLogFilterGroup[]
-  }) => {
-    replaceSearchParams(buildSearchParams(params))
+  // Keep page logic focused on field schema and data fetching. The shared
+  // serializer owns the quick_filter / filters transport details.
+  const performSearch = (params: Partial<TableFilterFormModel>) => {
+    replaceSearchParams(buildDynamicTableFilterParams(params, filterFields.value))
     getData()
   }
 
-  const buildSearchParams = (params: Record<string, any>) => {
-    const requestParams: Record<string, string> = {}
-    const quickFilter = normalizeQuickFilter(params.quickFilter as OperateLogFilterCondition)
-    const advancedFilters = normalizeFilterGroups(params.advancedFilters as OperateLogFilterGroup[])
-
-    if (quickFilter) {
-      requestParams.quick_filter = JSON.stringify(quickFilter)
-    }
-
-    if (advancedFilters.length > 0) {
-      requestParams.filters = JSON.stringify(advancedFilters)
-    }
-
-    return requestParams
-  }
-
-  const handleAdvancedFilterApply = (advancedFilters: OperateLogFilterGroup[]) => {
+  const handleAdvancedFilterApply = (advancedFilters: TableFilterGroup[]) => {
     performSearch({
       quickFilter: searchForm.value.quickFilter,
       advancedFilters
@@ -380,7 +278,7 @@
   }
 
   const handleSearch = (params: Record<string, any>) => {
-    performSearch(params)
+    performSearch(params as TableFilterFormModel)
   }
 
   const handleReset = async () => {

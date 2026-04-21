@@ -285,7 +285,7 @@ export function fetchUpdateDictSort(params: Array<{ id: number | string; sort: n
   })
 }
 
-export function fetchGetLoginLogList(params?: Record<string, any>) {
+export function fetchGetLoginLogList(params?: Api.SystemManage.LogSearchParams) {
   return request.get<Api.SystemManage.LogList>({
     url: '/login_log',
     params: normalizeListParams(params)
@@ -308,10 +308,11 @@ export function fetchClearLoginLog() {
   })
 }
 
-export function fetchExportLoginLog() {
+export function fetchExportLoginLog(params?: Api.SystemManage.LogSearchParams) {
   return request.request<Blob>({
     url: '/login_log/export',
     method: 'POST',
+    params: normalizeListParams(params),
     responseType: 'blob'
   })
 }

@@ -55,8 +55,11 @@
   import { useAuth } from '@/hooks'
   import { useBatchDelete } from '@/hooks/core/useBatchDelete'
   import { useTable } from '@/hooks/core/useTable'
+  import type { TableFilterFormModel } from '@/types'
   import { fetchDeleteRole, fetchGetDepartmentList, fetchGetRoleList } from '@/api/system-manage'
+  import { buildDynamicTableFilterParams, createTableFilterFormModel } from '@/utils/table/filter'
   import RoleEditDialog from './modules/role-edit-dialog.vue'
+  import { createRoleFilterFields } from './modules/role-filter-fields'
   import RolePermissionDialog from './modules/role-permission-dialog.vue'
   import RoleSearch from './modules/role-search.vue'
   import { ElMessage, ElMessageBox } from 'element-plus'
@@ -72,10 +75,8 @@
   const { hasAuth } = useAuth()
   const canDeleteRole = hasAuth('system:role:delete')
 
-  const searchForm = ref<Api.SystemManage.RoleSearchParams>({
-    key: undefined
-  })
-
+  const searchForm = ref<TableFilterFormModel>(createTableFilterFormModel())
+  const filterFields = computed(() => createRoleFilterFields())
   const tableRef = ref()
   const dialogVisible = ref(false)
   const permissionDialogVisible = ref(false)
@@ -115,8 +116,7 @@
       apiFn: fetchGetRoleList,
       apiParams: {
         page: 1,
-        pageSize: 20,
-        key: undefined
+        pageSize: 20
       },
       columnsFactory: () => [
         ...(canDeleteRole
@@ -254,18 +254,22 @@
       return
     }
 
-    await ElMessageBox.confirm(`确定删除角色“${row.name}”吗？删除后不可恢复。`, '删除确认', {
-      type: 'warning',
-      confirmButtonText: '确定',
-      cancelButtonText: '取消'
-    })
+    await ElMessageBox.confirm(
+      `确定删除角色“${row.name}”吗？删除后不可恢复。`,
+      '删除确认',
+      {
+        type: 'warning',
+        confirmButtonText: '确定',
+        cancelButtonText: '取消'
+      }
+    )
 
     await fetchDeleteRole(row.id)
     await refreshRemove()
   }
 
-  const handleSearch = (params: Api.SystemManage.RoleSearchParams) => {
-    replaceSearchParams(params)
+  const handleSearch = (params: TableFilterFormModel) => {
+    replaceSearchParams(buildDynamicTableFilterParams(params, filterFields.value))
     getData()
   }
 

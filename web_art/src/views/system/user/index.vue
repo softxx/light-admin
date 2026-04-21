@@ -42,6 +42,7 @@
   import ArtButtonTable from '@/components/core/forms/art-button-table/index.vue'
   import { useAuth } from '@/hooks'
   import { useTable } from '@/hooks/core/useTable'
+  import type { TableFilterFormModel } from '@/types'
   import {
     fetchChangeUserStatus,
     fetchDeleteUser,
@@ -50,7 +51,9 @@
     fetchGetUserList,
     fetchResetUserPassword
   } from '@/api/system-manage'
+  import { buildDynamicTableFilterParams, createTableFilterFormModel } from '@/utils/table/filter'
   import UserDialog from './modules/user-dialog.vue'
+  import { createUserFilterFields } from './modules/user-filter-fields'
   import UserSearch from './modules/user-search.vue'
   import { ElAvatar, ElMessageBox, ElSwitch, ElTag } from 'element-plus'
 
@@ -66,14 +69,12 @@
   const dialogVisible = ref(false)
   const dialogType = ref<DialogType>('add')
   const currentUserData = ref<Partial<UserListItem>>({})
+  const searchForm = ref<TableFilterFormModel>(createTableFilterFormModel())
 
-  const searchForm = ref<Api.SystemManage.UserSearchParams>({
-    key: undefined,
-    roles: undefined,
-    status: undefined,
-    dept_id: undefined,
-    create_time: undefined
-  })
+  // The page adapter only needs the shared field schema to serialize filters.
+  const filterFields = computed(() =>
+    createUserFilterFields(roleOptions.value, departmentOptions.value)
+  )
 
   const {
     columns,
@@ -95,8 +96,7 @@
       apiFn: fetchGetUserList,
       apiParams: {
         page: 1,
-        pageSize: 20,
-        ...searchForm.value
+        pageSize: 20
       },
       columnsFactory: () => [
         {
@@ -227,8 +227,8 @@
     dialogVisible.value = true
   }
 
-  const handleSearch = (params: Api.SystemManage.UserSearchParams) => {
-    replaceSearchParams(params)
+  const handleSearch = (params: TableFilterFormModel) => {
+    replaceSearchParams(buildDynamicTableFilterParams(params, filterFields.value))
     getData()
   }
 
@@ -259,11 +259,15 @@
   }
 
   const handleDelete = async (row: UserListItem) => {
-    await ElMessageBox.confirm(`确定删除用户“${row.realname || row.username}”吗？`, '删除确认', {
-      type: 'warning',
-      confirmButtonText: '确定',
-      cancelButtonText: '取消'
-    })
+    await ElMessageBox.confirm(
+      `确定删除用户“${row.realname || row.username}”吗？`,
+      '删除确认',
+      {
+        type: 'warning',
+        confirmButtonText: '确定',
+        cancelButtonText: '取消'
+      }
+    )
 
     await fetchDeleteUser(row.id)
     await refreshRemove()

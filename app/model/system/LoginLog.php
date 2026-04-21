@@ -2,53 +2,28 @@
 
 namespace app\model\system;
 
+use app\model\system\search\LoginLogSearch;
 use core\base\BaseModel;
-use app\model\system\User;
 
 class LoginLog extends BaseModel
 {
-    //开启自动写入时间戳
+    use LoginLogSearch;
+
+    //寮€鍚嚜鍔ㄥ啓鍏ユ椂闂存埑
     protected $autoWriteTimestamp = true;
 
-    //自动写入时间戳字段
+    //鑷姩鍐欏叆鏃堕棿鎴冲瓧娈?
     protected $createTime = 'login_time';
 
-    // 关闭自动写入update_time字段
+    // 鍏抽棴鑷姩鍐欏叆update_time瀛楁
     protected $updateTime = false;
 
-    //定义类型转换
+    //瀹氫箟绫诲瀷杞崲
     protected $type = [
-        'login_time'  =>  'timestamp:Y/m/d H:i:s'
+        'login_time' => 'timestamp:Y/m/d H:i:s',
     ];
 
-    //账号
-    public function searchAccountAttr($query, $value)
-    {
-        $query->where('account', $value);
-    }
-
-
-    //用户姓名
-    public function searchRealnameAttr($query, $value)
-    {
-        $user_id = User::whereLike('realname',trim($value))->column('id');
-        $query->whereIn('user_id', $user_id);
-    }
-
-    //登录IP
-    public function searchLoginIpAttr($query, $value)
-    {
-        $query->whereLike('login_ip', $value);
-    }
-
-
-    //操作时间
-    public function searchLoginTimeAttr($query, $value)
-    {
-        $query->whereTime('login_time', 'between', between_time($value));
-    }
-
-    //定义用户相对关联
+    //瀹氫箟鐢ㄦ埛鐩稿鍏宠仈
     public function user()
     {
         return $this->belongsTo(User::class, 'account', 'username')->bind(['realname']);

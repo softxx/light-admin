@@ -29,6 +29,7 @@
 
 // 导出响应类型
 export * from './response'
+export * from './table-filter'
 
 // 状态类型
 export type Status = 0 | 1 // 0: 禁用, 1: 启用
