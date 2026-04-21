@@ -16,9 +16,7 @@ const componentAliasMap: Record<string, string> = {
   'system/department/index': '/system/department',
   'system/dict/index': '/system/dict',
   'system/logs/login-log': '/system/logs/login-log',
-  'system/logs/operate-log': '/system/logs/operate-log',
-  'system/generator/index': '/system/generator',
-  'system/generator/edit': '/system/generator/edit'
+  'system/logs/operate-log': '/system/logs/operate-log'
 }
 
 function withLeadingSlash(path = '') {

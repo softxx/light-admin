@@ -7,10 +7,10 @@ SET FOREIGN_KEY_CHECKS = 0;
 DROP TABLE IF EXISTS `light_auth_access`;
 CREATE TABLE `light_auth_access` (
   `id` int(10) NOT NULL AUTO_INCREMENT,
-  `role_id` int(10) NOT NULL DEFAULT '0' COMMENT '角色id',
-  `menu_id` int(10) NOT NULL DEFAULT '0' COMMENT '菜单id',
+  `role_id` int(10) NOT NULL DEFAULT '0' COMMENT '瑙掕壊id',
+  `menu_id` int(10) NOT NULL DEFAULT '0' COMMENT '鑿滃崟id',
   PRIMARY KEY (`id`) USING BTREE
-) ENGINE=InnoDB AUTO_INCREMENT=5751 DEFAULT CHARSET=utf8mb4 ROW_FORMAT=DYNAMIC COMMENT='权限菜单关联表';
+) ENGINE=InnoDB AUTO_INCREMENT=5751 DEFAULT CHARSET=utf8mb4 ROW_FORMAT=DYNAMIC COMMENT='鏉冮檺鑿滃崟鍏宠仈琛?;
 
 -- ----------------------------
 -- Records of light_auth_access
@@ -85,8 +85,6 @@ INSERT INTO `light_auth_access` (`id`, `role_id`, `menu_id`) VALUES (5613, 1, 28
 INSERT INTO `light_auth_access` (`id`, `role_id`, `menu_id`) VALUES (5614, 1, 29);
 INSERT INTO `light_auth_access` (`id`, `role_id`, `menu_id`) VALUES (5615, 1, 30);
 INSERT INTO `light_auth_access` (`id`, `role_id`, `menu_id`) VALUES (5616, 1, 13);
-INSERT INTO `light_auth_access` (`id`, `role_id`, `menu_id`) VALUES (5630, 1, 184);
-INSERT INTO `light_auth_access` (`id`, `role_id`, `menu_id`) VALUES (5632, 1, 186);
 INSERT INTO `light_auth_access` (`id`, `role_id`, `menu_id`) VALUES (5684, 1, 236);
 INSERT INTO `light_auth_access` (`id`, `role_id`, `menu_id`) VALUES (5686, 2, 107);
 INSERT INTO `light_auth_access` (`id`, `role_id`, `menu_id`) VALUES (5687, 2, 119);
@@ -125,31 +123,31 @@ COMMIT;
 DROP TABLE IF EXISTS `light_department`;
 CREATE TABLE `light_department` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
-  `name` varchar(30) NOT NULL DEFAULT '' COMMENT '部门名称',
-  `parent_id` int(11) NOT NULL DEFAULT '0' COMMENT '父级部门',
-  `sort` smallint(5) NOT NULL DEFAULT '8' COMMENT '部门排序',
-  `leader_id` int(11) NOT NULL DEFAULT '0' COMMENT '部门负责人',
+  `name` varchar(30) NOT NULL DEFAULT '' COMMENT '閮ㄩ棬鍚嶇О',
+  `parent_id` int(11) NOT NULL DEFAULT '0' COMMENT '鐖剁骇閮ㄩ棬',
+  `sort` smallint(5) NOT NULL DEFAULT '8' COMMENT '閮ㄩ棬鎺掑簭',
+  `leader_id` int(11) NOT NULL DEFAULT '0' COMMENT '閮ㄩ棬璐熻矗浜?,
   PRIMARY KEY (`id`) USING BTREE
-) ENGINE=InnoDB AUTO_INCREMENT=21 DEFAULT CHARSET=utf8mb4 ROW_FORMAT=DYNAMIC COMMENT='部门表';
+) ENGINE=InnoDB AUTO_INCREMENT=21 DEFAULT CHARSET=utf8mb4 ROW_FORMAT=DYNAMIC COMMENT='閮ㄩ棬琛?;
 
 -- ----------------------------
 -- Records of light_department
 -- ----------------------------
 BEGIN;
-INSERT INTO `light_department` (`id`, `name`, `parent_id`, `sort`, `leader_id`) VALUES (1, '人事部', 4, 8, 9);
-INSERT INTO `light_department` (`id`, `name`, `parent_id`, `sort`, `leader_id`) VALUES (2, '财务部', 4, 8, 22);
-INSERT INTO `light_department` (`id`, `name`, `parent_id`, `sort`, `leader_id`) VALUES (3, '技术部', 4, 8, 11);
-INSERT INTO `light_department` (`id`, `name`, `parent_id`, `sort`, `leader_id`) VALUES (4, '总公司', 0, 8, 18);
-INSERT INTO `light_department` (`id`, `name`, `parent_id`, `sort`, `leader_id`) VALUES (5, '市场部', 4, 8, 1);
-INSERT INTO `light_department` (`id`, `name`, `parent_id`, `sort`, `leader_id`) VALUES (7, '上海分公司', 0, 8, 1);
-INSERT INTO `light_department` (`id`, `name`, `parent_id`, `sort`, `leader_id`) VALUES (8, '广东分公司', 0, 8, 1);
-INSERT INTO `light_department` (`id`, `name`, `parent_id`, `sort`, `leader_id`) VALUES (13, '北京分公司', 0, 8, 0);
-INSERT INTO `light_department` (`id`, `name`, `parent_id`, `sort`, `leader_id`) VALUES (14, '人事部', 7, 8, 0);
-INSERT INTO `light_department` (`id`, `name`, `parent_id`, `sort`, `leader_id`) VALUES (15, '研发部', 4, 8, 0);
-INSERT INTO `light_department` (`id`, `name`, `parent_id`, `sort`, `leader_id`) VALUES (16, '技术部', 7, 8, 0);
-INSERT INTO `light_department` (`id`, `name`, `parent_id`, `sort`, `leader_id`) VALUES (17, '开发部', 8, 8, 0);
-INSERT INTO `light_department` (`id`, `name`, `parent_id`, `sort`, `leader_id`) VALUES (18, '人事部', 8, 8, 22);
-INSERT INTO `light_department` (`id`, `name`, `parent_id`, `sort`, `leader_id`) VALUES (19, '人事部', 13, 8, 20);
+INSERT INTO `light_department` (`id`, `name`, `parent_id`, `sort`, `leader_id`) VALUES (1, '浜轰簨閮?, 4, 8, 9);
+INSERT INTO `light_department` (`id`, `name`, `parent_id`, `sort`, `leader_id`) VALUES (2, '璐㈠姟閮?, 4, 8, 22);
+INSERT INTO `light_department` (`id`, `name`, `parent_id`, `sort`, `leader_id`) VALUES (3, '鎶€鏈儴', 4, 8, 11);
+INSERT INTO `light_department` (`id`, `name`, `parent_id`, `sort`, `leader_id`) VALUES (4, '鎬诲叕鍙?, 0, 8, 18);
+INSERT INTO `light_department` (`id`, `name`, `parent_id`, `sort`, `leader_id`) VALUES (5, '甯傚満閮?, 4, 8, 1);
+INSERT INTO `light_department` (`id`, `name`, `parent_id`, `sort`, `leader_id`) VALUES (7, '涓婃捣鍒嗗叕鍙?, 0, 8, 1);
+INSERT INTO `light_department` (`id`, `name`, `parent_id`, `sort`, `leader_id`) VALUES (8, '骞夸笢鍒嗗叕鍙?, 0, 8, 1);
+INSERT INTO `light_department` (`id`, `name`, `parent_id`, `sort`, `leader_id`) VALUES (13, '鍖椾含鍒嗗叕鍙?, 0, 8, 0);
+INSERT INTO `light_department` (`id`, `name`, `parent_id`, `sort`, `leader_id`) VALUES (14, '浜轰簨閮?, 7, 8, 0);
+INSERT INTO `light_department` (`id`, `name`, `parent_id`, `sort`, `leader_id`) VALUES (15, '鐮斿彂閮?, 4, 8, 0);
+INSERT INTO `light_department` (`id`, `name`, `parent_id`, `sort`, `leader_id`) VALUES (16, '鎶€鏈儴', 7, 8, 0);
+INSERT INTO `light_department` (`id`, `name`, `parent_id`, `sort`, `leader_id`) VALUES (17, '寮€鍙戦儴', 8, 8, 0);
+INSERT INTO `light_department` (`id`, `name`, `parent_id`, `sort`, `leader_id`) VALUES (18, '浜轰簨閮?, 8, 8, 22);
+INSERT INTO `light_department` (`id`, `name`, `parent_id`, `sort`, `leader_id`) VALUES (19, '浜轰簨閮?, 13, 8, 20);
 COMMIT;
 
 -- ----------------------------
@@ -158,48 +156,48 @@ COMMIT;
 DROP TABLE IF EXISTS `light_dict`;
 CREATE TABLE `light_dict` (
   `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
-  `type` varchar(30) NOT NULL DEFAULT '' COMMENT '字典类型',
-  `name` varchar(30) NOT NULL DEFAULT '' COMMENT '中文名称',
-  `value` varchar(30) NOT NULL DEFAULT '' COMMENT '字典属性值',
-  `sort` smallint(5) NOT NULL DEFAULT '8' COMMENT '排序',
-  `note` varchar(255) NOT NULL DEFAULT '' COMMENT '备注',
-  `color` varchar(10) NOT NULL DEFAULT '' COMMENT '字典组件颜色',
-  `widget_type` varchar(10) NOT NULL DEFAULT '' COMMENT '字典组件类型',
-  `is_delete` tinyint(1) NOT NULL DEFAULT '0' COMMENT '是否删除，0未删除，1已删除',
-  `status` tinyint(1) NOT NULL DEFAULT '1' COMMENT '状态，1启用，2禁用',
+  `type` varchar(30) NOT NULL DEFAULT '' COMMENT '瀛楀吀绫诲瀷',
+  `name` varchar(30) NOT NULL DEFAULT '' COMMENT '涓枃鍚嶇О',
+  `value` varchar(30) NOT NULL DEFAULT '' COMMENT '瀛楀吀灞炴€у€?,
+  `sort` smallint(5) NOT NULL DEFAULT '8' COMMENT '鎺掑簭',
+  `note` varchar(255) NOT NULL DEFAULT '' COMMENT '澶囨敞',
+  `color` varchar(10) NOT NULL DEFAULT '' COMMENT '瀛楀吀缁勪欢棰滆壊',
+  `widget_type` varchar(10) NOT NULL DEFAULT '' COMMENT '瀛楀吀缁勪欢绫诲瀷',
+  `is_delete` tinyint(1) NOT NULL DEFAULT '0' COMMENT '鏄惁鍒犻櫎锛?鏈垹闄わ紝1宸插垹闄?,
+  `status` tinyint(1) NOT NULL DEFAULT '1' COMMENT '鐘舵€侊紝1鍚敤锛?绂佺敤',
   PRIMARY KEY (`id`) USING BTREE
-) ENGINE=InnoDB AUTO_INCREMENT=562 DEFAULT CHARSET=utf8mb4 ROW_FORMAT=DYNAMIC COMMENT='字典表';
+) ENGINE=InnoDB AUTO_INCREMENT=562 DEFAULT CHARSET=utf8mb4 ROW_FORMAT=DYNAMIC COMMENT='瀛楀吀琛?;
 
 -- ----------------------------
 -- Records of light_dict
 -- ----------------------------
 BEGIN;
-INSERT INTO `light_dict` (`id`, `type`, `name`, `value`, `sort`, `note`, `color`, `widget_type`, `is_delete`, `status`) VALUES (75, 'dict_type', '字典类型', 'dict_type', 8, '', '', '', 0, 1);
-INSERT INTO `light_dict` (`id`, `type`, `name`, `value`, `sort`, `note`, `color`, `widget_type`, `is_delete`, `status`) VALUES (250, 'dict_type', '菜单类型', 'menu_type', 8, '', '', 'tag', 0, 1);
-INSERT INTO `light_dict` (`id`, `type`, `name`, `value`, `sort`, `note`, `color`, `widget_type`, `is_delete`, `status`) VALUES (251, 'menu_type', '目录', '0', 2, '', 'green', 'tag', 0, 1);
-INSERT INTO `light_dict` (`id`, `type`, `name`, `value`, `sort`, `note`, `color`, `widget_type`, `is_delete`, `status`) VALUES (252, 'menu_type', '菜单', '1', 1, '', 'blue', 'tag', 0, 1);
-INSERT INTO `light_dict` (`id`, `type`, `name`, `value`, `sort`, `note`, `color`, `widget_type`, `is_delete`, `status`) VALUES (253, 'menu_type', '权限', '2', 3, '', '', 'tag', 0, 1);
-INSERT INTO `light_dict` (`id`, `type`, `name`, `value`, `sort`, `note`, `color`, `widget_type`, `is_delete`, `status`) VALUES (429, 'gender', '未知', '0', 3, '', '', 'text', 0, 1);
-INSERT INTO `light_dict` (`id`, `type`, `name`, `value`, `sort`, `note`, `color`, `widget_type`, `is_delete`, `status`) VALUES (431, 'gender', '男', '1', 1, '', '', 'text', 0, 1);
-INSERT INTO `light_dict` (`id`, `type`, `name`, `value`, `sort`, `note`, `color`, `widget_type`, `is_delete`, `status`) VALUES (432, 'gender', '女', '2', 2, '', '', 'text', 0, 1);
-INSERT INTO `light_dict` (`id`, `type`, `name`, `value`, `sort`, `note`, `color`, `widget_type`, `is_delete`, `status`) VALUES (489, 'dict_type', '设备类型', 'device_type', 8, '', '', 'text', 0, 1);
-INSERT INTO `light_dict` (`id`, `type`, `name`, `value`, `sort`, `note`, `color`, `widget_type`, `is_delete`, `status`) VALUES (490, 'dict_type', '设备级别', 'device_level', 8, '', '', 'tag', 0, 1);
-INSERT INTO `light_dict` (`id`, `type`, `name`, `value`, `sort`, `note`, `color`, `widget_type`, `is_delete`, `status`) VALUES (495, 'dict_type', '岗位', 'job_post', 8, '', '', 'text', 0, 1);
-INSERT INTO `light_dict` (`id`, `type`, `name`, `value`, `sort`, `note`, `color`, `widget_type`, `is_delete`, `status`) VALUES (496, 'dict_type', '职称', 'job_title', 8, '', '', 'text', 0, 1);
-INSERT INTO `light_dict` (`id`, `type`, `name`, `value`, `sort`, `note`, `color`, `widget_type`, `is_delete`, `status`) VALUES (498, 'dict_type', '性别', 'gender', 8, '', '', 'text', 0, 1);
-INSERT INTO `light_dict` (`id`, `type`, `name`, `value`, `sort`, `note`, `color`, `widget_type`, `is_delete`, `status`) VALUES (526, 'device_type', '一般设备', '3', 2, '', '', 'text', 0, 1);
-INSERT INTO `light_dict` (`id`, `type`, `name`, `value`, `sort`, `note`, `color`, `widget_type`, `is_delete`, `status`) VALUES (528, 'device_type', '生产设备', '5', 3, '', '', 'text', 0, 1);
-INSERT INTO `light_dict` (`id`, `type`, `name`, `value`, `sort`, `note`, `color`, `widget_type`, `is_delete`, `status`) VALUES (529, 'device_type', '重要设备', '6', 1, '', '', 'text', 1, 1);
-INSERT INTO `light_dict` (`id`, `type`, `name`, `value`, `sort`, `note`, `color`, `widget_type`, `is_delete`, `status`) VALUES (531, 'device_level', '一级', '1', 1, '', '', 'tag', 0, 1);
-INSERT INTO `light_dict` (`id`, `type`, `name`, `value`, `sort`, `note`, `color`, `widget_type`, `is_delete`, `status`) VALUES (532, 'device_level', '二级', '2', 2, '', '', 'tag', 0, 1);
-INSERT INTO `light_dict` (`id`, `type`, `name`, `value`, `sort`, `note`, `color`, `widget_type`, `is_delete`, `status`) VALUES (535, 'device_level', '三级', '6', 5, '', '', 'tag', 0, 1);
-INSERT INTO `light_dict` (`id`, `type`, `name`, `value`, `sort`, `note`, `color`, `widget_type`, `is_delete`, `status`) VALUES (537, 'job_post', '技术岗', '2', 2, '', '', 'text', 0, 1);
-INSERT INTO `light_dict` (`id`, `type`, `name`, `value`, `sort`, `note`, `color`, `widget_type`, `is_delete`, `status`) VALUES (538, 'job_post', '普通岗', '3', 1, '', '', 'text', 0, 1);
-INSERT INTO `light_dict` (`id`, `type`, `name`, `value`, `sort`, `note`, `color`, `widget_type`, `is_delete`, `status`) VALUES (539, 'job_post', '管理岗', '4', 3, '', '', 'text', 0, 1);
-INSERT INTO `light_dict` (`id`, `type`, `name`, `value`, `sort`, `note`, `color`, `widget_type`, `is_delete`, `status`) VALUES (541, 'job_title', '初级', '1', 4, '', '', 'text', 0, 1);
-INSERT INTO `light_dict` (`id`, `type`, `name`, `value`, `sort`, `note`, `color`, `widget_type`, `is_delete`, `status`) VALUES (542, 'job_title', '中级', '2', 2, '', '', 'text', 0, 1);
-INSERT INTO `light_dict` (`id`, `type`, `name`, `value`, `sort`, `note`, `color`, `widget_type`, `is_delete`, `status`) VALUES (543, 'job_title', '副高级', '3', 3, '', '', 'text', 0, 1);
-INSERT INTO `light_dict` (`id`, `type`, `name`, `value`, `sort`, `note`, `color`, `widget_type`, `is_delete`, `status`) VALUES (544, 'job_title', '正高级', '4', 1, '', '', 'text', 0, 1);
+INSERT INTO `light_dict` (`id`, `type`, `name`, `value`, `sort`, `note`, `color`, `widget_type`, `is_delete`, `status`) VALUES (75, 'dict_type', '瀛楀吀绫诲瀷', 'dict_type', 8, '', '', '', 0, 1);
+INSERT INTO `light_dict` (`id`, `type`, `name`, `value`, `sort`, `note`, `color`, `widget_type`, `is_delete`, `status`) VALUES (250, 'dict_type', '鑿滃崟绫诲瀷', 'menu_type', 8, '', '', 'tag', 0, 1);
+INSERT INTO `light_dict` (`id`, `type`, `name`, `value`, `sort`, `note`, `color`, `widget_type`, `is_delete`, `status`) VALUES (251, 'menu_type', '鐩綍', '0', 2, '', 'green', 'tag', 0, 1);
+INSERT INTO `light_dict` (`id`, `type`, `name`, `value`, `sort`, `note`, `color`, `widget_type`, `is_delete`, `status`) VALUES (252, 'menu_type', '鑿滃崟', '1', 1, '', 'blue', 'tag', 0, 1);
+INSERT INTO `light_dict` (`id`, `type`, `name`, `value`, `sort`, `note`, `color`, `widget_type`, `is_delete`, `status`) VALUES (253, 'menu_type', '鏉冮檺', '2', 3, '', '', 'tag', 0, 1);
+INSERT INTO `light_dict` (`id`, `type`, `name`, `value`, `sort`, `note`, `color`, `widget_type`, `is_delete`, `status`) VALUES (429, 'gender', '鏈煡', '0', 3, '', '', 'text', 0, 1);
+INSERT INTO `light_dict` (`id`, `type`, `name`, `value`, `sort`, `note`, `color`, `widget_type`, `is_delete`, `status`) VALUES (431, 'gender', '鐢?, '1', 1, '', '', 'text', 0, 1);
+INSERT INTO `light_dict` (`id`, `type`, `name`, `value`, `sort`, `note`, `color`, `widget_type`, `is_delete`, `status`) VALUES (432, 'gender', '濂?, '2', 2, '', '', 'text', 0, 1);
+INSERT INTO `light_dict` (`id`, `type`, `name`, `value`, `sort`, `note`, `color`, `widget_type`, `is_delete`, `status`) VALUES (489, 'dict_type', '璁惧绫诲瀷', 'device_type', 8, '', '', 'text', 0, 1);
+INSERT INTO `light_dict` (`id`, `type`, `name`, `value`, `sort`, `note`, `color`, `widget_type`, `is_delete`, `status`) VALUES (490, 'dict_type', '璁惧绾у埆', 'device_level', 8, '', '', 'tag', 0, 1);
+INSERT INTO `light_dict` (`id`, `type`, `name`, `value`, `sort`, `note`, `color`, `widget_type`, `is_delete`, `status`) VALUES (495, 'dict_type', '宀椾綅', 'job_post', 8, '', '', 'text', 0, 1);
+INSERT INTO `light_dict` (`id`, `type`, `name`, `value`, `sort`, `note`, `color`, `widget_type`, `is_delete`, `status`) VALUES (496, 'dict_type', '鑱岀О', 'job_title', 8, '', '', 'text', 0, 1);
+INSERT INTO `light_dict` (`id`, `type`, `name`, `value`, `sort`, `note`, `color`, `widget_type`, `is_delete`, `status`) VALUES (498, 'dict_type', '鎬у埆', 'gender', 8, '', '', 'text', 0, 1);
+INSERT INTO `light_dict` (`id`, `type`, `name`, `value`, `sort`, `note`, `color`, `widget_type`, `is_delete`, `status`) VALUES (526, 'device_type', '涓€鑸澶?, '3', 2, '', '', 'text', 0, 1);
+INSERT INTO `light_dict` (`id`, `type`, `name`, `value`, `sort`, `note`, `color`, `widget_type`, `is_delete`, `status`) VALUES (528, 'device_type', '鐢熶骇璁惧', '5', 3, '', '', 'text', 0, 1);
+INSERT INTO `light_dict` (`id`, `type`, `name`, `value`, `sort`, `note`, `color`, `widget_type`, `is_delete`, `status`) VALUES (529, 'device_type', '閲嶈璁惧', '6', 1, '', '', 'text', 1, 1);
+INSERT INTO `light_dict` (`id`, `type`, `name`, `value`, `sort`, `note`, `color`, `widget_type`, `is_delete`, `status`) VALUES (531, 'device_level', '涓€绾?, '1', 1, '', '', 'tag', 0, 1);
+INSERT INTO `light_dict` (`id`, `type`, `name`, `value`, `sort`, `note`, `color`, `widget_type`, `is_delete`, `status`) VALUES (532, 'device_level', '浜岀骇', '2', 2, '', '', 'tag', 0, 1);
+INSERT INTO `light_dict` (`id`, `type`, `name`, `value`, `sort`, `note`, `color`, `widget_type`, `is_delete`, `status`) VALUES (535, 'device_level', '涓夌骇', '6', 5, '', '', 'tag', 0, 1);
+INSERT INTO `light_dict` (`id`, `type`, `name`, `value`, `sort`, `note`, `color`, `widget_type`, `is_delete`, `status`) VALUES (537, 'job_post', '鎶€鏈矖', '2', 2, '', '', 'text', 0, 1);
+INSERT INTO `light_dict` (`id`, `type`, `name`, `value`, `sort`, `note`, `color`, `widget_type`, `is_delete`, `status`) VALUES (538, 'job_post', '鏅€氬矖', '3', 1, '', '', 'text', 0, 1);
+INSERT INTO `light_dict` (`id`, `type`, `name`, `value`, `sort`, `note`, `color`, `widget_type`, `is_delete`, `status`) VALUES (539, 'job_post', '绠＄悊宀?, '4', 3, '', '', 'text', 0, 1);
+INSERT INTO `light_dict` (`id`, `type`, `name`, `value`, `sort`, `note`, `color`, `widget_type`, `is_delete`, `status`) VALUES (541, 'job_title', '鍒濈骇', '1', 4, '', '', 'text', 0, 1);
+INSERT INTO `light_dict` (`id`, `type`, `name`, `value`, `sort`, `note`, `color`, `widget_type`, `is_delete`, `status`) VALUES (542, 'job_title', '涓骇', '2', 2, '', '', 'text', 0, 1);
+INSERT INTO `light_dict` (`id`, `type`, `name`, `value`, `sort`, `note`, `color`, `widget_type`, `is_delete`, `status`) VALUES (543, 'job_title', '鍓珮绾?, '3', 3, '', '', 'text', 0, 1);
+INSERT INTO `light_dict` (`id`, `type`, `name`, `value`, `sort`, `note`, `color`, `widget_type`, `is_delete`, `status`) VALUES (544, 'job_title', '姝ｉ珮绾?, '4', 1, '', '', 'text', 0, 1);
 COMMIT;
 
 -- ----------------------------
@@ -208,61 +206,15 @@ COMMIT;
 DROP TABLE IF EXISTS `light_file`;
 CREATE TABLE `light_file` (
   `id` int(10) NOT NULL AUTO_INCREMENT,
-  `url` varchar(255) NOT NULL COMMENT '文件地址',
-  `mime_type` varchar(100) NOT NULL COMMENT 'mime类型',
-  `file_ext` varchar(30) NOT NULL COMMENT '文件扩展名',
-  `file_size` int(11) NOT NULL DEFAULT '0' COMMENT '文件大小',
-  `filename` varchar(255) NOT NULL COMMENT '文件名称',
-  `create_time` int(10) NOT NULL DEFAULT '0' COMMENT '上传时间',
-  `user_id` varchar(30) NOT NULL DEFAULT '' COMMENT '上传用户id',
+  `url` varchar(255) NOT NULL COMMENT '鏂囦欢鍦板潃',
+  `mime_type` varchar(100) NOT NULL COMMENT 'mime绫诲瀷',
+  `file_ext` varchar(30) NOT NULL COMMENT '鏂囦欢鎵╁睍鍚?,
+  `file_size` int(11) NOT NULL DEFAULT '0' COMMENT '鏂囦欢澶у皬',
+  `filename` varchar(255) NOT NULL COMMENT '鏂囦欢鍚嶇О',
+  `create_time` int(10) NOT NULL DEFAULT '0' COMMENT '涓婁紶鏃堕棿',
+  `user_id` varchar(30) NOT NULL DEFAULT '' COMMENT '涓婁紶鐢ㄦ埛id',
   PRIMARY KEY (`id`) USING BTREE
-) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8mb4 ROW_FORMAT=DYNAMIC COMMENT='文件表';
-
--- ----------------------------
--- Table structure for light_generate_field
--- ----------------------------
-DROP TABLE IF EXISTS `light_generate_field`;
-CREATE TABLE `light_generate_field` (
-  `id` int(11) NOT NULL AUTO_INCREMENT COMMENT 'id',
-  `table_id` int(11) NOT NULL DEFAULT '0' COMMENT '表id',
-  `name` varchar(100) NOT NULL DEFAULT '' COMMENT '字段名称',
-  `comment` varchar(300) NOT NULL DEFAULT '' COMMENT '字段描述',
-  `type` varchar(100) NOT NULL DEFAULT '' COMMENT '字段类型',
-  `is_required` tinyint(1) DEFAULT '0' COMMENT '是否必填 0-非必填 1-必填',
-  `is_pk` tinyint(1) DEFAULT '0' COMMENT '是否为主键 0-不是 1-是',
-  `is_insert` tinyint(1) DEFAULT '0' COMMENT '是否为插入字段 0-不是 1-是',
-  `is_list` tinyint(1) DEFAULT '0' COMMENT '是否为列表字段 0-不是 1-是',
-  `is_search` tinyint(1) DEFAULT '0' COMMENT '是否为查询字段 0-不是 1-是',
-  `search_type` varchar(100) DEFAULT '=' COMMENT '查询类型',
-  `show_type` varchar(100) DEFAULT 'input' COMMENT '显示类型',
-  `dict_type` varchar(100) DEFAULT '' COMMENT '字典类型',
-  `create_time` int(10) NOT NULL COMMENT '创建时间',
-  `update_time` int(10) DEFAULT NULL COMMENT '修改时间',
-  PRIMARY KEY (`id`) USING BTREE
-) ENGINE=InnoDB AUTO_INCREMENT=262 DEFAULT CHARSET=utf8mb4 ROW_FORMAT=DYNAMIC COMMENT='代码生成表字段信息表';
-
-
--- ----------------------------
--- Table structure for light_generate_table
--- ----------------------------
-DROP TABLE IF EXISTS `light_generate_table`;
-CREATE TABLE `light_generate_table` (
-  `id` int(11) NOT NULL AUTO_INCREMENT COMMENT 'id',
-  `table_name` varchar(200) NOT NULL DEFAULT '' COMMENT '表名称',
-  `table_comment` varchar(300) NOT NULL DEFAULT '' COMMENT '表描述',
-  `generate_type` tinyint(1) NOT NULL DEFAULT '0' COMMENT '生成方式  0-压缩包下载 1-生成到模块',
-  `module_name` varchar(100) DEFAULT '' COMMENT '模块名',
-  `class_dir` varchar(100) DEFAULT '' COMMENT '类目录名',
-  `create__userid` int(11) DEFAULT '0' COMMENT '创建人id',
-  `menu_name` varchar(30) DEFAULT NULL COMMENT '菜单名称',
-  `menu_type` tinyint(1) DEFAULT NULL COMMENT '生成菜单类型。0自动构建，1手动添加',
-  `menu_pid` int(11) DEFAULT NULL COMMENT '上级菜单id',
-  `delete_type` tinyint(1) NOT NULL COMMENT '删除类型，0物理删除，1软删除',
-  `create_time` int(10) NOT NULL COMMENT '创建时间',
-  `update_time` int(10) DEFAULT NULL COMMENT '修改时间',
-  PRIMARY KEY (`id`) USING BTREE
-) ENGINE=InnoDB AUTO_INCREMENT=50 DEFAULT CHARSET=utf8mb4 ROW_FORMAT=DYNAMIC COMMENT='代码生成表信息表';
-
+) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8mb4 ROW_FORMAT=DYNAMIC COMMENT='鏂囦欢琛?;
 
 -- ----------------------------
 -- Table structure for light_login_log
@@ -270,14 +222,14 @@ CREATE TABLE `light_generate_table` (
 DROP TABLE IF EXISTS `light_login_log`;
 CREATE TABLE `light_login_log` (
   `id` int(11) unsigned NOT NULL AUTO_INCREMENT,
-  `account` varchar(30) NOT NULL DEFAULT '' COMMENT '登录账号',
-  `login_ip` varchar(20) NOT NULL DEFAULT '' COMMENT '登录ip',
-  `browser` varchar(20) NOT NULL DEFAULT '' COMMENT '浏览器',
-  `os` varchar(20) NOT NULL DEFAULT '' COMMENT '操作系统',
-  `login_time` int(10) unsigned NOT NULL DEFAULT '0' COMMENT '登录时间',
-  `user_id` int(11) NOT NULL DEFAULT '0' COMMENT '用户id',
+  `account` varchar(30) NOT NULL DEFAULT '' COMMENT '鐧诲綍璐﹀彿',
+  `login_ip` varchar(20) NOT NULL DEFAULT '' COMMENT '鐧诲綍ip',
+  `browser` varchar(20) NOT NULL DEFAULT '' COMMENT '娴忚鍣?,
+  `os` varchar(20) NOT NULL DEFAULT '' COMMENT '鎿嶄綔绯荤粺',
+  `login_time` int(10) unsigned NOT NULL DEFAULT '0' COMMENT '鐧诲綍鏃堕棿',
+  `user_id` int(11) NOT NULL DEFAULT '0' COMMENT '鐢ㄦ埛id',
   PRIMARY KEY (`id`) USING BTREE
-) ENGINE=InnoDB AUTO_INCREMENT=19 DEFAULT CHARSET=utf8mb4 ROW_FORMAT=DYNAMIC COMMENT='登录日志表';
+) ENGINE=InnoDB AUTO_INCREMENT=19 DEFAULT CHARSET=utf8mb4 ROW_FORMAT=DYNAMIC COMMENT='鐧诲綍鏃ュ織琛?;
 
 -- ----------------------------
 -- Table structure for light_system_setting
@@ -285,16 +237,16 @@ CREATE TABLE `light_login_log` (
 DROP TABLE IF EXISTS `light_system_setting`;
 CREATE TABLE `light_system_setting` (
   `id` int(11) unsigned NOT NULL AUTO_INCREMENT,
-  `system_name` varchar(100) NOT NULL DEFAULT '' COMMENT '系统名称',
-  `logo` varchar(500) NOT NULL DEFAULT '' COMMENT '系统Logo',
-  `favicon` varchar(500) NOT NULL DEFAULT '' COMMENT '站点图标',
-  `homepage_enabled` tinyint(1) NOT NULL DEFAULT '1' COMMENT '首页开关 1开启 0关闭',
-  `homepage_title` varchar(100) NOT NULL DEFAULT '' COMMENT '首页标题',
-  `homepage_intro` varchar(1000) NOT NULL DEFAULT '' COMMENT '首页简介',
-  `create_time` int(10) unsigned NOT NULL DEFAULT '0' COMMENT '创建时间',
-  `update_time` int(10) unsigned NOT NULL DEFAULT '0' COMMENT '更新时间',
+  `system_name` varchar(100) NOT NULL DEFAULT '' COMMENT '绯荤粺鍚嶇О',
+  `logo` varchar(500) NOT NULL DEFAULT '' COMMENT '绯荤粺Logo',
+  `favicon` varchar(500) NOT NULL DEFAULT '' COMMENT '绔欑偣鍥炬爣',
+  `homepage_enabled` tinyint(1) NOT NULL DEFAULT '1' COMMENT '棣栭〉寮€鍏?1寮€鍚?0鍏抽棴',
+  `homepage_title` varchar(100) NOT NULL DEFAULT '' COMMENT '棣栭〉鏍囬',
+  `homepage_intro` varchar(1000) NOT NULL DEFAULT '' COMMENT '棣栭〉绠€浠?,
+  `create_time` int(10) unsigned NOT NULL DEFAULT '0' COMMENT '鍒涘缓鏃堕棿',
+  `update_time` int(10) unsigned NOT NULL DEFAULT '0' COMMENT '鏇存柊鏃堕棿',
   PRIMARY KEY (`id`) USING BTREE
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 ROW_FORMAT=DYNAMIC COMMENT='系统设置表';
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 ROW_FORMAT=DYNAMIC COMMENT='绯荤粺璁剧疆琛?;
 
 -- ----------------------------
 -- Records of light_system_setting
@@ -308,69 +260,67 @@ COMMIT;
 DROP TABLE IF EXISTS `light_menu`;
 CREATE TABLE `light_menu` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
-  `pid` int(10) unsigned NOT NULL DEFAULT '0' COMMENT '父id',
-  `path` varchar(100) NOT NULL DEFAULT '' COMMENT '路由路径',
-  `component` varchar(255) NOT NULL DEFAULT '' COMMENT '路由组件',
-  `hidden` tinyint(1) NOT NULL DEFAULT '0' COMMENT '是否隐藏',
-  `title` varchar(30) NOT NULL DEFAULT '' COMMENT '菜单名称',
-  `icon` varchar(100) NOT NULL DEFAULT '' COMMENT '菜单图标',
-  `rules` varchar(100) NOT NULL DEFAULT '' COMMENT '权限节点',
-  `sort` smallint(5) NOT NULL DEFAULT '1' COMMENT '排序',
-  `type` tinyint(1) NOT NULL DEFAULT '0' COMMENT '0 目录，1菜单，2权限',
-  `hide_children` tinyint(1) NOT NULL DEFAULT '0' COMMENT '隐藏子菜单，并且强制渲染为菜单项',
-  `active_key` varchar(255) NOT NULL DEFAULT '' COMMENT '菜单高亮key',
-  `open_type` tinyint(1) NOT NULL DEFAULT '0' COMMENT '打开方式 0组件，1内链，2外链',
-  `link_url` varchar(500) NOT NULL DEFAULT '' COMMENT '内链地址',
+  `pid` int(10) unsigned NOT NULL DEFAULT '0' COMMENT '鐖秈d',
+  `path` varchar(100) NOT NULL DEFAULT '' COMMENT '璺敱璺緞',
+  `component` varchar(255) NOT NULL DEFAULT '' COMMENT '璺敱缁勪欢',
+  `hidden` tinyint(1) NOT NULL DEFAULT '0' COMMENT '鏄惁闅愯棌',
+  `title` varchar(30) NOT NULL DEFAULT '' COMMENT '鑿滃崟鍚嶇О',
+  `icon` varchar(100) NOT NULL DEFAULT '' COMMENT '鑿滃崟鍥炬爣',
+  `rules` varchar(100) NOT NULL DEFAULT '' COMMENT '鏉冮檺鑺傜偣',
+  `sort` smallint(5) NOT NULL DEFAULT '1' COMMENT '鎺掑簭',
+  `type` tinyint(1) NOT NULL DEFAULT '0' COMMENT '0 鐩綍锛?鑿滃崟锛?鏉冮檺',
+  `hide_children` tinyint(1) NOT NULL DEFAULT '0' COMMENT '闅愯棌瀛愯彍鍗曪紝骞朵笖寮哄埗娓叉煋涓鸿彍鍗曢」',
+  `active_key` varchar(255) NOT NULL DEFAULT '' COMMENT '鑿滃崟楂樹寒key',
+  `open_type` tinyint(1) NOT NULL DEFAULT '0' COMMENT '鎵撳紑鏂瑰紡 0缁勪欢锛?鍐呴摼锛?澶栭摼',
+  `link_url` varchar(500) NOT NULL DEFAULT '' COMMENT '鍐呴摼鍦板潃',
   PRIMARY KEY (`id`) USING BTREE
-) ENGINE=InnoDB AUTO_INCREMENT=241 DEFAULT CHARSET=utf8mb4 ROW_FORMAT=DYNAMIC COMMENT='菜单表';
+) ENGINE=InnoDB AUTO_INCREMENT=241 DEFAULT CHARSET=utf8mb4 ROW_FORMAT=DYNAMIC COMMENT='鑿滃崟琛?;
 
 -- ----------------------------
 -- Records of light_menu
 -- ----------------------------
 BEGIN;
-INSERT INTO `light_menu` (`id`, `pid`, `path`, `component`, `hidden`, `title`, `icon`, `rules`, `sort`, `type`, `hide_children`, `active_key`, `open_type`, `link_url`) VALUES (13, 0, 'system', 'Layout', 0, '系统管理', 'setting-outlined', '', 5, 0, 0, '', 0, '');
-INSERT INTO `light_menu` (`id`, `pid`, `path`, `component`, `hidden`, `title`, `icon`, `rules`, `sort`, `type`, `hide_children`, `active_key`, `open_type`, `link_url`) VALUES (14, 13, 'menu', 'system/menu/index', 0, '菜单管理', 'menu-outlined', '', 1, 1, 0, '', 0, '');
-INSERT INTO `light_menu` (`id`, `pid`, `path`, `component`, `hidden`, `title`, `icon`, `rules`, `sort`, `type`, `hide_children`, `active_key`, `open_type`, `link_url`) VALUES (16, 13, 'department', 'system/department/index', 0, '部门管理', 'apartment-outlined', '', 2, 1, 0, '', 0, '');
-INSERT INTO `light_menu` (`id`, `pid`, `path`, `component`, `hidden`, `title`, `icon`, `rules`, `sort`, `type`, `hide_children`, `active_key`, `open_type`, `link_url`) VALUES (20, 13, 'user', 'system/user/index', 0, '用户管理', 'team-outlined', '', 3, 1, 0, '', 0, '');
-INSERT INTO `light_menu` (`id`, `pid`, `path`, `component`, `hidden`, `title`, `icon`, `rules`, `sort`, `type`, `hide_children`, `active_key`, `open_type`, `link_url`) VALUES (21, 13, 'role', 'system/role/index', 0, '角色管理', 'user-outlined', '', 4, 1, 0, '', 0, '');
-INSERT INTO `light_menu` (`id`, `pid`, `path`, `component`, `hidden`, `title`, `icon`, `rules`, `sort`, `type`, `hide_children`, `active_key`, `open_type`, `link_url`) VALUES (28, 14, '', '', 0, '添加菜单', '', 'system:menu:save', 1, 2, 0, '', 0, '');
-INSERT INTO `light_menu` (`id`, `pid`, `path`, `component`, `hidden`, `title`, `icon`, `rules`, `sort`, `type`, `hide_children`, `active_key`, `open_type`, `link_url`) VALUES (29, 14, '', '', 0, '修改菜单', '', 'system:menu:update', 1, 2, 0, '', 0, '');
-INSERT INTO `light_menu` (`id`, `pid`, `path`, `component`, `hidden`, `title`, `icon`, `rules`, `sort`, `type`, `hide_children`, `active_key`, `open_type`, `link_url`) VALUES (30, 14, '', '', 0, '删除菜单', '', 'system:menu:delete', 1, 2, 0, '', 0, '');
-INSERT INTO `light_menu` (`id`, `pid`, `path`, `component`, `hidden`, `title`, `icon`, `rules`, `sort`, `type`, `hide_children`, `active_key`, `open_type`, `link_url`) VALUES (32, 13, 'auth/:id', 'system/role/auth', 1, '权限设置', 'insurance-outlined', '', 10, 1, 0, 'system/role', 0, '');
-INSERT INTO `light_menu` (`id`, `pid`, `path`, `component`, `hidden`, `title`, `icon`, `rules`, `sort`, `type`, `hide_children`, `active_key`, `open_type`, `link_url`) VALUES (36, 32, '', '', 1, '保存权限', '', 'system:authAccess:save', 1, 2, 0, '', 0, '');
-INSERT INTO `light_menu` (`id`, `pid`, `path`, `component`, `hidden`, `title`, `icon`, `rules`, `sort`, `type`, `hide_children`, `active_key`, `open_type`, `link_url`) VALUES (38, 16, '', '', 0, '删除部门', '', 'system:department:delete', 1, 2, 0, '', 0, '');
-INSERT INTO `light_menu` (`id`, `pid`, `path`, `component`, `hidden`, `title`, `icon`, `rules`, `sort`, `type`, `hide_children`, `active_key`, `open_type`, `link_url`) VALUES (40, 20, '', '', 0, '更新用户', '', 'system:user:update', 2, 2, 0, '', 0, '');
-INSERT INTO `light_menu` (`id`, `pid`, `path`, `component`, `hidden`, `title`, `icon`, `rules`, `sort`, `type`, `hide_children`, `active_key`, `open_type`, `link_url`) VALUES (45, 21, '', '', 0, '添加角色', '', 'system:role:save', 1, 2, 0, '', 0, '');
-INSERT INTO `light_menu` (`id`, `pid`, `path`, `component`, `hidden`, `title`, `icon`, `rules`, `sort`, `type`, `hide_children`, `active_key`, `open_type`, `link_url`) VALUES (46, 21, '', '', 0, '修改角色', '', 'system:role:update', 1, 2, 0, '', 0, '');
-INSERT INTO `light_menu` (`id`, `pid`, `path`, `component`, `hidden`, `title`, `icon`, `rules`, `sort`, `type`, `hide_children`, `active_key`, `open_type`, `link_url`) VALUES (47, 21, '', '', 0, '删除角色', '', 'system:role:delete', 1, 2, 0, '', 0, '');
-INSERT INTO `light_menu` (`id`, `pid`, `path`, `component`, `hidden`, `title`, `icon`, `rules`, `sort`, `type`, `hide_children`, `active_key`, `open_type`, `link_url`) VALUES (50, 13, 'dict', 'system/dict/index', 0, '字典管理', 'deployment-unit-outlined', '', 5, 1, 0, '', 0, '');
-INSERT INTO `light_menu` (`id`, `pid`, `path`, `component`, `hidden`, `title`, `icon`, `rules`, `sort`, `type`, `hide_children`, `active_key`, `open_type`, `link_url`) VALUES (53, 50, '', '', 0, '修改字典', '', 'system:dict:update', 1, 2, 0, '', 0, '');
-INSERT INTO `light_menu` (`id`, `pid`, `path`, `component`, `hidden`, `title`, `icon`, `rules`, `sort`, `type`, `hide_children`, `active_key`, `open_type`, `link_url`) VALUES (54, 50, '', '', 0, '删除字典', '', 'system:dict:delete', 1, 2, 0, '', 0, '');
-INSERT INTO `light_menu` (`id`, `pid`, `path`, `component`, `hidden`, `title`, `icon`, `rules`, `sort`, `type`, `hide_children`, `active_key`, `open_type`, `link_url`) VALUES (77, 14, '', '', 0, '查看列表', '', 'system:menu:index', 1, 2, 0, '', 0, '');
-INSERT INTO `light_menu` (`id`, `pid`, `path`, `component`, `hidden`, `title`, `icon`, `rules`, `sort`, `type`, `hide_children`, `active_key`, `open_type`, `link_url`) VALUES (78, 32, '', '', 1, '查看权限', '', 'system:authAccess:index', 1, 2, 0, '', 0, '');
-INSERT INTO `light_menu` (`id`, `pid`, `path`, `component`, `hidden`, `title`, `icon`, `rules`, `sort`, `type`, `hide_children`, `active_key`, `open_type`, `link_url`) VALUES (80, 20, '', '', 0, '查看列表', '', 'system:user:index', 1, 2, 0, '', 0, '');
-INSERT INTO `light_menu` (`id`, `pid`, `path`, `component`, `hidden`, `title`, `icon`, `rules`, `sort`, `type`, `hide_children`, `active_key`, `open_type`, `link_url`) VALUES (81, 21, '', '', 0, '查看列表', '', 'system:role:index', 1, 2, 0, '', 0, '');
-INSERT INTO `light_menu` (`id`, `pid`, `path`, `component`, `hidden`, `title`, `icon`, `rules`, `sort`, `type`, `hide_children`, `active_key`, `open_type`, `link_url`) VALUES (82, 50, '', '', 0, '查看列表', '', 'system:dict:index', 1, 2, 0, '', 0, '');
-INSERT INTO `light_menu` (`id`, `pid`, `path`, `component`, `hidden`, `title`, `icon`, `rules`, `sort`, `type`, `hide_children`, `active_key`, `open_type`, `link_url`) VALUES (105, 156, 'operate', 'system/logs/operate-log', 0, '操作日志', 'profile-outlined', '', 1, 1, 0, '', 0, '');
-INSERT INTO `light_menu` (`id`, `pid`, `path`, `component`, `hidden`, `title`, `icon`, `rules`, `sort`, `type`, `hide_children`, `active_key`, `open_type`, `link_url`) VALUES (106, 105, '', '', 0, '查看列表', '', 'system:operateLog:index', 1, 2, 0, '', 0, '');
-INSERT INTO `light_menu` (`id`, `pid`, `path`, `component`, `hidden`, `title`, `icon`, `rules`, `sort`, `type`, `hide_children`, `active_key`, `open_type`, `link_url`) VALUES (107, 105, '', '', 0, '清空日志', '', 'system:operateLog:clear', 1, 2, 0, '', 0, '');
-INSERT INTO `light_menu` (`id`, `pid`, `path`, `component`, `hidden`, `title`, `icon`, `rules`, `sort`, `type`, `hide_children`, `active_key`, `open_type`, `link_url`) VALUES (108, 20, '', '', 0, '修改状态', '', 'system:user:changeStatus', 1, 2, 0, '', 0, '');
-INSERT INTO `light_menu` (`id`, `pid`, `path`, `component`, `hidden`, `title`, `icon`, `rules`, `sort`, `type`, `hide_children`, `active_key`, `open_type`, `link_url`) VALUES (110, 50, '', '', 0, '添加字典', '', 'system:dict:save', 1, 2, 0, '', 0, '');
-INSERT INTO `light_menu` (`id`, `pid`, `path`, `component`, `hidden`, `title`, `icon`, `rules`, `sort`, `type`, `hide_children`, `active_key`, `open_type`, `link_url`) VALUES (113, 156, 'login', 'system/logs/login-log', 0, '登录日志', 'diff-outlined', '', 1, 1, 0, '', 0, '');
-INSERT INTO `light_menu` (`id`, `pid`, `path`, `component`, `hidden`, `title`, `icon`, `rules`, `sort`, `type`, `hide_children`, `active_key`, `open_type`, `link_url`) VALUES (114, 113, '', '', 0, '查看列表', '', 'system:loginLog:index', 1, 2, 0, '', 0, '');
-INSERT INTO `light_menu` (`id`, `pid`, `path`, `component`, `hidden`, `title`, `icon`, `rules`, `sort`, `type`, `hide_children`, `active_key`, `open_type`, `link_url`) VALUES (116, 113, '', '', 0, '清空日志', '', 'system:loginLog:clear', 1, 2, 0, '', 0, '');
-INSERT INTO `light_menu` (`id`, `pid`, `path`, `component`, `hidden`, `title`, `icon`, `rules`, `sort`, `type`, `hide_children`, `active_key`, `open_type`, `link_url`) VALUES (119, 105, '', '', 0, '删除日志', '', 'system:operateLog:delete', 1, 2, 0, '', 0, '');
-INSERT INTO `light_menu` (`id`, `pid`, `path`, `component`, `hidden`, `title`, `icon`, `rules`, `sort`, `type`, `hide_children`, `active_key`, `open_type`, `link_url`) VALUES (120, 113, '', '', 0, '删除日志', '', 'system:loginLog:delete', 1, 2, 0, '', 0, '');
-INSERT INTO `light_menu` (`id`, `pid`, `path`, `component`, `hidden`, `title`, `icon`, `rules`, `sort`, `type`, `hide_children`, `active_key`, `open_type`, `link_url`) VALUES (130, 16, '', '', 0, '添加部门', '', 'system:department:save', 1, 2, 0, '', 0, '');
-INSERT INTO `light_menu` (`id`, `pid`, `path`, `component`, `hidden`, `title`, `icon`, `rules`, `sort`, `type`, `hide_children`, `active_key`, `open_type`, `link_url`) VALUES (156, 13, 'log', 'RouteView', 0, '日志管理', 'file-text-outlined', '', 1, 0, 0, '', 0, '');
-INSERT INTO `light_menu` (`id`, `pid`, `path`, `component`, `hidden`, `title`, `icon`, `rules`, `sort`, `type`, `hide_children`, `active_key`, `open_type`, `link_url`) VALUES (167, 165, 'filetype', 'system/login_log/index', 0, '附件类型', '', '', 1, 1, 0, '', 0, '');
-INSERT INTO `light_menu` (`id`, `pid`, `path`, `component`, `hidden`, `title`, `icon`, `rules`, `sort`, `type`, `hide_children`, `active_key`, `open_type`, `link_url`) VALUES (184, 13, 'generator', 'system/generator/index', 0, '代码生成器', 'snippets-outlined', '', 1, 1, 1, '', 0, '');
-INSERT INTO `light_menu` (`id`, `pid`, `path`, `component`, `hidden`, `title`, `icon`, `rules`, `sort`, `type`, `hide_children`, `active_key`, `open_type`, `link_url`) VALUES (186, 13, 'generator/:id', 'system/generator/edit', 1, '基础配置', '', '', 1, 1, 0, 'system/generator', 0, '');
-INSERT INTO `light_menu` (`id`, `pid`, `path`, `component`, `hidden`, `title`, `icon`, `rules`, `sort`, `type`, `hide_children`, `active_key`, `open_type`, `link_url`) VALUES (236, 20, '', '', 0, '重置密码', '', 'system:user:resetPassword', 1, 2, 0, '', 0, '');
-INSERT INTO `light_menu` (`id`, `pid`, `path`, `component`, `hidden`, `title`, `icon`, `rules`, `sort`, `type`, `hide_children`, `active_key`, `open_type`, `link_url`) VALUES (237, 20, '', '', 0, '删除用户', '', 'system:user:delete', 1, 2, 0, '', 0, '');
-INSERT INTO `light_menu` (`id`, `pid`, `path`, `component`, `hidden`, `title`, `icon`, `rules`, `sort`, `type`, `hide_children`, `active_key`, `open_type`, `link_url`) VALUES (238, 13, 'setting', 'system/system-setting/index', 0, '系统设置', 'setting-outlined', '', 99, 1, 0, '', 0, '');
-INSERT INTO `light_menu` (`id`, `pid`, `path`, `component`, `hidden`, `title`, `icon`, `rules`, `sort`, `type`, `hide_children`, `active_key`, `open_type`, `link_url`) VALUES (239, 238, '', '', 0, '查看配置', '', 'system:systemsetting:index', 1, 2, 0, '', 0, '');
-INSERT INTO `light_menu` (`id`, `pid`, `path`, `component`, `hidden`, `title`, `icon`, `rules`, `sort`, `type`, `hide_children`, `active_key`, `open_type`, `link_url`) VALUES (240, 238, '', '', 0, '保存配置', '', 'system:systemsetting:update', 1, 2, 0, '', 0, '');
+INSERT INTO `light_menu` (`id`, `pid`, `path`, `component`, `hidden`, `title`, `icon`, `rules`, `sort`, `type`, `hide_children`, `active_key`, `open_type`, `link_url`) VALUES (13, 0, 'system', 'Layout', 0, '绯荤粺绠＄悊', 'setting-outlined', '', 5, 0, 0, '', 0, '');
+INSERT INTO `light_menu` (`id`, `pid`, `path`, `component`, `hidden`, `title`, `icon`, `rules`, `sort`, `type`, `hide_children`, `active_key`, `open_type`, `link_url`) VALUES (14, 13, 'menu', 'system/menu/index', 0, '鑿滃崟绠＄悊', 'menu-outlined', '', 1, 1, 0, '', 0, '');
+INSERT INTO `light_menu` (`id`, `pid`, `path`, `component`, `hidden`, `title`, `icon`, `rules`, `sort`, `type`, `hide_children`, `active_key`, `open_type`, `link_url`) VALUES (16, 13, 'department', 'system/department/index', 0, '閮ㄩ棬绠＄悊', 'apartment-outlined', '', 2, 1, 0, '', 0, '');
+INSERT INTO `light_menu` (`id`, `pid`, `path`, `component`, `hidden`, `title`, `icon`, `rules`, `sort`, `type`, `hide_children`, `active_key`, `open_type`, `link_url`) VALUES (20, 13, 'user', 'system/user/index', 0, '鐢ㄦ埛绠＄悊', 'team-outlined', '', 3, 1, 0, '', 0, '');
+INSERT INTO `light_menu` (`id`, `pid`, `path`, `component`, `hidden`, `title`, `icon`, `rules`, `sort`, `type`, `hide_children`, `active_key`, `open_type`, `link_url`) VALUES (21, 13, 'role', 'system/role/index', 0, '瑙掕壊绠＄悊', 'user-outlined', '', 4, 1, 0, '', 0, '');
+INSERT INTO `light_menu` (`id`, `pid`, `path`, `component`, `hidden`, `title`, `icon`, `rules`, `sort`, `type`, `hide_children`, `active_key`, `open_type`, `link_url`) VALUES (28, 14, '', '', 0, '娣诲姞鑿滃崟', '', 'system:menu:save', 1, 2, 0, '', 0, '');
+INSERT INTO `light_menu` (`id`, `pid`, `path`, `component`, `hidden`, `title`, `icon`, `rules`, `sort`, `type`, `hide_children`, `active_key`, `open_type`, `link_url`) VALUES (29, 14, '', '', 0, '淇敼鑿滃崟', '', 'system:menu:update', 1, 2, 0, '', 0, '');
+INSERT INTO `light_menu` (`id`, `pid`, `path`, `component`, `hidden`, `title`, `icon`, `rules`, `sort`, `type`, `hide_children`, `active_key`, `open_type`, `link_url`) VALUES (30, 14, '', '', 0, '鍒犻櫎鑿滃崟', '', 'system:menu:delete', 1, 2, 0, '', 0, '');
+INSERT INTO `light_menu` (`id`, `pid`, `path`, `component`, `hidden`, `title`, `icon`, `rules`, `sort`, `type`, `hide_children`, `active_key`, `open_type`, `link_url`) VALUES (32, 13, 'auth/:id', 'system/role/auth', 1, '鏉冮檺璁剧疆', 'insurance-outlined', '', 10, 1, 0, 'system/role', 0, '');
+INSERT INTO `light_menu` (`id`, `pid`, `path`, `component`, `hidden`, `title`, `icon`, `rules`, `sort`, `type`, `hide_children`, `active_key`, `open_type`, `link_url`) VALUES (36, 32, '', '', 1, '淇濆瓨鏉冮檺', '', 'system:authAccess:save', 1, 2, 0, '', 0, '');
+INSERT INTO `light_menu` (`id`, `pid`, `path`, `component`, `hidden`, `title`, `icon`, `rules`, `sort`, `type`, `hide_children`, `active_key`, `open_type`, `link_url`) VALUES (38, 16, '', '', 0, '鍒犻櫎閮ㄩ棬', '', 'system:department:delete', 1, 2, 0, '', 0, '');
+INSERT INTO `light_menu` (`id`, `pid`, `path`, `component`, `hidden`, `title`, `icon`, `rules`, `sort`, `type`, `hide_children`, `active_key`, `open_type`, `link_url`) VALUES (40, 20, '', '', 0, '鏇存柊鐢ㄦ埛', '', 'system:user:update', 2, 2, 0, '', 0, '');
+INSERT INTO `light_menu` (`id`, `pid`, `path`, `component`, `hidden`, `title`, `icon`, `rules`, `sort`, `type`, `hide_children`, `active_key`, `open_type`, `link_url`) VALUES (45, 21, '', '', 0, '娣诲姞瑙掕壊', '', 'system:role:save', 1, 2, 0, '', 0, '');
+INSERT INTO `light_menu` (`id`, `pid`, `path`, `component`, `hidden`, `title`, `icon`, `rules`, `sort`, `type`, `hide_children`, `active_key`, `open_type`, `link_url`) VALUES (46, 21, '', '', 0, '淇敼瑙掕壊', '', 'system:role:update', 1, 2, 0, '', 0, '');
+INSERT INTO `light_menu` (`id`, `pid`, `path`, `component`, `hidden`, `title`, `icon`, `rules`, `sort`, `type`, `hide_children`, `active_key`, `open_type`, `link_url`) VALUES (47, 21, '', '', 0, '鍒犻櫎瑙掕壊', '', 'system:role:delete', 1, 2, 0, '', 0, '');
+INSERT INTO `light_menu` (`id`, `pid`, `path`, `component`, `hidden`, `title`, `icon`, `rules`, `sort`, `type`, `hide_children`, `active_key`, `open_type`, `link_url`) VALUES (50, 13, 'dict', 'system/dict/index', 0, '瀛楀吀绠＄悊', 'deployment-unit-outlined', '', 5, 1, 0, '', 0, '');
+INSERT INTO `light_menu` (`id`, `pid`, `path`, `component`, `hidden`, `title`, `icon`, `rules`, `sort`, `type`, `hide_children`, `active_key`, `open_type`, `link_url`) VALUES (53, 50, '', '', 0, '淇敼瀛楀吀', '', 'system:dict:update', 1, 2, 0, '', 0, '');
+INSERT INTO `light_menu` (`id`, `pid`, `path`, `component`, `hidden`, `title`, `icon`, `rules`, `sort`, `type`, `hide_children`, `active_key`, `open_type`, `link_url`) VALUES (54, 50, '', '', 0, '鍒犻櫎瀛楀吀', '', 'system:dict:delete', 1, 2, 0, '', 0, '');
+INSERT INTO `light_menu` (`id`, `pid`, `path`, `component`, `hidden`, `title`, `icon`, `rules`, `sort`, `type`, `hide_children`, `active_key`, `open_type`, `link_url`) VALUES (77, 14, '', '', 0, '鏌ョ湅鍒楄〃', '', 'system:menu:index', 1, 2, 0, '', 0, '');
+INSERT INTO `light_menu` (`id`, `pid`, `path`, `component`, `hidden`, `title`, `icon`, `rules`, `sort`, `type`, `hide_children`, `active_key`, `open_type`, `link_url`) VALUES (78, 32, '', '', 1, '鏌ョ湅鏉冮檺', '', 'system:authAccess:index', 1, 2, 0, '', 0, '');
+INSERT INTO `light_menu` (`id`, `pid`, `path`, `component`, `hidden`, `title`, `icon`, `rules`, `sort`, `type`, `hide_children`, `active_key`, `open_type`, `link_url`) VALUES (80, 20, '', '', 0, '鏌ョ湅鍒楄〃', '', 'system:user:index', 1, 2, 0, '', 0, '');
+INSERT INTO `light_menu` (`id`, `pid`, `path`, `component`, `hidden`, `title`, `icon`, `rules`, `sort`, `type`, `hide_children`, `active_key`, `open_type`, `link_url`) VALUES (81, 21, '', '', 0, '鏌ョ湅鍒楄〃', '', 'system:role:index', 1, 2, 0, '', 0, '');
+INSERT INTO `light_menu` (`id`, `pid`, `path`, `component`, `hidden`, `title`, `icon`, `rules`, `sort`, `type`, `hide_children`, `active_key`, `open_type`, `link_url`) VALUES (82, 50, '', '', 0, '鏌ョ湅鍒楄〃', '', 'system:dict:index', 1, 2, 0, '', 0, '');
+INSERT INTO `light_menu` (`id`, `pid`, `path`, `component`, `hidden`, `title`, `icon`, `rules`, `sort`, `type`, `hide_children`, `active_key`, `open_type`, `link_url`) VALUES (105, 156, 'operate', 'system/logs/operate-log', 0, '鎿嶄綔鏃ュ織', 'profile-outlined', '', 1, 1, 0, '', 0, '');
+INSERT INTO `light_menu` (`id`, `pid`, `path`, `component`, `hidden`, `title`, `icon`, `rules`, `sort`, `type`, `hide_children`, `active_key`, `open_type`, `link_url`) VALUES (106, 105, '', '', 0, '鏌ョ湅鍒楄〃', '', 'system:operateLog:index', 1, 2, 0, '', 0, '');
+INSERT INTO `light_menu` (`id`, `pid`, `path`, `component`, `hidden`, `title`, `icon`, `rules`, `sort`, `type`, `hide_children`, `active_key`, `open_type`, `link_url`) VALUES (107, 105, '', '', 0, '娓呯┖鏃ュ織', '', 'system:operateLog:clear', 1, 2, 0, '', 0, '');
+INSERT INTO `light_menu` (`id`, `pid`, `path`, `component`, `hidden`, `title`, `icon`, `rules`, `sort`, `type`, `hide_children`, `active_key`, `open_type`, `link_url`) VALUES (108, 20, '', '', 0, '淇敼鐘舵€?, '', 'system:user:changeStatus', 1, 2, 0, '', 0, '');
+INSERT INTO `light_menu` (`id`, `pid`, `path`, `component`, `hidden`, `title`, `icon`, `rules`, `sort`, `type`, `hide_children`, `active_key`, `open_type`, `link_url`) VALUES (110, 50, '', '', 0, '娣诲姞瀛楀吀', '', 'system:dict:save', 1, 2, 0, '', 0, '');
+INSERT INTO `light_menu` (`id`, `pid`, `path`, `component`, `hidden`, `title`, `icon`, `rules`, `sort`, `type`, `hide_children`, `active_key`, `open_type`, `link_url`) VALUES (113, 156, 'login', 'system/logs/login-log', 0, '鐧诲綍鏃ュ織', 'diff-outlined', '', 1, 1, 0, '', 0, '');
+INSERT INTO `light_menu` (`id`, `pid`, `path`, `component`, `hidden`, `title`, `icon`, `rules`, `sort`, `type`, `hide_children`, `active_key`, `open_type`, `link_url`) VALUES (114, 113, '', '', 0, '鏌ョ湅鍒楄〃', '', 'system:loginLog:index', 1, 2, 0, '', 0, '');
+INSERT INTO `light_menu` (`id`, `pid`, `path`, `component`, `hidden`, `title`, `icon`, `rules`, `sort`, `type`, `hide_children`, `active_key`, `open_type`, `link_url`) VALUES (116, 113, '', '', 0, '娓呯┖鏃ュ織', '', 'system:loginLog:clear', 1, 2, 0, '', 0, '');
+INSERT INTO `light_menu` (`id`, `pid`, `path`, `component`, `hidden`, `title`, `icon`, `rules`, `sort`, `type`, `hide_children`, `active_key`, `open_type`, `link_url`) VALUES (119, 105, '', '', 0, '鍒犻櫎鏃ュ織', '', 'system:operateLog:delete', 1, 2, 0, '', 0, '');
+INSERT INTO `light_menu` (`id`, `pid`, `path`, `component`, `hidden`, `title`, `icon`, `rules`, `sort`, `type`, `hide_children`, `active_key`, `open_type`, `link_url`) VALUES (120, 113, '', '', 0, '鍒犻櫎鏃ュ織', '', 'system:loginLog:delete', 1, 2, 0, '', 0, '');
+INSERT INTO `light_menu` (`id`, `pid`, `path`, `component`, `hidden`, `title`, `icon`, `rules`, `sort`, `type`, `hide_children`, `active_key`, `open_type`, `link_url`) VALUES (130, 16, '', '', 0, '娣诲姞閮ㄩ棬', '', 'system:department:save', 1, 2, 0, '', 0, '');
+INSERT INTO `light_menu` (`id`, `pid`, `path`, `component`, `hidden`, `title`, `icon`, `rules`, `sort`, `type`, `hide_children`, `active_key`, `open_type`, `link_url`) VALUES (156, 13, 'log', 'RouteView', 0, '鏃ュ織绠＄悊', 'file-text-outlined', '', 1, 0, 0, '', 0, '');
+INSERT INTO `light_menu` (`id`, `pid`, `path`, `component`, `hidden`, `title`, `icon`, `rules`, `sort`, `type`, `hide_children`, `active_key`, `open_type`, `link_url`) VALUES (167, 165, 'filetype', 'system/login_log/index', 0, '闄勪欢绫诲瀷', '', '', 1, 1, 0, '', 0, '');
+INSERT INTO `light_menu` (`id`, `pid`, `path`, `component`, `hidden`, `title`, `icon`, `rules`, `sort`, `type`, `hide_children`, `active_key`, `open_type`, `link_url`) VALUES (236, 20, '', '', 0, '閲嶇疆瀵嗙爜', '', 'system:user:resetPassword', 1, 2, 0, '', 0, '');
+INSERT INTO `light_menu` (`id`, `pid`, `path`, `component`, `hidden`, `title`, `icon`, `rules`, `sort`, `type`, `hide_children`, `active_key`, `open_type`, `link_url`) VALUES (237, 20, '', '', 0, '鍒犻櫎鐢ㄦ埛', '', 'system:user:delete', 1, 2, 0, '', 0, '');
+INSERT INTO `light_menu` (`id`, `pid`, `path`, `component`, `hidden`, `title`, `icon`, `rules`, `sort`, `type`, `hide_children`, `active_key`, `open_type`, `link_url`) VALUES (238, 13, 'setting', 'system/system-setting/index', 0, '绯荤粺璁剧疆', 'setting-outlined', '', 99, 1, 0, '', 0, '');
+INSERT INTO `light_menu` (`id`, `pid`, `path`, `component`, `hidden`, `title`, `icon`, `rules`, `sort`, `type`, `hide_children`, `active_key`, `open_type`, `link_url`) VALUES (239, 238, '', '', 0, '鏌ョ湅閰嶇疆', '', 'system:systemsetting:index', 1, 2, 0, '', 0, '');
+INSERT INTO `light_menu` (`id`, `pid`, `path`, `component`, `hidden`, `title`, `icon`, `rules`, `sort`, `type`, `hide_children`, `active_key`, `open_type`, `link_url`) VALUES (240, 238, '', '', 0, '淇濆瓨閰嶇疆', '', 'system:systemsetting:update', 1, 2, 0, '', 0, '');
 COMMIT;
 
 -- ----------------------------
@@ -379,16 +329,16 @@ COMMIT;
 DROP TABLE IF EXISTS `light_operate_log`;
 CREATE TABLE `light_operate_log` (
   `id` int(11) unsigned NOT NULL AUTO_INCREMENT,
-  `module` varchar(50) NOT NULL DEFAULT '' COMMENT '模块名称',
-  `operate` varchar(20) NOT NULL DEFAULT '' COMMENT '操作模块',
-  `route` varchar(100) NOT NULL DEFAULT '' COMMENT '路由',
-  `params` varchar(1000) NOT NULL DEFAULT '' COMMENT '参数',
+  `module` varchar(50) NOT NULL DEFAULT '' COMMENT '妯″潡鍚嶇О',
+  `operate` varchar(20) NOT NULL DEFAULT '' COMMENT '鎿嶄綔妯″潡',
+  `route` varchar(100) NOT NULL DEFAULT '' COMMENT '璺敱',
+  `params` varchar(1000) NOT NULL DEFAULT '' COMMENT '鍙傛暟',
   `ip` varchar(20) NOT NULL DEFAULT '' COMMENT 'ip',
-  `user_id` varchar(30) NOT NULL DEFAULT '' COMMENT '操作用户',
-  `method` varchar(255) NOT NULL DEFAULT '' COMMENT '请求方法',
-  `create_time` int(10) unsigned NOT NULL DEFAULT '0' COMMENT '登录时间',
+  `user_id` varchar(30) NOT NULL DEFAULT '' COMMENT '鎿嶄綔鐢ㄦ埛',
+  `method` varchar(255) NOT NULL DEFAULT '' COMMENT '璇锋眰鏂规硶',
+  `create_time` int(10) unsigned NOT NULL DEFAULT '0' COMMENT '鐧诲綍鏃堕棿',
   PRIMARY KEY (`id`) USING BTREE
-) ENGINE=InnoDB AUTO_INCREMENT=267 DEFAULT CHARSET=utf8mb4 ROW_FORMAT=DYNAMIC COMMENT='操作日志';
+) ENGINE=InnoDB AUTO_INCREMENT=267 DEFAULT CHARSET=utf8mb4 ROW_FORMAT=DYNAMIC COMMENT='鎿嶄綔鏃ュ織';
 
 -- ----------------------------
 -- Records of light_operate_log
@@ -402,24 +352,24 @@ COMMIT;
 DROP TABLE IF EXISTS `light_role`;
 CREATE TABLE `light_role` (
   `id` mediumint(11) NOT NULL AUTO_INCREMENT,
-  `status` tinyint(1) unsigned NOT NULL DEFAULT '1' COMMENT '状态',
-  `name` varchar(30) NOT NULL DEFAULT '' COMMENT '名称',
-  `note` varchar(100) NOT NULL DEFAULT '' COMMENT '备注',
-  `role_key` varchar(30) NOT NULL DEFAULT '' COMMENT '权限标识',
-  `data_range` tinyint(1) NOT NULL DEFAULT '1' COMMENT '1 全部数据 2 自定义数据 3 仅本人数据 4 部门数据 5 部门及以下数据',
-  `delete_time` int(10) NOT NULL DEFAULT '0' COMMENT '删除时间',
+  `status` tinyint(1) unsigned NOT NULL DEFAULT '1' COMMENT '鐘舵€?,
+  `name` varchar(30) NOT NULL DEFAULT '' COMMENT '鍚嶇О',
+  `note` varchar(100) NOT NULL DEFAULT '' COMMENT '澶囨敞',
+  `role_key` varchar(30) NOT NULL DEFAULT '' COMMENT '鏉冮檺鏍囪瘑',
+  `data_range` tinyint(1) NOT NULL DEFAULT '1' COMMENT '1 鍏ㄩ儴鏁版嵁 2 鑷畾涔夋暟鎹?3 浠呮湰浜烘暟鎹?4 閮ㄩ棬鏁版嵁 5 閮ㄩ棬鍙婁互涓嬫暟鎹?,
+  `delete_time` int(10) NOT NULL DEFAULT '0' COMMENT '鍒犻櫎鏃堕棿',
   PRIMARY KEY (`id`) USING BTREE,
   UNIQUE KEY `role_key` (`role_key`) USING BTREE
-) ENGINE=InnoDB AUTO_INCREMENT=10 DEFAULT CHARSET=utf8mb4 ROW_FORMAT=DYNAMIC COMMENT='角色表';
+) ENGINE=InnoDB AUTO_INCREMENT=10 DEFAULT CHARSET=utf8mb4 ROW_FORMAT=DYNAMIC COMMENT='瑙掕壊琛?;
 
 -- ----------------------------
 -- Records of light_role
 -- ----------------------------
 BEGIN;
-INSERT INTO `light_role` (`id`, `status`, `name`, `note`, `role_key`, `data_range`, `delete_time`) VALUES (1, 1, '超级管理员', '内置角色，不可维护', 'super_admin', 1, 0);
-INSERT INTO `light_role` (`id`, `status`, `name`, `note`, `role_key`, `data_range`, `delete_time`) VALUES (2, 1, '管理员', '业务权限', 'admin', 1, 0);
-INSERT INTO `light_role` (`id`, `status`, `name`, `note`, `role_key`, `data_range`, `delete_time`) VALUES (3, 1, '总经理', '', 'general', 1, 0);
-INSERT INTO `light_role` (`id`, `status`, `name`, `note`, `role_key`, `data_range`, `delete_time`) VALUES (5, 1, '部门经理', '', 'manager', 1, 0);
+INSERT INTO `light_role` (`id`, `status`, `name`, `note`, `role_key`, `data_range`, `delete_time`) VALUES (1, 1, '瓒呯骇绠＄悊鍛?, '鍐呯疆瑙掕壊锛屼笉鍙淮鎶?, 'super_admin', 1, 0);
+INSERT INTO `light_role` (`id`, `status`, `name`, `note`, `role_key`, `data_range`, `delete_time`) VALUES (2, 1, '绠＄悊鍛?, '涓氬姟鏉冮檺', 'admin', 1, 0);
+INSERT INTO `light_role` (`id`, `status`, `name`, `note`, `role_key`, `data_range`, `delete_time`) VALUES (3, 1, '鎬荤粡鐞?, '', 'general', 1, 0);
+INSERT INTO `light_role` (`id`, `status`, `name`, `note`, `role_key`, `data_range`, `delete_time`) VALUES (5, 1, '閮ㄩ棬缁忕悊', '', 'manager', 1, 0);
 COMMIT;
 
 -- ----------------------------
@@ -431,7 +381,7 @@ CREATE TABLE `light_role_department` (
   `role_id` int(11) NOT NULL,
   `dept_id` int(11) NOT NULL,
   PRIMARY KEY (`id`) USING BTREE
-) ENGINE=InnoDB AUTO_INCREMENT=10 DEFAULT CHARSET=latin1 ROW_FORMAT=DYNAMIC COMMENT='部门角色关联表';
+) ENGINE=InnoDB AUTO_INCREMENT=10 DEFAULT CHARSET=latin1 ROW_FORMAT=DYNAMIC COMMENT='閮ㄩ棬瑙掕壊鍏宠仈琛?;
 
 -- ----------------------------
 -- Records of light_role_department
@@ -445,22 +395,22 @@ COMMIT;
 DROP TABLE IF EXISTS `light_user`;
 CREATE TABLE `light_user` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
-  `username` varchar(30) NOT NULL COMMENT '用户名',
-  `password` varchar(255) NOT NULL COMMENT '密码',
-  `realname` varchar(10) NOT NULL DEFAULT '' COMMENT '姓名',
-  `pinyin` varchar(10) NOT NULL DEFAULT '' COMMENT '拼音',
-  `phone` varchar(15) NOT NULL DEFAULT '' COMMENT '手机',
-  `email` varchar(50) NOT NULL DEFAULT '' COMMENT '邮箱',
-  `dept_id` int(10) unsigned NOT NULL DEFAULT '0' COMMENT '部门id',
-  `status` tinyint(3) unsigned NOT NULL DEFAULT '1' COMMENT '1启用，2禁用',
-  `create_time` int(10) unsigned NOT NULL DEFAULT '0' COMMENT '添加时间',
-  `avatar` varchar(255) NOT NULL DEFAULT '' COMMENT '头像',
-  `last_login_time` int(10) NOT NULL DEFAULT '0' COMMENT '最后登录时间',
-  `last_login_ip` varchar(20) NOT NULL DEFAULT '' COMMENT '最后登录的IP',
-  `is_admin` tinyint(1) NOT NULL DEFAULT '0' COMMENT '是否系统管理员，0否，1是',
+  `username` varchar(30) NOT NULL COMMENT '鐢ㄦ埛鍚?,
+  `password` varchar(255) NOT NULL COMMENT '瀵嗙爜',
+  `realname` varchar(10) NOT NULL DEFAULT '' COMMENT '濮撳悕',
+  `pinyin` varchar(10) NOT NULL DEFAULT '' COMMENT '鎷奸煶',
+  `phone` varchar(15) NOT NULL DEFAULT '' COMMENT '鎵嬫満',
+  `email` varchar(50) NOT NULL DEFAULT '' COMMENT '閭',
+  `dept_id` int(10) unsigned NOT NULL DEFAULT '0' COMMENT '閮ㄩ棬id',
+  `status` tinyint(3) unsigned NOT NULL DEFAULT '1' COMMENT '1鍚敤锛?绂佺敤',
+  `create_time` int(10) unsigned NOT NULL DEFAULT '0' COMMENT '娣诲姞鏃堕棿',
+  `avatar` varchar(255) NOT NULL DEFAULT '' COMMENT '澶村儚',
+  `last_login_time` int(10) NOT NULL DEFAULT '0' COMMENT '鏈€鍚庣櫥褰曟椂闂?,
+  `last_login_ip` varchar(20) NOT NULL DEFAULT '' COMMENT '鏈€鍚庣櫥褰曠殑IP',
+  `is_admin` tinyint(1) NOT NULL DEFAULT '0' COMMENT '鏄惁绯荤粺绠＄悊鍛橈紝0鍚︼紝1鏄?,
   PRIMARY KEY (`id`) USING BTREE,
-  UNIQUE KEY `username` (`username`) USING BTREE COMMENT '用户名唯一'
-) ENGINE=InnoDB AUTO_INCREMENT=25 DEFAULT CHARSET=utf8mb4 ROW_FORMAT=DYNAMIC COMMENT='用户表';
+  UNIQUE KEY `username` (`username`) USING BTREE COMMENT '鐢ㄦ埛鍚嶅敮涓€'
+) ENGINE=InnoDB AUTO_INCREMENT=25 DEFAULT CHARSET=utf8mb4 ROW_FORMAT=DYNAMIC COMMENT='鐢ㄦ埛琛?;
 
 -- ----------------------------
 -- Records of light_user
@@ -468,14 +418,14 @@ CREATE TABLE `light_user` (
 BEGIN;
 INSERT INTO `light_user` (`id`, `username`, `password`, `realname`, `pinyin`, `phone`, `email`, `dept_id`, `status`, `create_time`, `avatar`, `last_login_time`, `last_login_ip`, `is_admin`) VALUES (1, 'admin', '$2y$10$mH5jYh4WxS8HjqTN9Q1tu.SUyMMezQthe6.LDkZjPu7sABJTyprn6', 'super', '', '18899996666', '', 4, 1, 1748939339, '', 1750173840, '', 1);
 INSERT INTO `light_user` (`id`, `username`, `password`, `realname`, `pinyin`, `phone`, `email`, `dept_id`, `status`, `create_time`, `avatar`, `last_login_time`, `last_login_ip`, `is_admin`) VALUES (2, 'demo', '$2y$10$mH5jYh4WxS8HjqTN9Q1tu.SUyMMezQthe6.LDkZjPu7sABJTyprn6', 'demo', '', '', '', 4, 1, 1748939339, '', 1750173831, '', 0);
-INSERT INTO `light_user` (`id`, `username`, `password`, `realname`, `pinyin`, `phone`, `email`, `dept_id`, `status`, `create_time`, `avatar`, `last_login_time`, `last_login_ip`, `is_admin`) VALUES (9, 'test', '$2y$10$KZnWAJFpo/d4XXPLgzSuDOBv2Y7SQLcKwYbFZKQggCnawytQ4DSLK', '测试', 'cs', '', '', 15, 1, 1615864955, 'https://zos.alipayobjects.com/rmsportal/ODTLcjxAfvqbxHnVXCYX.png', 0, '', 0);
-INSERT INTO `light_user` (`id`, `username`, `password`, `realname`, `pinyin`, `phone`, `email`, `dept_id`, `status`, `create_time`, `avatar`, `last_login_time`, `last_login_ip`, `is_admin`) VALUES (10, 'test2', '$2y$10$89LxsExrBliqqCW/PrOBgOeubhHJUI5tmQkZJ2dBht8ltF/puI6a.', '测试2', 'cs', '', '', 16, 1, 1615865516, '', 0, '', 0);
-INSERT INTO `light_user` (`id`, `username`, `password`, `realname`, `pinyin`, `phone`, `email`, `dept_id`, `status`, `create_time`, `avatar`, `last_login_time`, `last_login_ip`, `is_admin`) VALUES (11, 'yunweu', '$2y$10$Zvbnq8TC7TavN/t/CriXC.g0d89XK4UaBiOYHOSctlwmjD2HLmdYu', '运维管理', 'ywgl', '', '', 17, 1, 1616059337, 'https://gw.alipayobjects.com/zos/antfincdn/XAosXuNZyF/BiazfanxmamNRoxxVxka.png', 0, '', 0);
-INSERT INTO `light_user` (`id`, `username`, `password`, `realname`, `pinyin`, `phone`, `email`, `dept_id`, `status`, `create_time`, `avatar`, `last_login_time`, `last_login_ip`, `is_admin`) VALUES (19, 'www', '$2y$10$SFlICzdZZMZy/2VxS4tMIODzQxcoYV40TkCbS48eTYwnvZEJJAd8u', '王五', 'ww', '', '', 7, 1, 1617182546, '', 0, '', 0);
-INSERT INTO `light_user` (`id`, `username`, `password`, `realname`, `pinyin`, `phone`, `email`, `dept_id`, `status`, `create_time`, `avatar`, `last_login_time`, `last_login_ip`, `is_admin`) VALUES (20, 'yang', '$2y$10$g1oVhKY1SXZmAl20SDo0xOAivYFaB4GbtDzzEjw..AcC0iNEQ/Yp2', '杨六', 'yl', '', '', 4, 1, 1645673069, '', 0, '', 0);
-INSERT INTO `light_user` (`id`, `username`, `password`, `realname`, `pinyin`, `phone`, `email`, `dept_id`, `status`, `create_time`, `avatar`, `last_login_time`, `last_login_ip`, `is_admin`) VALUES (21, 'lishi', '$2y$10$e9cdcQEFEb7k9sdixmwXnuO/GD1bRN8C1xw6b1nfbPjuXxEfvP2FS', '李四', 'ls', '', '', 4, 1, 1645673088, '', 0, '', 0);
-INSERT INTO `light_user` (`id`, `username`, `password`, `realname`, `pinyin`, `phone`, `email`, `dept_id`, `status`, `create_time`, `avatar`, `last_login_time`, `last_login_ip`, `is_admin`) VALUES (22, 'zhangs', '$2y$10$cl6yeliFDXHnfQ7accy4fOO3l7Jelcao9k3IdAka2hewcoZwiKAb2', '张三', 'zs', '', '', 8, 1, 1651917072, '', 0, '', 0);
-INSERT INTO `light_user` (`id`, `username`, `password`, `realname`, `pinyin`, `phone`, `email`, `dept_id`, `status`, `create_time`, `avatar`, `last_login_time`, `last_login_ip`, `is_admin`) VALUES (23, 'wang', '$2y$10$ec8Ln1cnCH0wOGkeWJnJm.68.eue7d/0c2oGWQ25yynxvkOHL6SLK', '王安', 'wa', '', '', 7, 1, 1748939339, '', 0, '', 0);
+INSERT INTO `light_user` (`id`, `username`, `password`, `realname`, `pinyin`, `phone`, `email`, `dept_id`, `status`, `create_time`, `avatar`, `last_login_time`, `last_login_ip`, `is_admin`) VALUES (9, 'test', '$2y$10$KZnWAJFpo/d4XXPLgzSuDOBv2Y7SQLcKwYbFZKQggCnawytQ4DSLK', '娴嬭瘯', 'cs', '', '', 15, 1, 1615864955, 'https://zos.alipayobjects.com/rmsportal/ODTLcjxAfvqbxHnVXCYX.png', 0, '', 0);
+INSERT INTO `light_user` (`id`, `username`, `password`, `realname`, `pinyin`, `phone`, `email`, `dept_id`, `status`, `create_time`, `avatar`, `last_login_time`, `last_login_ip`, `is_admin`) VALUES (10, 'test2', '$2y$10$89LxsExrBliqqCW/PrOBgOeubhHJUI5tmQkZJ2dBht8ltF/puI6a.', '娴嬭瘯2', 'cs', '', '', 16, 1, 1615865516, '', 0, '', 0);
+INSERT INTO `light_user` (`id`, `username`, `password`, `realname`, `pinyin`, `phone`, `email`, `dept_id`, `status`, `create_time`, `avatar`, `last_login_time`, `last_login_ip`, `is_admin`) VALUES (11, 'yunweu', '$2y$10$Zvbnq8TC7TavN/t/CriXC.g0d89XK4UaBiOYHOSctlwmjD2HLmdYu', '杩愮淮绠＄悊', 'ywgl', '', '', 17, 1, 1616059337, 'https://gw.alipayobjects.com/zos/antfincdn/XAosXuNZyF/BiazfanxmamNRoxxVxka.png', 0, '', 0);
+INSERT INTO `light_user` (`id`, `username`, `password`, `realname`, `pinyin`, `phone`, `email`, `dept_id`, `status`, `create_time`, `avatar`, `last_login_time`, `last_login_ip`, `is_admin`) VALUES (19, 'www', '$2y$10$SFlICzdZZMZy/2VxS4tMIODzQxcoYV40TkCbS48eTYwnvZEJJAd8u', '鐜嬩簲', 'ww', '', '', 7, 1, 1617182546, '', 0, '', 0);
+INSERT INTO `light_user` (`id`, `username`, `password`, `realname`, `pinyin`, `phone`, `email`, `dept_id`, `status`, `create_time`, `avatar`, `last_login_time`, `last_login_ip`, `is_admin`) VALUES (20, 'yang', '$2y$10$g1oVhKY1SXZmAl20SDo0xOAivYFaB4GbtDzzEjw..AcC0iNEQ/Yp2', '鏉ㄥ叚', 'yl', '', '', 4, 1, 1645673069, '', 0, '', 0);
+INSERT INTO `light_user` (`id`, `username`, `password`, `realname`, `pinyin`, `phone`, `email`, `dept_id`, `status`, `create_time`, `avatar`, `last_login_time`, `last_login_ip`, `is_admin`) VALUES (21, 'lishi', '$2y$10$e9cdcQEFEb7k9sdixmwXnuO/GD1bRN8C1xw6b1nfbPjuXxEfvP2FS', '鏉庡洓', 'ls', '', '', 4, 1, 1645673088, '', 0, '', 0);
+INSERT INTO `light_user` (`id`, `username`, `password`, `realname`, `pinyin`, `phone`, `email`, `dept_id`, `status`, `create_time`, `avatar`, `last_login_time`, `last_login_ip`, `is_admin`) VALUES (22, 'zhangs', '$2y$10$cl6yeliFDXHnfQ7accy4fOO3l7Jelcao9k3IdAka2hewcoZwiKAb2', '寮犱笁', 'zs', '', '', 8, 1, 1651917072, '', 0, '', 0);
+INSERT INTO `light_user` (`id`, `username`, `password`, `realname`, `pinyin`, `phone`, `email`, `dept_id`, `status`, `create_time`, `avatar`, `last_login_time`, `last_login_ip`, `is_admin`) VALUES (23, 'wang', '$2y$10$ec8Ln1cnCH0wOGkeWJnJm.68.eue7d/0c2oGWQ25yynxvkOHL6SLK', '鐜嬪畨', 'wa', '', '', 7, 1, 1748939339, '', 0, '', 0);
 COMMIT;
 
 -- ----------------------------
@@ -487,7 +437,7 @@ CREATE TABLE `light_user_role` (
   `user_id` int(11) NOT NULL DEFAULT '0',
   `role_id` int(11) NOT NULL,
   PRIMARY KEY (`id`) USING BTREE
-) ENGINE=InnoDB AUTO_INCREMENT=160 DEFAULT CHARSET=utf8mb4 ROW_FORMAT=DYNAMIC COMMENT='用户角色关联表';
+) ENGINE=InnoDB AUTO_INCREMENT=160 DEFAULT CHARSET=utf8mb4 ROW_FORMAT=DYNAMIC COMMENT='鐢ㄦ埛瑙掕壊鍏宠仈琛?;
 
 -- ----------------------------
 -- Records of light_user_role

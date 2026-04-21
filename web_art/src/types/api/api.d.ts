@@ -304,17 +304,5 @@ declare namespace Api {
         page: number
         pageSize: number
       }>
-
-    interface GeneratorListItem {
-      id: number
-      table_name: string
-      table_comment?: string
-      module_name?: string
-      menu_name?: string
-      create_time?: string
-      [key: string]: any
-    }
-
-    type GeneratorList = Api.Common.PaginatedResponse<GeneratorListItem>
   }
 }
