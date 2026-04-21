@@ -279,7 +279,7 @@
     justify-content: space-between;
     gap: 10px;
     min-height: 32px;
-    padding: 0 10px 0 12px;
+    padding: 0 0 0 12px;
     background:
       linear-gradient(135deg, rgb(14 165 233 / 6%), rgb(59 130 246 / 2%)), var(--el-bg-color);
     border: 1px solid var(--el-border-color-lighter);
@@ -420,7 +420,7 @@
     }
 
     .summary-bar {
-      padding: 10px 12px;
+      padding: 10px 0 10px 12px;
     }
 
     .summary-actions,
