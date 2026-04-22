@@ -267,7 +267,7 @@ class CacheService extends BaseService
 
     private function getJwtBlacklistFiles(FileCacheDriver $fileCacheStore): array
     {
-        $jwtCachePrefix = (string) config('jwt.default.cache_prefix', 'speed_jwt');
+        $jwtCachePrefix = (string) config('jwt.default.cache_prefix', 'light_jwt');
         $tagItems = $fileCacheStore->getTagItems($jwtCachePrefix);
         $tagFile = $fileCacheStore->getCacheKey($fileCacheStore->getTagKey($jwtCachePrefix));
 
