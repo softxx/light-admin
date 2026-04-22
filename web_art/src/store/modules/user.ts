@@ -4,6 +4,11 @@ import { LanguageEnum } from '@/enums/appEnum'
 import { router } from '@/router'
 import { resetRouterState } from '@/router/guards/beforeEach'
 import type { AppRouteRecord } from '@/types/router'
+import {
+  clearTokenCookies,
+  initializeTokenStorage,
+  setTokenCookies
+} from '@/utils/auth/token-storage'
 import { setPageTitle } from '@/utils/router'
 import { StorageConfig } from '@/utils/storage/storage-config'
 import { useMenuStore } from './menu'
@@ -21,9 +26,10 @@ function withBearer(token = '') {
 export const useUserStore = defineStore(
   'userStore',
   () => {
+    const initialTokens = initializeTokenStorage()
     const language = ref(LanguageEnum.ZH)
-    const accessToken = ref('')
-    const refreshToken = ref('')
+    const accessToken = ref(withBearer(initialTokens.accessToken))
+    const refreshToken = ref(withBearer(initialTokens.refreshToken))
     const isLogin = ref(false)
     const isLock = ref(false)
     const lockPassword = ref('')
@@ -68,6 +74,7 @@ export const useUserStore = defineStore(
     }
 
     const setToken = (newAccessToken: string, newRefreshToken?: string) => {
+      setTokenCookies(newAccessToken, newRefreshToken)
       accessToken.value = withBearer(newAccessToken)
 
       if (typeof newRefreshToken === 'string') {
@@ -85,6 +92,7 @@ export const useUserStore = defineStore(
       isLogin.value = false
       isLock.value = false
       lockPassword.value = ''
+      clearTokenCookies()
       accessToken.value = ''
       refreshToken.value = ''
 
@@ -148,7 +156,8 @@ export const useUserStore = defineStore(
   {
     persist: {
       key: 'user',
-      storage: localStorage
+      storage: localStorage,
+      omit: ['accessToken', 'refreshToken', 'isLogin']
     }
   }
 )

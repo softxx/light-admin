@@ -8,6 +8,7 @@ import axios, {
 import { $t } from '@/locales'
 import { useUserStore } from '@/store/modules/user'
 import type { BaseResponse } from '@/types'
+import { getAccessTokenHeaderValue, getRefreshTokenHeaderValue } from '@/utils/auth/token-storage'
 import { HttpError, handleError, showError, showSuccess } from './error'
 import { ApiStatus } from './status'
 
@@ -49,7 +50,7 @@ let unauthorizedTimer: NodeJS.Timeout | null = null
 
 axiosInstance.interceptors.request.use(
   (request: InternalAxiosRequestConfig) => {
-    const { accessToken } = useUserStore()
+    const accessToken = getAccessTokenHeaderValue()
     const headers = AxiosHeaders.from(request.headers)
 
     if (accessToken && !headers.has('Authorization')) {
@@ -57,7 +58,12 @@ axiosInstance.interceptors.request.use(
     }
 
     const method = request.method?.toUpperCase()
-    if (request.data && !(request.data instanceof FormData) && method && ['POST', 'PUT', 'PATCH'].includes(method)) {
+    if (
+      request.data &&
+      !(request.data instanceof FormData) &&
+      method &&
+      ['POST', 'PUT', 'PATCH'].includes(method)
+    ) {
       if (!headers.has('Content-Type')) {
         headers.set('Content-Type', 'application/json')
       }
@@ -166,7 +172,7 @@ function retryRequestWithToken(
 
 async function refreshAccessToken() {
   const userStore = useUserStore()
-  const currentRefreshToken = userStore.refreshToken
+  const currentRefreshToken = getRefreshTokenHeaderValue()
 
   if (!currentRefreshToken) {
     throw createHttpError($t('httpMsg.unauthorized'), ApiStatus.unauthorized)
@@ -192,7 +198,7 @@ async function refreshAccessToken() {
   }
 
   userStore.setToken(body.data.access_token, body.data.refresh_token)
-  return userStore.accessToken
+  return getAccessTokenHeaderValue() || userStore.accessToken
 }
 
 function resetUnauthorizedState() {
@@ -234,8 +240,7 @@ async function handleUnauthorizedResponse(
     return rejectUnauthorized(message)
   }
 
-  const userStore = useUserStore()
-  if (!userStore.refreshToken) {
+  if (!getRefreshTokenHeaderValue()) {
     return rejectUnauthorized(message)
   }
 
