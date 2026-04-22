@@ -181,27 +181,6 @@ INSERT INTO `light_dict` (`id`, `type`, `name`, `value`, `sort`, `note`, `color`
 INSERT INTO `light_dict` (`id`, `type`, `name`, `value`, `sort`, `note`, `color`, `widget_type`, `is_delete`, `status`) VALUES (251, 'menu_type', '目录', '0', 2, '', 'green', 'tag', 0, 1);
 INSERT INTO `light_dict` (`id`, `type`, `name`, `value`, `sort`, `note`, `color`, `widget_type`, `is_delete`, `status`) VALUES (252, 'menu_type', '菜单', '1', 1, '', 'blue', 'tag', 0, 1);
 INSERT INTO `light_dict` (`id`, `type`, `name`, `value`, `sort`, `note`, `color`, `widget_type`, `is_delete`, `status`) VALUES (253, 'menu_type', '权限', '2', 3, '', '', 'tag', 0, 1);
-INSERT INTO `light_dict` (`id`, `type`, `name`, `value`, `sort`, `note`, `color`, `widget_type`, `is_delete`, `status`) VALUES (429, 'gender', '未知', '0', 3, '', '', 'text', 0, 1);
-INSERT INTO `light_dict` (`id`, `type`, `name`, `value`, `sort`, `note`, `color`, `widget_type`, `is_delete`, `status`) VALUES (431, 'gender', '男', '1', 1, '', '', 'text', 0, 1);
-INSERT INTO `light_dict` (`id`, `type`, `name`, `value`, `sort`, `note`, `color`, `widget_type`, `is_delete`, `status`) VALUES (432, 'gender', '女', '2', 2, '', '', 'text', 0, 1);
-INSERT INTO `light_dict` (`id`, `type`, `name`, `value`, `sort`, `note`, `color`, `widget_type`, `is_delete`, `status`) VALUES (489, 'dict_type', '设备类型', 'device_type', 8, '', '', 'text', 0, 1);
-INSERT INTO `light_dict` (`id`, `type`, `name`, `value`, `sort`, `note`, `color`, `widget_type`, `is_delete`, `status`) VALUES (490, 'dict_type', '设备级别', 'device_level', 8, '', '', 'tag', 0, 1);
-INSERT INTO `light_dict` (`id`, `type`, `name`, `value`, `sort`, `note`, `color`, `widget_type`, `is_delete`, `status`) VALUES (495, 'dict_type', '岗位', 'job_post', 8, '', '', 'text', 0, 1);
-INSERT INTO `light_dict` (`id`, `type`, `name`, `value`, `sort`, `note`, `color`, `widget_type`, `is_delete`, `status`) VALUES (496, 'dict_type', '职称', 'job_title', 8, '', '', 'text', 0, 1);
-INSERT INTO `light_dict` (`id`, `type`, `name`, `value`, `sort`, `note`, `color`, `widget_type`, `is_delete`, `status`) VALUES (498, 'dict_type', '性别', 'gender', 8, '', '', 'text', 0, 1);
-INSERT INTO `light_dict` (`id`, `type`, `name`, `value`, `sort`, `note`, `color`, `widget_type`, `is_delete`, `status`) VALUES (526, 'device_type', '一般设备', '3', 2, '', '', 'text', 0, 1);
-INSERT INTO `light_dict` (`id`, `type`, `name`, `value`, `sort`, `note`, `color`, `widget_type`, `is_delete`, `status`) VALUES (528, 'device_type', '生产设备', '5', 3, '', '', 'text', 0, 1);
-INSERT INTO `light_dict` (`id`, `type`, `name`, `value`, `sort`, `note`, `color`, `widget_type`, `is_delete`, `status`) VALUES (529, 'device_type', '重要设备', '6', 1, '', '', 'text', 1, 1);
-INSERT INTO `light_dict` (`id`, `type`, `name`, `value`, `sort`, `note`, `color`, `widget_type`, `is_delete`, `status`) VALUES (531, 'device_level', '一级', '1', 1, '', '', 'tag', 0, 1);
-INSERT INTO `light_dict` (`id`, `type`, `name`, `value`, `sort`, `note`, `color`, `widget_type`, `is_delete`, `status`) VALUES (532, 'device_level', '二级', '2', 2, '', '', 'tag', 0, 1);
-INSERT INTO `light_dict` (`id`, `type`, `name`, `value`, `sort`, `note`, `color`, `widget_type`, `is_delete`, `status`) VALUES (535, 'device_level', '三级', '6', 5, '', '', 'tag', 0, 1);
-INSERT INTO `light_dict` (`id`, `type`, `name`, `value`, `sort`, `note`, `color`, `widget_type`, `is_delete`, `status`) VALUES (537, 'job_post', '技术岗', '2', 2, '', '', 'text', 0, 1);
-INSERT INTO `light_dict` (`id`, `type`, `name`, `value`, `sort`, `note`, `color`, `widget_type`, `is_delete`, `status`) VALUES (538, 'job_post', '普通岗', '3', 1, '', '', 'text', 0, 1);
-INSERT INTO `light_dict` (`id`, `type`, `name`, `value`, `sort`, `note`, `color`, `widget_type`, `is_delete`, `status`) VALUES (539, 'job_post', '管理岗', '4', 3, '', '', 'text', 0, 1);
-INSERT INTO `light_dict` (`id`, `type`, `name`, `value`, `sort`, `note`, `color`, `widget_type`, `is_delete`, `status`) VALUES (541, 'job_title', '初级', '1', 4, '', '', 'text', 0, 1);
-INSERT INTO `light_dict` (`id`, `type`, `name`, `value`, `sort`, `note`, `color`, `widget_type`, `is_delete`, `status`) VALUES (542, 'job_title', '中级', '2', 2, '', '', 'text', 0, 1);
-INSERT INTO `light_dict` (`id`, `type`, `name`, `value`, `sort`, `note`, `color`, `widget_type`, `is_delete`, `status`) VALUES (543, 'job_title', '副高级', '3', 3, '', '', 'text', 0, 1);
-INSERT INTO `light_dict` (`id`, `type`, `name`, `value`, `sort`, `note`, `color`, `widget_type`, `is_delete`, `status`) VALUES (544, 'job_title', '正高级', '4', 1, '', '', 'text', 0, 1);
 COMMIT;
 
 -- ----------------------------
