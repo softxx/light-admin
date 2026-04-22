@@ -96,7 +96,6 @@
 </template>
 
 <script setup lang="ts">
-  import { useSystemConfigStore } from '@/store/modules/system-config'
   import { useUserStore } from '@/store/modules/user'
   import { useI18n } from 'vue-i18n'
   import { HttpError } from '@/utils/http/error'
@@ -108,7 +107,6 @@
   defineOptions({ name: 'Login' })
 
   const settingStore = useSettingStore()
-  const { systemName } = storeToRefs(useSystemConfigStore())
   const { isDark } = storeToRefs(settingStore)
   const { t, locale } = useI18n()
   const formKey = ref(0)
@@ -272,6 +270,11 @@
   }
 
   // 登录成功提示
+  const getLoginSuccessDisplayName = () => {
+    const { realname, userName, username } = userStore.info
+    return realname || userName || username || formData.username
+  }
+
   const showLoginSuccessNotice = () => {
     setTimeout(() => {
       ElNotification({
@@ -279,7 +282,7 @@
         type: 'success',
         duration: 2500,
         zIndex: 10000,
-        message: `${t('login.success.message')}, ${systemName.value}!`
+        message: `${t('login.success.message')}, ${getLoginSuccessDisplayName()}!`
       })
     }, 1000)
   }
