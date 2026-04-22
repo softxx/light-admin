@@ -50,6 +50,7 @@ INSERT INTO `light_auth_access` (`id`, `role_id`, `menu_id`) VALUES (5198, 3, 10
 INSERT INTO `light_auth_access` (`id`, `role_id`, `menu_id`) VALUES (5199, 3, 16);
 INSERT INTO `light_auth_access` (`id`, `role_id`, `menu_id`) VALUES (5200, 3, 20);
 INSERT INTO `light_auth_access` (`id`, `role_id`, `menu_id`) VALUES (5201, 3, 121);
+INSERT INTO `light_auth_access` (`id`, `role_id`, `menu_id`) VALUES (5722, 3, 245);
 INSERT INTO `light_auth_access` (`id`, `role_id`, `menu_id`) VALUES (5579, 1, 107);
 INSERT INTO `light_auth_access` (`id`, `role_id`, `menu_id`) VALUES (5580, 1, 106);
 INSERT INTO `light_auth_access` (`id`, `role_id`, `menu_id`) VALUES (5581, 1, 119);
@@ -90,6 +91,7 @@ INSERT INTO `light_auth_access` (`id`, `role_id`, `menu_id`) VALUES (5716, 1, 24
 INSERT INTO `light_auth_access` (`id`, `role_id`, `menu_id`) VALUES (5717, 1, 242);
 INSERT INTO `light_auth_access` (`id`, `role_id`, `menu_id`) VALUES (5718, 1, 243);
 INSERT INTO `light_auth_access` (`id`, `role_id`, `menu_id`) VALUES (5719, 1, 244);
+INSERT INTO `light_auth_access` (`id`, `role_id`, `menu_id`) VALUES (5720, 1, 245);
 INSERT INTO `light_auth_access` (`id`, `role_id`, `menu_id`) VALUES (5686, 2, 107);
 INSERT INTO `light_auth_access` (`id`, `role_id`, `menu_id`) VALUES (5687, 2, 119);
 INSERT INTO `light_auth_access` (`id`, `role_id`, `menu_id`) VALUES (5688, 2, 114);
@@ -109,6 +111,7 @@ INSERT INTO `light_auth_access` (`id`, `role_id`, `menu_id`) VALUES (5702, 2, 11
 INSERT INTO `light_auth_access` (`id`, `role_id`, `menu_id`) VALUES (5703, 2, 20);
 INSERT INTO `light_auth_access` (`id`, `role_id`, `menu_id`) VALUES (5704, 2, 156);
 INSERT INTO `light_auth_access` (`id`, `role_id`, `menu_id`) VALUES (5705, 2, 13);
+INSERT INTO `light_auth_access` (`id`, `role_id`, `menu_id`) VALUES (5721, 2, 245);
 INSERT INTO `light_auth_access` (`id`, `role_id`, `menu_id`) VALUES (5706, 5, 156);
 INSERT INTO `light_auth_access` (`id`, `role_id`, `menu_id`) VALUES (5707, 5, 105);
 INSERT INTO `light_auth_access` (`id`, `role_id`, `menu_id`) VALUES (5708, 5, 113);
@@ -119,6 +122,7 @@ INSERT INTO `light_auth_access` (`id`, `role_id`, `menu_id`) VALUES (5712, 5, 12
 INSERT INTO `light_auth_access` (`id`, `role_id`, `menu_id`) VALUES (5713, 5, 114);
 INSERT INTO `light_auth_access` (`id`, `role_id`, `menu_id`) VALUES (5714, 5, 116);
 INSERT INTO `light_auth_access` (`id`, `role_id`, `menu_id`) VALUES (5715, 5, 13);
+INSERT INTO `light_auth_access` (`id`, `role_id`, `menu_id`) VALUES (5723, 5, 245);
 COMMIT;
 
 -- ----------------------------
@@ -257,7 +261,7 @@ CREATE TABLE `light_menu` (
   `open_type` tinyint(1) NOT NULL DEFAULT '0' COMMENT '打开方式 0组件，1内链，2外链',
   `link_url` varchar(500) NOT NULL DEFAULT '' COMMENT '内链地址',
   PRIMARY KEY (`id`) USING BTREE
-) ENGINE=InnoDB AUTO_INCREMENT=245 DEFAULT CHARSET=utf8mb4 ROW_FORMAT=DYNAMIC COMMENT='菜单表';
+) ENGINE=InnoDB AUTO_INCREMENT=246 DEFAULT CHARSET=utf8mb4 ROW_FORMAT=DYNAMIC COMMENT='菜单表';
 
 -- ----------------------------
 -- Records of light_menu
@@ -274,6 +278,7 @@ INSERT INTO `light_menu` (`id`, `pid`, `path`, `component`, `hidden`, `title`, `
 INSERT INTO `light_menu` (`id`, `pid`, `path`, `component`, `hidden`, `title`, `icon`, `rules`, `sort`, `type`, `hide_children`, `active_key`, `open_type`, `link_url`) VALUES (32, 13, 'auth/:id', 'system/role/auth', 1, '权限设置', 'insurance-outlined', '', 10, 1, 0, 'system/role', 0, '');
 INSERT INTO `light_menu` (`id`, `pid`, `path`, `component`, `hidden`, `title`, `icon`, `rules`, `sort`, `type`, `hide_children`, `active_key`, `open_type`, `link_url`) VALUES (36, 32, '', '', 1, '保存权限', '', 'system:authAccess:save', 1, 2, 0, '', 0, '');
 INSERT INTO `light_menu` (`id`, `pid`, `path`, `component`, `hidden`, `title`, `icon`, `rules`, `sort`, `type`, `hide_children`, `active_key`, `open_type`, `link_url`) VALUES (38, 16, '', '', 0, '删除部门', '', 'system:department:delete', 1, 2, 0, '', 0, '');
+INSERT INTO `light_menu` (`id`, `pid`, `path`, `component`, `hidden`, `title`, `icon`, `rules`, `sort`, `type`, `hide_children`, `active_key`, `open_type`, `link_url`) VALUES (245, 20, '', '', 0, '新增用户', '', 'system:user:save', 1, 2, 0, '', 0, '');
 INSERT INTO `light_menu` (`id`, `pid`, `path`, `component`, `hidden`, `title`, `icon`, `rules`, `sort`, `type`, `hide_children`, `active_key`, `open_type`, `link_url`) VALUES (40, 20, '', '', 0, '更新用户', '', 'system:user:update', 2, 2, 0, '', 0, '');
 INSERT INTO `light_menu` (`id`, `pid`, `path`, `component`, `hidden`, `title`, `icon`, `rules`, `sort`, `type`, `hide_children`, `active_key`, `open_type`, `link_url`) VALUES (45, 21, '', '', 0, '添加角色', '', 'system:role:save', 1, 2, 0, '', 0, '');
 INSERT INTO `light_menu` (`id`, `pid`, `path`, `component`, `hidden`, `title`, `icon`, `rules`, `sort`, `type`, `hide_children`, `active_key`, `open_type`, `link_url`) VALUES (46, 21, '', '', 0, '修改角色', '', 'system:role:update', 1, 2, 0, '', 0, '');

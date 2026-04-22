@@ -14,14 +14,27 @@
           <ElButton v-auth="'system:user:save'" @click="openDialog('add')" v-ripple>
             新增用户
           </ElButton>
+          <ElButton
+            v-if="canDeleteUser"
+            type="danger"
+            :disabled="!hasSelection"
+            :loading="batchDeleting"
+            @click="handleBatchDelete"
+            v-ripple
+          >
+            批量删除
+          </ElButton>
         </template>
       </ArtTableHeader>
 
       <ArtTable
+        ref="tableRef"
         :loading="loading"
         :data="data"
         :columns="columns"
         :pagination="pagination"
+        rowKey="id"
+        @selection-change="handleSelectionChange"
         @pagination:size-change="handleSizeChange"
         @pagination:current-change="handleCurrentChange"
       />
@@ -41,6 +54,7 @@
 <script setup lang="ts">
   import ArtButtonTable from '@/components/core/forms/art-button-table/index.vue'
   import { useAuth } from '@/hooks'
+  import { useBatchDelete } from '@/hooks/core/useBatchDelete'
   import { useTable } from '@/hooks/core/useTable'
   import type { TableFilterFormModel } from '@/types'
   import {
@@ -55,7 +69,7 @@
   import UserDialog from './modules/user-dialog.vue'
   import { createUserFilterFields } from './modules/user-filter-fields'
   import UserSearch from './modules/user-search.vue'
-  import { ElAvatar, ElMessageBox, ElSwitch, ElTag } from 'element-plus'
+  import { ElAvatar, ElMessage, ElMessageBox, ElSwitch, ElTag } from 'element-plus'
 
   defineOptions({ name: 'User' })
 
@@ -63,18 +77,25 @@
   type UserListItem = Api.SystemManage.UserListItem
 
   const { hasAuth } = useAuth()
+  const canDeleteUser = hasAuth('system:user:delete')
+  const PROTECTED_USER_MESSAGE = '管理员账号不允许删除'
 
   const roleOptions = ref<Api.SystemManage.RoleOption[]>([])
   const departmentOptions = ref<Api.SystemManage.DepartmentOption[]>([])
+  const tableRef = ref()
   const dialogVisible = ref(false)
   const dialogType = ref<DialogType>('add')
   const currentUserData = ref<Partial<UserListItem>>({})
+  const selectedRows = ref<UserListItem[]>([])
   const searchForm = ref<TableFilterFormModel>(createTableFilterFormModel())
 
   // The page adapter only needs the shared field schema to serialize filters.
   const filterFields = computed(() =>
     createUserFilterFields(roleOptions.value, departmentOptions.value)
   )
+
+  const isAdminAccount = (row?: Partial<UserListItem>) =>
+    Number(row?.is_admin || 0) === 1 || String(row?.username || '').toLowerCase() === 'admin'
 
   const {
     columns,
@@ -99,6 +120,23 @@
         pageSize: 20
       },
       columnsFactory: () => [
+        ...(canDeleteUser
+          ? [
+              {
+                type: 'selection' as const,
+                width: 55,
+                fixed: 'left' as const,
+                disabled: true,
+                selectable: (row: UserListItem) => !isAdminAccount(row)
+              }
+            ]
+          : []),
+        {
+          type: 'globalIndex',
+          label: '序号',
+          width: 70,
+          fixed: 'left'
+        },
         {
           prop: 'username',
           label: '用户信息',
@@ -182,10 +220,8 @@
           fixed: 'right',
           formatter: (row: UserListItem) => {
             const buttons = []
-            const isAdminAccount =
-              Number(row.is_admin || 0) === 1 || String(row.username).toLowerCase() === 'admin'
 
-            if (hasAuth('system:user:update') && !isAdminAccount) {
+            if (hasAuth('system:user:update') && !isAdminAccount(row)) {
               buttons.push(
                 h(ArtButtonTable, {
                   type: 'edit',
@@ -194,7 +230,7 @@
               )
             }
 
-            if (hasAuth('system:user:resetPassword') && !isAdminAccount) {
+            if (hasAuth('system:user:resetPassword') && !isAdminAccount(row)) {
               buttons.push(
                 h(ArtButtonTable, {
                   icon: 'ri:lock-password-line',
@@ -205,7 +241,7 @@
               )
             }
 
-            if (hasAuth('system:user:delete') && !isAdminAccount) {
+            if (canDeleteUser && !isAdminAccount(row)) {
               buttons.push(
                 h(ArtButtonTable, {
                   type: 'delete',
@@ -220,6 +256,19 @@
       ]
     }
   })
+
+  const { batchDeleting, hasSelection, handleSelectionChange, handleBatchDelete } =
+    useBatchDelete<UserListItem>({
+      selectedRows,
+      getLabel: (row) => row.realname || row.username || `ID ${row.id}`,
+      deleteFn: (row) =>
+        fetchDeleteUser(row.id, {
+          showSuccessMessage: false,
+          showErrorMessage: false
+        }),
+      refreshFn: refreshRemove,
+      clearSelection: () => tableRef.value?.elTableRef?.clearSelection?.()
+    })
 
   const openDialog = (type: DialogType, row?: UserListItem) => {
     dialogType.value = type
@@ -259,15 +308,16 @@
   }
 
   const handleDelete = async (row: UserListItem) => {
-    await ElMessageBox.confirm(
-      `确定删除用户“${row.realname || row.username}”吗？`,
-      '删除确认',
-      {
-        type: 'warning',
-        confirmButtonText: '确定',
-        cancelButtonText: '取消'
-      }
-    )
+    if (isAdminAccount(row)) {
+      ElMessage.warning(PROTECTED_USER_MESSAGE)
+      return
+    }
+
+    await ElMessageBox.confirm(`确定删除用户“${row.realname || row.username}”吗？`, '删除确认', {
+      type: 'warning',
+      confirmButtonText: '确定',
+      cancelButtonText: '取消'
+    })
 
     await fetchDeleteUser(row.id)
     await refreshRemove()

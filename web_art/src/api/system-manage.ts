@@ -43,10 +43,11 @@ export function fetchSaveUser(params: Api.SystemManage.UserPayload) {
   })
 }
 
-export function fetchDeleteUser(id: number | string) {
+export function fetchDeleteUser(id: number | string, options: RequestMessageOptions = {}) {
   return request.del<void>({
     url: `/user/${id}`,
-    showSuccessMessage: true
+    showSuccessMessage: true,
+    ...options
   })
 }
 
