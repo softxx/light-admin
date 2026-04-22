@@ -12,6 +12,11 @@ function removeElement(el: HTMLElement) {
 
 function hasButtonPermission(auth: string) {
   const userStore = useUserStore()
+
+  if (userStore.info?.is_super_admin) {
+    return true
+  }
+
   const buttons = Array.isArray(userStore.info?.buttons)
     ? userStore.info.buttons
     : Array.isArray(userStore.info?.rules)

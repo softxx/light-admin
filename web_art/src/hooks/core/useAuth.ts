@@ -24,6 +24,10 @@ export const useAuth = () => {
     : []
 
   const hasAuth = (auth: string): boolean => {
+    if (info.value?.is_super_admin) {
+      return true
+    }
+
     if (authButtons.includes(auth)) {
       return true
     }
