@@ -4,7 +4,7 @@
 
   <p>
   一个基于 
-  <a href="https://github.com/atseps/speed-admin" target="_blank">SpeedAdmin</a> 的后端能力和 <a href="https://github.com/Daymychen/art-design-pro" target="_blank">Art Design Pro</a> 前端特性的现代化管理系统
+  <a href="https://github.com/atseps/speed-admin" target="_blank">SpeedAdmin</a> 的后端能力和 <a href="https://github.com/Daymychen/art-design-pro" target="_blank">Art Design Pro</a> 前端特性的现代化后台管理系统
 </p>
 <p>
   <img src="https://img.shields.io/badge/PHP-8.2%2B-777BB4?style=flat-square&logo=php&logoColor=white" alt="PHP 8.2+" />
