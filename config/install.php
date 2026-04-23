@@ -17,6 +17,7 @@ return [
         'dom',
         'fileinfo',
         'gd',
+        'gmp',
         'hash',
         'iconv',
         'json',
