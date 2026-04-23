@@ -22,6 +22,27 @@
   .custom-height {
     @apply !h-[40px];
   }
+
+  /* 验证码输入区 */
+  .captcha-row {
+    @apply grid w-full grid-cols-[minmax(0,1fr)_156px] items-center gap-2.5;
+  }
+
+  .captcha-trigger {
+    @apply h-[40px] w-full cursor-pointer overflow-hidden rounded-lg border border-solid border-g-300 bg-white transition duration-200;
+  }
+
+  .captcha-trigger:disabled {
+    @apply cursor-not-allowed opacity-70;
+  }
+
+  .captcha-image {
+    @apply block h-full w-full object-cover;
+  }
+
+  .captcha-loading {
+    @apply flex h-full w-full items-center justify-center text-xs text-g-500;
+  }
 }
 
 /* 滑入动画 */

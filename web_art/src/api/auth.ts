@@ -122,7 +122,9 @@ export function fetchLogin(params: Api.Auth.LoginParams) {
     url: '/login',
     params: {
       username: params.username || params.userName || '',
-      password: params.password
+      password: params.password,
+      captchaId: params.captchaId || '',
+      captchaCode: params.captchaCode || ''
     },
     skipAuthRefresh: true,
     responseAdapter: (data: any) => ({
@@ -132,6 +134,32 @@ export function fetchLogin(params: Api.Auth.LoginParams) {
       refresh_token: data.refresh_token,
       expiresIn: data.expires_in
     })
+  })
+}
+
+export function fetchLoginCaptcha(options: { showErrorMessage?: boolean } = {}) {
+  return request.post<Api.Auth.LoginCaptchaPayload>({
+    url: '/login/captcha',
+    params: {},
+    skipAuthRefresh: true,
+    showErrorMessage: options.showErrorMessage
+  })
+}
+
+export function fetchLoginCaptchaMeta(options: { showErrorMessage?: boolean } = {}) {
+  return request.get<Api.Auth.LoginCaptchaMeta>({
+    url: '/login/captcha/meta',
+    skipAuthRefresh: true,
+    showErrorMessage: options.showErrorMessage
+  })
+}
+
+export function fetchLoginCaptchaBootstrap(options: { showErrorMessage?: boolean } = {}) {
+  return request.post<Api.Auth.LoginCaptchaBootstrapPayload>({
+    url: '/login/captcha/bootstrap',
+    params: {},
+    skipAuthRefresh: true,
+    showErrorMessage: options.showErrorMessage
   })
 }
 

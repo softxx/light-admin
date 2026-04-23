@@ -45,6 +45,8 @@ declare namespace Api {
       username?: string
       userName?: string
       password: string
+      captchaId?: string
+      captchaCode?: string
     }
 
     interface LoginResponse {
@@ -53,6 +55,23 @@ declare namespace Api {
       access_token: string
       refresh_token: string
       expiresIn: number
+    }
+
+    interface LoginCaptchaPayload {
+      captchaId: string
+      image: string
+      expireIn: number
+    }
+
+    interface LoginCaptchaMeta {
+      enabled: boolean
+      mode: 'always' | 'adaptive'
+      requiredAfterAttempts: number
+    }
+
+    interface LoginCaptchaBootstrapPayload {
+      meta: LoginCaptchaMeta
+      captcha?: LoginCaptchaPayload
     }
 
     interface UserInfo {

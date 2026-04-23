@@ -25,6 +25,7 @@
                 v-model.trim="formData.username"
               />
             </ElFormItem>
+
             <ElFormItem prop="password">
               <ElInput
                 class="custom-height"
@@ -36,30 +37,32 @@
               />
             </ElFormItem>
 
-            <!-- 推拽验证 -->
-            <div class="relative pb-5 mt-6">
-              <div
-                class="relative z-[2] overflow-hidden select-none rounded-lg border border-transparent tad-300"
-                :class="{ '!border-[#FF4E4F]': !isPassing && isClickPass }"
-              >
-                <ArtDragVerify
-                  ref="dragVerify"
-                  v-model:value="isPassing"
-                  :text="$t('login.sliderText')"
-                  textColor="var(--art-gray-700)"
-                  :successText="$t('login.sliderSuccessText')"
-                  progressBarBg="var(--main-color)"
-                  :background="isDark ? '#26272F' : '#F1F1F4'"
-                  handlerBg="var(--default-box-color)"
+            <!-- 图片验证码：开启后默认展示，或在自适应模式下由后端触发显示 -->
+            <ElFormItem v-if="showCaptcha" prop="captchaCode">
+              <div class="captcha-row">
+                <ElInput
+                  class="custom-height"
+                  :placeholder="captchaPlaceholder"
+                  v-model.trim="formData.captchaCode"
+                  autocomplete="off"
                 />
+
+                <button
+                  type="button"
+                  class="captcha-trigger"
+                  :disabled="captchaLoading"
+                  @click="handleRefreshCaptcha"
+                >
+                  <img
+                    v-if="captcha.image"
+                    :src="captcha.image"
+                    class="captcha-image"
+                    :alt="captchaPlaceholder"
+                  />
+                  <span v-else class="captcha-loading">{{ captchaLoadingText }}</span>
+                </button>
               </div>
-              <p
-                class="absolute top-0 z-[1] px-px mt-2 text-xs text-[#f56c6c] tad-300"
-                :class="{ 'translate-y-10': !isPassing && isClickPass }"
-              >
-                {{ $t('login.placeholder.slider') }}
-              </p>
-            </div>
+            </ElFormItem>
 
             <div class="flex-cb mt-2 text-sm">
               <ElCheckbox v-model="formData.rememberPassword">{{
@@ -96,86 +99,80 @@
 </template>
 
 <script setup lang="ts">
+  import { fetchLogin, fetchLoginCaptcha, fetchLoginCaptchaBootstrap } from '@/api/auth'
   import { useUserStore } from '@/store/modules/user'
-  import { useI18n } from 'vue-i18n'
   import { HttpError } from '@/utils/http/error'
-  import { fetchLogin } from '@/api/auth'
   import { normalizeLoginRedirect } from '@/utils/navigation/login-redirect'
   import { ElNotification, type FormInstance, type FormRules } from 'element-plus'
-  import { useSettingStore } from '@/store/modules/setting'
+  import { useI18n } from 'vue-i18n'
 
   defineOptions({ name: 'Login' })
 
-  const settingStore = useSettingStore()
-  const { isDark } = storeToRefs(settingStore)
+  const CAPTCHA_REQUIRED_CODE = 4301
+  const CAPTCHA_INVALID_CODE = 4302
+
   const { t, locale } = useI18n()
   const formKey = ref(0)
+  const isZhLocale = computed(() => String(locale.value).toLowerCase().startsWith('zh'))
+  const captchaPlaceholder = computed(() =>
+    isZhLocale.value ? '请输入验证码' : 'Please enter captcha'
+  )
+  const captchaLoadingText = computed(() => (isZhLocale.value ? '加载中...' : 'Loading...'))
 
   // 监听语言切换，重置表单
   watch(locale, () => {
-    formKey.value++
+    formKey.value += 1
   })
-
-  type AccountKey = 'admin' | 'manager' | 'custom'
-
-  export interface Account {
-    key: AccountKey
-    label: string
-    userName: string
-    password: string
-    roles: string[]
-  }
-
-  const accounts = computed<Account[]>(() => [
-    {
-      key: 'admin',
-      label: '管理员',
-      userName: 'admin',
-      password: '123456',
-      roles: ['admin']
-    },
-    {
-      key: 'manager',
-      label: '测试账号',
-      userName: 'demo',
-      password: '123456',
-      roles: ['manager']
-    },
-    {
-      key: 'custom',
-      label: '自定义输入',
-      userName: '',
-      password: '',
-      roles: []
-    }
-  ])
-
-  const dragVerify = ref()
 
   const userStore = useUserStore()
   const router = useRouter()
   const route = useRoute()
-  const isPassing = ref(false)
-  const isClickPass = ref(false)
 
   const formRef = ref<FormInstance>()
+  const loading = ref(false)
+  const showCaptcha = ref(false)
+  const captchaLoading = ref(false)
+  const captchaMeta = reactive<Api.Auth.LoginCaptchaMeta>({
+    enabled: false,
+    mode: 'always',
+    requiredAfterAttempts: 0
+  })
+
+  const captcha = reactive<Api.Auth.LoginCaptchaPayload>({
+    captchaId: '',
+    image: '',
+    expireIn: 0
+  })
 
   const formData = reactive({
-    account: 'admin',
     username: 'admin',
     password: '123456',
+    captchaId: '',
+    captchaCode: '',
     rememberPassword: true
   })
 
   const rules = computed<FormRules>(() => ({
     username: [{ required: true, message: t('login.placeholder.username'), trigger: 'blur' }],
-    password: [{ required: true, message: t('login.placeholder.password'), trigger: 'blur' }]
-  }))
+    password: [{ required: true, message: t('login.placeholder.password'), trigger: 'blur' }],
+    captchaCode: [
+      {
+        validator: (_rule: unknown, value: string, callback: (error?: Error) => void) => {
+          if (!showCaptcha.value || String(value || '').trim()) {
+            callback()
+            return
+          }
 
-  const loading = ref(false)
+          callback(new Error(captchaPlaceholder.value))
+        },
+        trigger: 'blur'
+      }
+    ]
+  }))
 
   onMounted(() => {
     redirectIfLoggedIn()
+    void loadCaptchaBootstrap()
   })
 
   const getAuthenticatedRedirect = () => {
@@ -202,12 +199,126 @@
     { immediate: true }
   )
 
-  // 设置账号
-  const setupAccount = (key: AccountKey) => {
-    const selectedAccount = accounts.value.find((account: Account) => account.key === key)
-    formData.account = key
-    formData.username = selectedAccount?.userName ?? ''
-    formData.password = selectedAccount?.password ?? ''
+  const resetCaptchaState = () => {
+    showCaptcha.value = false
+    captcha.captchaId = ''
+    captcha.image = ''
+    captcha.expireIn = 0
+    formData.captchaId = ''
+    formData.captchaCode = ''
+  }
+
+  const applyCaptchaMeta = (payload?: Partial<Api.Auth.LoginCaptchaMeta> | null) => {
+    captchaMeta.enabled = Boolean(payload?.enabled)
+    captchaMeta.mode = payload?.mode === 'adaptive' ? 'adaptive' : 'always'
+    captchaMeta.requiredAfterAttempts = Number(payload?.requiredAfterAttempts || 0)
+  }
+
+  const applyCaptcha = (payload?: Partial<Api.Auth.LoginCaptchaPayload> | null) => {
+    if (!payload?.captchaId || !payload?.image) {
+      return false
+    }
+
+    showCaptcha.value = true
+    captcha.captchaId = payload.captchaId
+    captcha.image = payload.image
+    captcha.expireIn = Number(payload.expireIn || 0)
+    formData.captchaId = payload.captchaId
+    formData.captchaCode = ''
+    return true
+  }
+
+  const extractCaptchaPayload = (data: unknown) => {
+    if (!data || typeof data !== 'object') {
+      return null
+    }
+
+    const payload = (data as Record<string, any>).captcha
+    if (!payload || typeof payload !== 'object') {
+      return null
+    }
+
+    return payload as Partial<Api.Auth.LoginCaptchaPayload>
+  }
+
+  const extractCaptchaMeta = (data: unknown) => {
+    if (!data || typeof data !== 'object') {
+      return null
+    }
+
+    const payload = (data as Record<string, any>).captchaMeta
+    if (!payload || typeof payload !== 'object') {
+      return null
+    }
+
+    return payload as Partial<Api.Auth.LoginCaptchaMeta>
+  }
+
+  const focusCaptchaField = async () => {
+    await nextTick()
+    const validation = formRef.value?.validateField('captchaCode')
+    if (validation) {
+      await validation.catch(() => undefined)
+    }
+  }
+
+  // 登录页初始化改成一次请求，避免先取配置再取图片造成输入框出现更慢。
+  const loadCaptchaBootstrap = async () => {
+    try {
+      const payload = await fetchLoginCaptchaBootstrap({ showErrorMessage: false })
+      applyCaptchaMeta(payload.meta)
+
+      if (payload.captcha) {
+        applyCaptcha(payload.captcha)
+      } else if (!captchaMeta.enabled || captchaMeta.mode === 'adaptive') {
+        resetCaptchaState()
+      }
+    } catch {
+      applyCaptchaMeta(null)
+    }
+  }
+
+  const refreshCaptcha = async (showErrorMessage = false) => {
+    if (!captchaMeta.enabled) {
+      resetCaptchaState()
+      return
+    }
+
+    captchaLoading.value = true
+
+    try {
+      const payload = await fetchLoginCaptcha({ showErrorMessage })
+      applyCaptcha(payload)
+      showCaptcha.value = true
+    } finally {
+      captchaLoading.value = false
+    }
+  }
+
+  const handleRefreshCaptcha = () => refreshCaptcha()
+
+  const ensureCaptcha = async (data?: unknown) => {
+    applyCaptchaMeta(extractCaptchaMeta(data))
+
+    if (applyCaptcha(extractCaptchaPayload(data))) {
+      return
+    }
+
+    await refreshCaptcha(false)
+  }
+
+  const handleLoginError = async (error: HttpError) => {
+    if ([CAPTCHA_REQUIRED_CODE, CAPTCHA_INVALID_CODE].includes(error.code)) {
+      await ensureCaptcha(error.data)
+      await focusCaptchaField()
+      return
+    }
+
+    // 验证码模式开启时，普通失败也刷新验证码，避免验证码被消费后页面还是旧图。
+    if (showCaptcha.value) {
+      formData.captchaCode = ''
+      await refreshCaptcha(false).catch(() => undefined)
+    }
   }
 
   // 登录
@@ -219,20 +330,16 @@
       const valid = await formRef.value.validate()
       if (!valid) return
 
-      // 拖拽验证
-      if (!isPassing.value) {
-        isClickPass.value = true
-        return
-      }
-
       loading.value = true
 
       // 登录请求
-      const { username, password } = formData
+      const { username, password, captchaId, captchaCode } = formData
 
       const { token, refreshToken } = await fetchLogin({
         userName: username,
-        password
+        password,
+        captchaId,
+        captchaCode
       })
 
       // 验证token
@@ -247,26 +354,19 @@
       // 登录成功处理
       showLoginSuccessNotice()
 
-      // 获取 redirect 参数，如果存在则跳转到指定页面，否则跳转到首页
-      router.push(getAuthenticatedRedirect())
+      // 登录页会在路由跳转后卸载，不提前清空验证码，避免加载中表单高度跳动。
+      await router.push(getAuthenticatedRedirect())
     } catch (error) {
       // 处理 HttpError
       if (error instanceof HttpError) {
-        // console.log(error.code)
+        await handleLoginError(error)
       } else {
         // 处理非 HttpError
-        // ElMessage.error('登录失败，请稍后重试')
         console.error('[Login] Unexpected error:', error)
       }
     } finally {
       loading.value = false
-      resetDragVerify()
     }
-  }
-
-  // 重置拖拽验证
-  const resetDragVerify = () => {
-    dragVerify.value.reset()
   }
 
   // 登录成功提示
@@ -290,10 +390,4 @@
 
 <style scoped>
   @import './style.css';
-</style>
-
-<style lang="scss" scoped>
-  :deep(.el-select__wrapper) {
-    height: 40px !important;
-  }
 </style>
