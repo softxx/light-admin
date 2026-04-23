@@ -5,10 +5,10 @@ import { initRouter } from './router'
 import language from './locales'
 import '@styles/core/tailwind.css'
 import '@styles/index.scss'
-import '@utils/sys/console.ts'
 import { setupGlobDirectives } from './directives'
 import { setupErrorHandle } from './utils/sys/error-handle'
 import { useSystemConfigStore } from './store/modules/system-config'
+import "@utils/ui/iconify-loader"; // 离线图标加载
 
 document.addEventListener(
   'touchstart',
