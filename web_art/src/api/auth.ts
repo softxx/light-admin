@@ -145,14 +145,14 @@ export function fetchLogout(refreshToken: string) {
 }
 
 export function fetchGetUserInfo() {
-  return request.get<Api.Auth.UserInfo>({
+  return request.post<Api.Auth.UserInfo>({
     url: '/getUserInfo',
     responseAdapter: normalizeUserInfo
   })
 }
 
 export function fetchGetMenuRoutes() {
-  return request.get<AppRouteRecord[]>({
+  return request.post<AppRouteRecord[]>({
     url: '/getRouter',
     responseAdapter: (data: Api.Backend.RouteMenu[]) => data.map((item) => transformRouteMenu(item))
   })

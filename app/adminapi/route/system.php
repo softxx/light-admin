@@ -8,106 +8,79 @@
 // +----------------------------------------------------------------------
 // | Author: liu21st <liu21st@gmail.com>
 // +----------------------------------------------------------------------
+
 use think\facade\Route;
 
-//系统模块
 Route::group(function () {
-    //获取用户信息
-    Route::get('getUserInfo', 'system.user/getUserInfo');
-    //获取路由
-    Route::get('getRouter', 'system.menu/getRouter');
+    Route::post('getUserInfo', 'system.user/getUserInfo');
+    Route::post('getRouter', 'system.menu/getRouter');
 
-    //登录日志
     Route::group('login_log', function () {
-        //清空登录日志
         Route::delete('clear', 'system.login_log/clear');
-        //删除登录日志
         Route::post('delete', 'system.login_log/delete');
-        //导出登录日志
         Route::post('export', 'system.login_log/export');
     });
 
-    //操作日志
     Route::group('operate_log', function () {
-        //清空操作日志
         Route::delete('clear', 'system.operate_log/clear');
-        //删除操作日志
         Route::post('delete', 'system.operate_log/delete');
     });
 
-    //字典
     Route::group('dict', function () {
-        //更新字典缓存
         Route::post('updateCache', 'system.dict/updateCache');
-        //获取字典
-        Route::get('get', 'system.dict/get');
-        //更新排序
+        Route::post('get', 'system.dict/get');
         Route::post('updateSort', 'system.dict/updateSort');
-        //更改状态
         Route::post('changeStatus/:id', 'system.dict/changeStatus');
     });
 
-    //用户
     Route::group('user', function () {
-        //获取激活的用户
-        Route::get('getActiveUsers', 'system.user/getActiveUsers');
-        //修改用户状态
+        Route::post('getActiveUsers', 'system.user/getActiveUsers');
         Route::put('changeStatus/:id', 'system.user/changeStatus');
-        //重置密码
         Route::put('resetPassword/:id', 'system.user/resetPassword');
-        //修改密码
         Route::put('changePassword', 'system.user/changePassword');
-        //根据id获取用户
-        Route::get('getUserById', 'system.user/getUserById');
-        //更新用户信息
+        Route::post('getUserById', 'system.user/getUserById');
         Route::put('updateInfo', 'system.user/updateInfo');
     });
 
-    //角色
     Route::group('role', function () {
-        //获取全部角色
-        Route::get('all', 'system.role/all');
+        Route::post('all', 'system.role/all');
     });
 
-    //上传
     Route::group('upload', function () {
-        //文件上传
         Route::post('file', 'system.file/uploadFile');
-        //图片上传
         Route::post('image', 'system.file/uploadImg');
-        //附件上传
         Route::post('attachment', 'system.file/uploadAttachment');
     });
 
     Route::group('system_setting', function () {
-        Route::get('', 'system.system_setting/index');
+        Route::post('query', 'system.system_setting/index');
         Route::post('', 'system.system_setting/update');
     });
 
-    //缓存管理
     Route::group('cache', function () {
-        Route::get('', 'system.cache/index');
+        Route::post('overview', 'system.cache/index');
         Route::post('refreshDict', 'system.cache/refreshDict');
         Route::post('clearRuntime', 'system.cache/clearRuntime');
     });
 
-    //资源路由
     Route::group(function () {
-        //用户
-        Route::resource('user', 'system.user');
-        //权限
-        Route::resource('authAccess', 'system.authAccess')->only(['index', 'save']);
-        //角色
-        Route::resource('role', 'system.role');
-        //部门
-        Route::resource('department', 'system.department');
-        //字典
-        Route::resource('dict', 'system.dict');
-        //菜单
-        Route::resource('menu', 'system.menu');
-        //操作日志
-        Route::resource('operate_log', 'system.OperateLog');
-        //登录日志
-        Route::resource('login_log', 'system.LoginLog');
+        Route::post('user/list', 'system.user/index');
+        Route::post('user/:id/edit', 'system.user/edit');
+        Route::post('authAccess/index', 'system.authAccess/index');
+        Route::post('role/list', 'system.role/index');
+        Route::post('role/:id/edit', 'system.role/edit');
+        Route::post('department/list', 'system.department/index');
+        Route::post('department/:id/edit', 'system.department/edit');
+        Route::post('dict/list', 'system.dict/index');
+        Route::post('menu/list', 'system.menu/index');
+        Route::post('login_log/list', 'system.LoginLog/index');
+        Route::post('operate_log/list', 'system.OperateLog/index');
+
+        Route::resource('user', 'system.user')->except(['index', 'read', 'edit']);
+        Route::resource('authAccess', 'system.authAccess')->only(['save']);
+        Route::resource('role', 'system.role')->except(['index', 'read', 'edit']);
+        Route::resource('department', 'system.department')->except(['index', 'read', 'edit']);
+        Route::resource('dict', 'system.dict')->except(['index', 'read', 'edit']);
+        Route::resource('menu', 'system.menu')->except(['index', 'read', 'edit']);
     });
 })->middleware('auth');

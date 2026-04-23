@@ -11,6 +11,14 @@ import type { BaseResponse } from '@/types'
 import { getAccessTokenHeaderValue, getRefreshTokenHeaderValue } from '@/utils/auth/token-storage'
 import { HttpError, handleError, showError, showSuccess } from './error'
 import { ApiStatus } from './status'
+import {
+  clearTransportCryptoMetaCache,
+  decryptTransportResponse,
+  encryptTransportRequest,
+  isTransportMetaInvalidPayload,
+  shouldBypassTransportEncryption,
+  type TransportCryptoRequestConfig
+} from './transport-crypto'
 
 const REQUEST_TIMEOUT = 15000
 const LOGOUT_DELAY = 500
@@ -20,7 +28,7 @@ const UNAUTHORIZED_DEBOUNCE_TIME = 3000
 
 const { VITE_API_URL, VITE_WITH_CREDENTIALS } = import.meta.env
 
-interface ExtendedAxiosRequestConfig<T = any> extends AxiosRequestConfig {
+interface ExtendedAxiosRequestConfig<T = any> extends TransportCryptoRequestConfig {
   showErrorMessage?: boolean
   showSuccessMessage?: boolean
   responseAdapter?: (data: any, response: AxiosResponse<BaseResponse<any>>) => T
@@ -48,33 +56,73 @@ let pendingRequests: PendingRequest[] = []
 let isUnauthorizedErrorShown = false
 let unauthorizedTimer: NodeJS.Timeout | null = null
 
-axiosInstance.interceptors.request.use(
-  (request: InternalAxiosRequestConfig) => {
-    const accessToken = getAccessTokenHeaderValue()
-    const headers = AxiosHeaders.from(request.headers)
+const attachRequestInterceptor = (instance: typeof axiosInstance) => {
+  instance.interceptors.request.use(
+    async (request: InternalAxiosRequestConfig) => {
+      const accessToken = getAccessTokenHeaderValue()
+      const headers = AxiosHeaders.from(request.headers)
 
-    if (accessToken && !headers.has('Authorization')) {
-      headers.set('Authorization', accessToken)
+      if (accessToken && !headers.has('Authorization')) {
+        headers.set('Authorization', accessToken)
+      }
+
+      const method = request.method?.toUpperCase()
+      if (
+        request.data &&
+        !(request.data instanceof FormData) &&
+        method &&
+        ['POST', 'PUT', 'PATCH'].includes(method)
+      ) {
+        if (!headers.has('Content-Type')) {
+          headers.set('Content-Type', 'application/json')
+        }
+      }
+
+      request.headers = headers
+
+      return encryptTransportRequest(request as ExtendedAxiosRequestConfig) as Promise<
+        InternalAxiosRequestConfig
+      >
+    },
+    (error) => {
+      const httpError = createHttpError($t('httpMsg.requestConfigError'), ApiStatus.error)
+      showError(httpError)
+      return Promise.reject(error)
+    }
+  )
+}
+
+attachRequestInterceptor(axiosInstance)
+attachRequestInterceptor(refreshInstance)
+
+refreshInstance.interceptors.response.use(
+  async (response: AxiosResponse<BaseResponse<any>>) => {
+    if (isBlobResponse(response)) {
+      return response
     }
 
-    const method = request.method?.toUpperCase()
-    if (
-      request.data &&
-      !(request.data instanceof FormData) &&
-      method &&
-      ['POST', 'PUT', 'PATCH'].includes(method)
-    ) {
-      if (!headers.has('Content-Type')) {
-        headers.set('Content-Type', 'application/json')
+    return decryptTransportResponse(response)
+  },
+  async (error: AxiosError<BaseResponse<any>>) => {
+    const transportRetryResponse = await retryWithFreshTransportMeta(refreshInstance, error)
+    if (transportRetryResponse) {
+      return transportRetryResponse
+    }
+
+    if (error.response && !isBlobResponse(error.response)) {
+      try {
+        decryptTransportResponse(error.response)
+      } catch (decryptError) {
+        return Promise.reject(
+          createHttpError('Encrypted response decrypt failed', ApiStatus.error, {
+            data: decryptError,
+            url: error.config?.url,
+            method: error.config?.method?.toUpperCase()
+          })
+        )
       }
     }
 
-    request.headers = headers
-    return request
-  },
-  (error) => {
-    const httpError = createHttpError($t('httpMsg.requestConfigError'), ApiStatus.error)
-    showError(httpError)
     return Promise.reject(error)
   }
 )
@@ -83,6 +131,16 @@ axiosInstance.interceptors.response.use(
   async (response: AxiosResponse<BaseResponse<any>>) => {
     if (isBlobResponse(response)) {
       return response
+    }
+
+    try {
+      decryptTransportResponse(response)
+    } catch (error) {
+      throw createHttpError('Encrypted response decrypt failed', ApiStatus.error, {
+        data: error,
+        url: response.config.url,
+        method: response.config.method?.toUpperCase()
+      })
     }
 
     const body = response.data
@@ -105,6 +163,25 @@ axiosInstance.interceptors.response.use(
     )
   },
   async (error: AxiosError<BaseResponse<any>>) => {
+    const transportRetryResponse = await retryWithFreshTransportMeta(axiosInstance, error)
+    if (transportRetryResponse) {
+      return transportRetryResponse
+    }
+
+    if (error.response && !isBlobResponse(error.response)) {
+      try {
+        decryptTransportResponse(error.response)
+      } catch (decryptError) {
+        return Promise.reject(
+          createHttpError('Encrypted response decrypt failed', ApiStatus.error, {
+            data: decryptError,
+            url: error.config?.url,
+            method: error.config?.method?.toUpperCase()
+          })
+        )
+      }
+    }
+
     if (error.response?.status === ApiStatus.unauthorized) {
       return handleUnauthorizedResponse(error.response, error)
     }
@@ -126,7 +203,40 @@ function createHttpError(
 }
 
 function isBlobResponse(response: AxiosResponse) {
-  return response.config.responseType === 'blob' || response.data instanceof Blob
+  return (
+    response.config.responseType === 'blob' ||
+    response.config.responseType === 'arraybuffer' ||
+    response.data instanceof Blob
+  )
+}
+
+async function retryWithFreshTransportMeta(
+  instance: typeof axiosInstance,
+  error: AxiosError<BaseResponse<any>>
+): Promise<AxiosResponse<BaseResponse<any>> | null> {
+  const response = error.response
+  const config = response?.config as ExtendedAxiosRequestConfig | undefined
+
+  if (!response || !config) {
+    return null
+  }
+
+  if (config._transportMetaRetried || shouldBypassTransportEncryption(config)) {
+    return null
+  }
+
+  if (!isTransportMetaInvalidPayload(response.data)) {
+    return null
+  }
+
+  clearTransportCryptoMetaCache()
+
+  const retryConfig: ExtendedAxiosRequestConfig = {
+    ...config,
+    _transportMetaRetried: true
+  }
+
+  return instance.request<BaseResponse<any>>(retryConfig as AxiosRequestConfig)
 }
 
 function createRequestQueue(config: ExtendedAxiosRequestConfig) {
@@ -180,7 +290,7 @@ async function refreshAccessToken() {
 
   const response = await refreshInstance.request<BaseResponse<Api.Auth.LoginResponse>>({
     url: '/refreshToken',
-    method: 'GET',
+    method: 'POST',
     headers: {
       Authorization: currentRefreshToken
     }

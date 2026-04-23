@@ -1,20 +1,24 @@
 <?php
-namespace core\service;
-use think\Response;
-use think\exception\HttpResponseException;
 
- class JsonServer
- {
+namespace core\service;
+
+use app\Request;
+use core\service\crypto\TransportCryptoService;
+use think\exception\HttpResponseException;
+use think\Response;
+
+class JsonServer
+{
     public $json_success_code = 1;
     public $json_error_code = 0;
-   
+
     /**
-     * 返回封装后的 API 数据到客户端
+     * 杩斿洖灏佽鍚庣殑 API 鏁版嵁鍒板鎴风
      * @access protected
-     * @param mixed  $data   要返回的数据
-     * @param int    $code   返回的 code 成功1,失败0
-     * @param mixed  $msg    提示信息
-     * @param int    $http_response_code  http状态码
+     * @param mixed  $data   瑕佽繑鍥炵殑鏁版嵁
+     * @param int    $code   杩斿洖鐨刢ode 鎴愬姛1, 澶辫触0
+     * @param mixed  $msg    鎻愮ず淇℃伅
+     * @param int    $http_response_code  http鐘舵€佺爜
      * @return void
      * @throws HttpResponseException
      */
@@ -22,59 +26,72 @@ use think\exception\HttpResponseException;
     {
         $response = [
             'code' => $code,
-            'msg'  => $msg,
+            'msg' => $msg,
             'time' => time(),
-            'data' => $data
+            'data' => $data,
         ];
 
-        $response =  Response::create($response, 'json', $http_response_code);
-        
+        $request = app()->request;
+        if ($request instanceof Request && $request->isEncryptedRequest()) {
+            try {
+                $response = app()->make(TransportCryptoService::class)->encryptResponse($request, $response);
+            } catch (\Throwable) {
+                $http_response_code = 500;
+                $response = [
+                    'code' => 4699,
+                    'msg' => 'response encryption failed',
+                    'time' => time(),
+                    'data' => [],
+                ];
+            }
+        }
+
+        $response = Response::create($response, 'json', $http_response_code);
+
         throw new HttpResponseException($response);
     }
 
-    /** 
-     * 返回操作
+    /**
+     * 杩斿洖鎿嶄綔
      * @param array $data
-     * @param number $http_status_code http状态码
-     * @return json
+     * @param int $http_status_code
+     * @return void
      */
-    public function response($http_status_code = 200, $msg = 'success',$data = [] )
-    {   
-        if($http_status_code >= 200 && $http_status_code < 300){
+    public function response($http_status_code = 200, $msg = 'success', $data = [])
+    {
+        if ($http_status_code >= 200 && $http_status_code < 300) {
             $json_status_code = 1;
-        }else{
+        } else {
             $json_status_code = 0;
         }
 
-        return $this->result($data, $json_status_code, $msg,$http_status_code);
+        return $this->result($data, $json_status_code, $msg, $http_status_code);
     }
 
-
     /**
-     * 返回操作成功json
-     * @param array $data
+     * 杩斿洖鎿嶄綔鎴愬姛json
+     * @param array|string $data
      * @param string $msg
-     * @return json
+     * @return void
      */
-    public function success($data = [] ,$msg = 'success')
-    {   
-        if(is_string($data)){
-           $msg = $data;
-           $data = [];
-        }    
+    public function success($data = [], $msg = 'success')
+    {
+        if (is_string($data)) {
+            $msg = $data;
+            $data = [];
+        }
+
         return $this->result($data, $this->json_success_code, $msg);
     }
 
-
     /**
-     * 返回操作失败json
+     * 杩斿洖鎿嶄綔澶辫触json
      * @param string $msg
      * @param array $data
-     * @return json
+     * @return void
      */
     public function error($msg = 'error', $data = [])
     {
-         return $this->result($data, $this->json_error_code, $msg);
+        return $this->result($data, $this->json_error_code, $msg);
     }
-
- }
+}

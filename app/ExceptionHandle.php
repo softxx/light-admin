@@ -1,23 +1,25 @@
 <?php
+
 namespace app;
 
+use core\exception\FailedException;
+use core\facade\Json;
 use think\db\exception\DataNotFoundException;
 use think\db\exception\ModelNotFoundException;
 use think\exception\Handle;
 use think\exception\HttpException;
 use think\exception\HttpResponseException;
 use think\exception\ValidateException;
-use core\exception\FailedException;
 use think\Response;
-use core\facade\Json;
 use Throwable;
+
 /**
- * 应用异常处理类
+ * 搴旂敤寮傚父澶勭悊绫?
  */
 class ExceptionHandle extends Handle
 {
     /**
-     * 不需要记录信息（日志）的异常类列表
+     * 涓嶉渶瑕佽褰曚俊鎭紙鏃ュ織锛夌殑寮傚父绫诲垪琛?
      * @var array
      */
     protected $ignoreReport = [
@@ -29,41 +31,45 @@ class ExceptionHandle extends Handle
         FailedException::class,
     ];
 
-    /**
-     * 记录异常信息（包括日志或者其它方式记录）
-     *
-     * @access public
-     * @param  Throwable $exception
-     * @return void
-     */
     public function report(Throwable $exception): void
     {
-        // 使用内置的方式记录异常日志
         parent::report($exception);
     }
 
-    /**
-     * Render an exception into an HTTP response.
-     *
-     * @access public
-     * @param \think\Request   $request
-     * @param Throwable $e
-     * @return Response
-     */
     public function render($request, Throwable $e): Response
     {
-        // 添加自定义异常处理机制
-        
-        if ($e instanceof FailedException) {
-            return $e->render();
+        if ($e instanceof HttpResponseException) {
+            return $e->getResponse();
         }
 
-        // 参数验证错误
-        if ($e instanceof ValidateException) {
-            return Json::error($e->getError());
+        if ($e instanceof FailedException) {
+            return $this->toHttpResponse(fn() => $e->render());
         }
-  
-        // 其他错误交给系统处理
+
+        if ($e instanceof ValidateException) {
+            return $this->toHttpResponse(fn() => Json::error($e->getError()));
+        }
+
+        if ($request instanceof Request && $request->isEncryptedRequest()) {
+            return $this->toHttpResponse(
+                fn() => Json::result(
+                    [],
+                    0,
+                    app()->isDebug() ? $e->getMessage() : config('app.error_message'),
+                    500
+                )
+            );
+        }
+
         return parent::render($request, $e);
+    }
+
+    private function toHttpResponse(callable $resolver): Response
+    {
+        try {
+            return $resolver();
+        } catch (HttpResponseException $exception) {
+            return $exception->getResponse();
+        }
     }
 }

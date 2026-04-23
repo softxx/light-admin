@@ -15,20 +15,20 @@ function normalizeListParams(params?: Record<string, any>) {
 }
 
 export function fetchGetUserList(params: Api.SystemManage.UserSearchParams) {
-  return request.get<Api.SystemManage.UserList>({
-    url: '/user',
+  return request.post<Api.SystemManage.UserList>({
+    url: '/user/list',
     params: normalizeListParams(params as Record<string, any>)
   })
 }
 
 export function fetchGetUserDetail(id: number | string) {
-  return request.get<Api.SystemManage.UserListItem>({
+  return request.post<Api.SystemManage.UserListItem>({
     url: `/user/${id}/edit`
   })
 }
 
 export function fetchGetActiveUsers(params?: Record<string, any>) {
-  return request.get<Api.Common.PaginatedResponse<any>>({
+  return request.post<Api.Common.PaginatedResponse<any>>({
     url: '/user/getActiveUsers',
     params: normalizeListParams(params)
   })
@@ -109,8 +109,8 @@ export function fetchGetPublicSystemSetting() {
 }
 
 export function fetchGetSystemSetting() {
-  return request.get<Api.SystemManage.SystemSettingItem>({
-    url: '/system_setting'
+  return request.post<Api.SystemManage.SystemSettingItem>({
+    url: '/system_setting/query'
   })
 }
 
@@ -123,8 +123,8 @@ export function fetchUpdateSystemSetting(params: Api.SystemManage.SystemSettingP
 }
 
 export function fetchGetCacheOverview() {
-  return request.get<Api.SystemManage.CacheOverview>({
-    url: '/cache'
+  return request.post<Api.SystemManage.CacheOverview>({
+    url: '/cache/overview'
   })
 }
 
@@ -143,20 +143,20 @@ export function fetchClearRuntimeCache() {
 }
 
 export function fetchGetRoleList(params: Api.SystemManage.RoleSearchParams) {
-  return request.get<Api.SystemManage.RoleList>({
-    url: '/role',
+  return request.post<Api.SystemManage.RoleList>({
+    url: '/role/list',
     params: normalizeListParams(params as Record<string, any>)
   })
 }
 
 export function fetchGetRoleAll() {
-  return request.get<Api.SystemManage.RoleOption[]>({
+  return request.post<Api.SystemManage.RoleOption[]>({
     url: '/role/all'
   })
 }
 
 export function fetchGetRoleDetail(id: number | string) {
-  return request.get<Api.SystemManage.RoleListItem>({
+  return request.post<Api.SystemManage.RoleListItem>({
     url: `/role/${id}/edit`
   })
 }
@@ -179,8 +179,8 @@ export function fetchDeleteRole(id: number | string, options: RequestMessageOpti
 }
 
 export function fetchGetRolePermission(id: number | string) {
-  return request.get<Api.Backend.AuthAccessResponse>({
-    url: '/authAccess',
+  return request.post<Api.Backend.AuthAccessResponse>({
+    url: '/authAccess/index',
     params: { id }
   })
 }
@@ -197,8 +197,8 @@ export function fetchSaveRolePermission(roleId: number | string, menuIds: Array<
 }
 
 export function fetchGetMenuList(params?: Record<string, any>) {
-  return request.get<Api.SystemManage.MenuListItem[]>({
-    url: '/menu',
+  return request.post<Api.SystemManage.MenuListItem[]>({
+    url: '/menu/list',
     params
   })
 }
@@ -221,14 +221,14 @@ export function fetchDeleteMenu(id: number | string, options: RequestMessageOpti
 }
 
 export function fetchGetDepartmentList(params?: Record<string, any>) {
-  return request.get<Api.SystemManage.DepartmentOption[]>({
-    url: '/department',
+  return request.post<Api.SystemManage.DepartmentOption[]>({
+    url: '/department/list',
     params
   })
 }
 
 export function fetchGetDepartmentDetail(id: number | string) {
-  return request.get<Api.SystemManage.DepartmentOption>({
+  return request.post<Api.SystemManage.DepartmentOption>({
     url: `/department/${id}/edit`
   })
 }
@@ -251,14 +251,14 @@ export function fetchDeleteDepartment(id: number | string, options: RequestMessa
 }
 
 export function fetchGetDictList(params?: Record<string, any>) {
-  return request.get<Api.SystemManage.DictListItem[]>({
-    url: '/dict',
+  return request.post<Api.SystemManage.DictListItem[]>({
+    url: '/dict/list',
     params
   })
 }
 
 export function fetchGetDictOptions(type: string[] | string, str = false) {
-  return request.get<Api.Common.DictOption[] | Record<string, Api.Common.DictOption[]>>({
+  return request.post<Api.Common.DictOption[] | Record<string, Api.Common.DictOption[]>>({
     url: '/dict/get',
     params: {
       type,
@@ -307,8 +307,8 @@ export function fetchUpdateDictSort(params: Array<{ id: number | string; sort: n
 }
 
 export function fetchGetLoginLogList(params?: Api.SystemManage.LogSearchParams) {
-  return request.get<Api.SystemManage.LogList>({
-    url: '/login_log',
+  return request.post<Api.SystemManage.LogList>({
+    url: '/login_log/list',
     params: normalizeListParams(params)
   })
 }
@@ -339,8 +339,8 @@ export function fetchExportLoginLog(params?: Api.SystemManage.LogSearchParams) {
 }
 
 export function fetchGetOperateLogList(params?: Record<string, any>) {
-  return request.get<Api.SystemManage.LogList>({
-    url: '/operate_log',
+  return request.post<Api.SystemManage.LogList>({
+    url: '/operate_log/list',
     params: normalizeListParams(params)
   })
 }

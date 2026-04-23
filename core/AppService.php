@@ -44,10 +44,12 @@ class AppService extends Service
     {
         $middleware = $this->app->config->get('middleware');
         $middleware['alias']['auth'] = [
+            \core\middleware\TransportCrypto::class,
             \app\adminapi\middleware\JwtAuth::class,
             \app\adminapi\middleware\Permissions::class,
             \app\adminapi\middleware\RecordOperate::class,
         ];
+        $middleware['alias']['transportCrypto'] = \core\middleware\TransportCrypto::class;
         $this->app->config->set($middleware, 'middleware');
     }
 
