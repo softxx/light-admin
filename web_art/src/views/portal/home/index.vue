@@ -13,9 +13,9 @@
           </div>
         </div>
 
-        <a :href="primaryEntryHref" class="portal-home__header-link">
+        <RouterLink :to="primaryEntryTo" class="portal-home__header-link">
           {{ primaryEntryText }}
-        </a>
+        </RouterLink>
       </header>
 
       <main class="portal-home__content">
@@ -25,9 +25,9 @@
           <p class="portal-home__description">{{ homepageIntro }}</p>
 
           <div class="portal-home__actions">
-            <a :href="primaryEntryHref" class="portal-home__button portal-home__button--primary">
+            <RouterLink :to="primaryEntryTo" class="portal-home__button portal-home__button--primary">
               {{ primaryEntryText }}
-            </a>
+            </RouterLink>
           </div>
         </section>
 
@@ -50,21 +50,20 @@
 
   defineOptions({ name: 'PortalHome' })
 
-  const LOGIN_ENTRY = '/#/auth/login'
-  const DEFAULT_WORKSPACE_ENTRY = `/#${RoutesAlias.Layout}`
+  const DEFAULT_WORKSPACE_ENTRY = RoutesAlias.Layout
 
   const menuStore = useMenuStore()
   const systemConfigStore = useSystemConfigStore()
   const userStore = useUserStore()
   const { systemName, logoUrl, homepageTitle, homepageIntro } = storeToRefs(systemConfigStore)
 
-  const workspaceEntryHref = computed(() => {
+  const workspaceEntryTo = computed(() => {
     const homePath = menuStore.getHomePath()
-    return homePath ? `/#${homePath}` : DEFAULT_WORKSPACE_ENTRY
+    return homePath || DEFAULT_WORKSPACE_ENTRY
   })
 
-  const primaryEntryHref = computed(() =>
-    userStore.isLogin ? workspaceEntryHref.value : LOGIN_ENTRY
+  const primaryEntryTo = computed(() =>
+    userStore.isLogin ? workspaceEntryTo.value : RoutesAlias.Login
   )
   const primaryEntryText = computed(() => (userStore.isLogin ? '进入工作台' : '进入后台管理'))
 
