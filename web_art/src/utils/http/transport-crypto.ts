@@ -4,6 +4,9 @@ import { sm2, sm3, sm4 } from 'sm-crypto-v2'
 const encoder = new TextEncoder()
 const decoder = new TextDecoder()
 const DEFAULT_QUERY_PARAM = '__enc'
+const DEFAULT_TRANSPORT_SUITE = 1
+const DEFAULT_KEY_LENGTH = 16
+const DEFAULT_IV_LENGTH = 16
 const BYPASS_PATHS = new Set([
   '/adminapi/crypto/meta',
   '/adminapi/system_setting/public',
@@ -18,7 +21,7 @@ const { VITE_API_URL, VITE_WITH_CREDENTIALS } = import.meta.env
 interface TransportCryptoMeta {
   enabled: boolean
   v: number
-  alg: string
+  suite: number
   kid: string
   sm2_public_key: string
   sm2_asn1?: boolean
@@ -26,9 +29,27 @@ interface TransportCryptoMeta {
   iv_length: number
 }
 
+interface TransportCryptoMetaPayload {
+  e?: boolean | number | string
+  r?: number | string
+  s?: number | string
+  k?: string
+  p?: string
+  x?: boolean | number | string
+  a?: number | string
+  b?: number | string
+  enabled?: boolean | number | string
+  v?: number | string
+  kid?: string
+  sm2_public_key?: string
+  sm2_asn1?: boolean | number | string
+  key_length?: number | string
+  iv_length?: number | string
+}
+
 interface TransportRequestEnvelope {
   v: number
-  alg: string
+  s: number
   kid: string
   ts: number
   nonce: string
@@ -159,7 +180,7 @@ export async function encryptTransportRequest(
 
   const envelope: TransportRequestEnvelope = {
     v: meta.v,
-    alg: meta.alg,
+    s: meta.suite,
     kid: meta.kid,
     ts: timestamp,
     nonce: requestNonce,
@@ -237,13 +258,72 @@ function requestTransportCryptoMeta(): Promise<TransportCryptoMeta> {
     }
   }).then(async (response) => {
     const body = await response.json()
+    const meta = normalizeTransportCryptoMeta(body?.data)
 
-    if (!response.ok || Number(body?.code) !== 1 || !body?.data?.sm2_public_key) {
+    if (!response.ok || Number(body?.code) !== 1 || !meta) {
       throw new Error('Failed to load transport crypto metadata.')
     }
 
-    return body.data as TransportCryptoMeta
+    return meta
   })
+}
+
+function normalizeTransportCryptoMeta(payload: unknown): TransportCryptoMeta | null {
+  if (!isObject(payload)) {
+    return null
+  }
+
+  const record = payload as TransportCryptoMetaPayload
+  const suite = toFiniteNumber(record.s, DEFAULT_TRANSPORT_SUITE)
+  const kid = readString(record.k ?? record.kid)
+  const publicKey = readString(record.p ?? record.sm2_public_key)
+
+  if (!kid || !publicKey || suite !== DEFAULT_TRANSPORT_SUITE) {
+    return null
+  }
+
+  return {
+    enabled: toBoolean(record.e ?? record.enabled, true),
+    v: toFiniteNumber(record.r ?? record.v, 1),
+    suite,
+    kid,
+    sm2_public_key: publicKey,
+    sm2_asn1: toBoolean(record.x ?? record.sm2_asn1, false),
+    key_length: toFiniteNumber(record.a ?? record.key_length, DEFAULT_KEY_LENGTH),
+    iv_length: toFiniteNumber(record.b ?? record.iv_length, DEFAULT_IV_LENGTH)
+  }
+}
+
+function readString(value: unknown): string {
+  return typeof value === 'string' ? value.trim() : ''
+}
+
+function toFiniteNumber(value: unknown, fallback: number): number {
+  const numberValue = Number(value)
+  return Number.isFinite(numberValue) ? numberValue : fallback
+}
+
+function toBoolean(value: unknown, fallback: boolean): boolean {
+  if (typeof value === 'boolean') {
+    return value
+  }
+
+  if (typeof value === 'number') {
+    return value !== 0
+  }
+
+  if (typeof value === 'string') {
+    const normalized = value.trim().toLowerCase()
+    if (['1', 'true', 'yes', 'on'].includes(normalized)) {
+      return true
+    }
+
+    if (['0', 'false', 'no', 'off'].includes(normalized)) {
+      return false
+    }
+  }
+
+  return fallback
 }
 
 function resolveApiUrl(path: string): string {

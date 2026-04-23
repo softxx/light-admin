@@ -13,6 +13,7 @@ class TransportCryptoService
 {
     private const REQUEST_AAD_PREFIX = 'REQ';
     private const RESPONSE_AAD_PREFIX = 'RES';
+    private const META_SUITE = 1;
 
     private ?array $keyPair = null;
 
@@ -49,14 +50,14 @@ class TransportCryptoService
         $keyPair = $this->getKeyPair();
 
         return [
-            'enabled' => $this->isEnabled(),
-            'v' => (int) $this->config('protocol_version', 1),
-            'alg' => (string) $this->config('algorithm', 'SM2+SM4-CBC+SM3'),
-            'kid' => $keyPair['kid'],
-            'sm2_public_key' => $keyPair['public_key'],
-            'sm2_asn1' => false,
-            'key_length' => (int) $this->config('sm4.key_length', 16),
-            'iv_length' => (int) $this->config('sm4.iv_length', 16),
+            'e' => $this->isEnabled() ? 1 : 0,
+            'r' => (int) $this->config('protocol_version', 1),
+            's' => self::META_SUITE,
+            'k' => $keyPair['kid'],
+            'p' => $keyPair['public_key'],
+            'x' => 0,
+            'a' => (int) $this->config('sm4.key_length', 16),
+            'b' => (int) $this->config('sm4.iv_length', 16),
         ];
     }
 
@@ -205,18 +206,22 @@ class TransportCryptoService
 
     private function validateEnvelope(array $envelope): void
     {
-        $requiredFields = ['v', 'alg', 'kid', 'ts', 'nonce', 'ek', 'iv', 'ct', 'mac'];
+        $requiredFields = ['v', 'kid', 'ts', 'nonce', 'ek', 'iv', 'ct', 'mac'];
         foreach ($requiredFields as $field) {
             if (!array_key_exists($field, $envelope) || $envelope[$field] === '') {
                 throw new FailedException("encrypted payload field {$field} is required", 4600, [], 400);
             }
         }
 
+        if (!array_key_exists('s', $envelope) || $envelope['s'] === '') {
+            throw new FailedException('encrypted payload suite is required', 4600, [], 400);
+        }
+
         if ((int) $envelope['v'] !== (int) $this->config('protocol_version', 1)) {
             throw new FailedException('encrypted payload version is invalid', 4601, [], 400);
         }
 
-        if ((string) $envelope['alg'] !== (string) $this->config('algorithm', 'SM2+SM4-CBC+SM3')) {
+        if (!is_numeric($envelope['s']) || (int) $envelope['s'] !== self::META_SUITE) {
             throw new FailedException('encrypted payload algorithm is invalid', 4608, [], 415);
         }
 

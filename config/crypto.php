@@ -3,7 +3,6 @@
 return [
     'enabled' => env('API_ENCRYPT_ENABLED', true),
     'protocol_version' => 1,
-    'algorithm' => 'SM2+SM4-CBC+SM3',
     'request_query_param' => '__enc',
     'timestamp_ttl' => 300,
     'nonce_ttl' => 300,
