@@ -24,8 +24,17 @@ import riIcons from '@iconify-json/ri/icons.json'
 // import svgSpinners from '@iconify-json/svg-spinners/icons.json'
 // import lineMd from '@iconify-json/line-md/icons.json'
 
+import vaadinIcons from '@iconify-json/vaadin/icons.json'
+import antDesign from '@iconify-json/ant-design/icons.json'
+import iconamoonIcons from '@iconify-json/iconamoon/icons.json'
+import systemUicons from '@iconify-json/system-uicons/icons.json'
+
 // // 注册离线图标集
 
 addCollection(riIcons)
+addCollection(vaadinIcons)
+addCollection(antDesign)
+addCollection(iconamoonIcons)
+addCollection(systemUicons)
 // addCollection(svgSpinners)
 // addCollection(lineMd)
