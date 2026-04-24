@@ -242,6 +242,63 @@ BEGIN;
 COMMIT;
 
 -- ----------------------------
+-- Table structure for light_system_version
+-- ----------------------------
+DROP TABLE IF EXISTS `light_system_version`;
+CREATE TABLE `light_system_version` (
+  `id` int(11) unsigned NOT NULL AUTO_INCREMENT COMMENT '主键ID',
+  `version` varchar(32) NOT NULL DEFAULT '' COMMENT '版本号',
+  `build` varchar(64) NOT NULL DEFAULT '' COMMENT '构建号',
+  `commit_hash` varchar(64) NOT NULL DEFAULT '' COMMENT '代码提交哈希',
+  `channel` varchar(32) NOT NULL DEFAULT 'stable' COMMENT '发布通道',
+  `release_notes` longtext NULL COMMENT '版本更新说明JSON',
+  `installed_at` int(10) unsigned NOT NULL DEFAULT '0' COMMENT '安装时间',
+  `create_time` int(10) unsigned NOT NULL DEFAULT '0' COMMENT '创建时间',
+  PRIMARY KEY (`id`) USING BTREE,
+  KEY `idx_version` (`version`) USING BTREE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 ROW_FORMAT=DYNAMIC COMMENT='系统版本安装记录表';
+
+-- ----------------------------
+-- Records of light_system_version
+-- ----------------------------
+BEGIN;
+COMMIT;
+
+-- ----------------------------
+-- Table structure for light_upgrade_task
+-- ----------------------------
+DROP TABLE IF EXISTS `light_upgrade_task`;
+CREATE TABLE `light_upgrade_task` (
+  `id` int(11) unsigned NOT NULL AUTO_INCREMENT COMMENT '主键ID',
+  `target_version` varchar(32) NOT NULL DEFAULT '' COMMENT '目标版本号',
+  `package_url` varchar(1000) NOT NULL DEFAULT '' COMMENT '升级包下载地址',
+  `package_path` varchar(1000) NOT NULL DEFAULT '' COMMENT '本地升级包路径',
+  `backup_path` varchar(1000) NOT NULL DEFAULT '' COMMENT '升级前备份路径',
+  `manifest_url` varchar(1000) NOT NULL DEFAULT '' COMMENT '发布源地址',
+  `manifest` longtext NULL COMMENT '发布版本元数据JSON',
+  `precheck` longtext NULL COMMENT '预检查结果JSON',
+  `status` varchar(32) NOT NULL DEFAULT 'pending' COMMENT '任务状态',
+  `progress` tinyint(3) unsigned NOT NULL DEFAULT '0' COMMENT '任务进度百分比',
+  `message` varchar(1000) NOT NULL DEFAULT '' COMMENT '当前状态消息',
+  `logs` longtext NULL COMMENT '任务日志JSON',
+  `error` longtext NULL COMMENT '失败原因',
+  `operator_id` int(11) unsigned NOT NULL DEFAULT '0' COMMENT '操作人ID',
+  `started_at` int(10) unsigned NOT NULL DEFAULT '0' COMMENT '开始时间',
+  `finished_at` int(10) unsigned NOT NULL DEFAULT '0' COMMENT '结束时间',
+  `create_time` int(10) unsigned NOT NULL DEFAULT '0' COMMENT '创建时间',
+  `update_time` int(10) unsigned NOT NULL DEFAULT '0' COMMENT '更新时间',
+  PRIMARY KEY (`id`) USING BTREE,
+  KEY `idx_status` (`status`) USING BTREE,
+  KEY `idx_target_version` (`target_version`) USING BTREE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 ROW_FORMAT=DYNAMIC COMMENT='系统升级任务表';
+
+-- ----------------------------
+-- Records of light_upgrade_task
+-- ----------------------------
+BEGIN;
+COMMIT;
+
+-- ----------------------------
 -- Table structure for light_menu
 -- ----------------------------
 DROP TABLE IF EXISTS `light_menu`;

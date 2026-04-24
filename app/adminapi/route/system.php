@@ -63,6 +63,17 @@ Route::group(function () {
         Route::post('clearRuntime', 'system.cache/clearRuntime');
     });
 
+    Route::group('version', function () {
+        Route::post('current', 'system.version/current');
+        Route::post('check', 'system.version/check');
+        Route::post('download', 'system.version/download');
+        Route::post('precheck', 'system.version/precheck');
+        Route::post('upgrade', 'system.version/upgrade');
+        Route::post('rollback', 'system.version/rollback');
+        Route::post('task', 'system.version/task');
+        Route::post('tasks', 'system.version/tasks');
+    });
+
     Route::group(function () {
         Route::post('user/list', 'system.user/index');
         Route::post('user/:id/edit', 'system.user/edit');

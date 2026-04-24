@@ -56,6 +56,16 @@ export const systemRoutes: AppRouteRecord = {
           { title: '删除', authMark: 'delete' }
         ]
       }
+    },
+    {
+      path: 'version',
+      name: 'VersionManage',
+      component: '/system/version-manage',
+      meta: {
+        title: '版本管理',
+        keepAlive: true,
+        roles: ['R_SUPER']
+      }
     }
   ]
 }

@@ -9,4 +9,5 @@ return [
     // \think\middleware\SessionInit::class
     // 跨域中间件
     \think\middleware\AllowCrossDomain::class,
+    \app\middleware\MaintenanceMode::class,
 ];

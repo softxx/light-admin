@@ -333,6 +333,157 @@ declare namespace Api {
       protected_file_count: number
     }
 
+    interface VersionInfo {
+      version: string
+      build?: string
+      commit?: string
+      released_at?: string
+      channel?: string
+      [key: string]: any
+    }
+
+    interface VersionReleaseConfig {
+      app: string
+      channel: string
+      source: 'github' | 'gitlab' | 'gitee' | 'cnb' | string
+      has_release_token: boolean
+      owner: string
+      repo: string
+      project: string
+      asset_pattern: string
+      api_base?: string
+      include_prerelease: boolean
+    }
+
+    interface VersionEnvironment {
+      php_version: string
+      thinkphp_version: string
+      root_path: string
+      runtime_path: string
+      os: string
+    }
+
+    interface VersionReleaseItem {
+      version: string
+      tag_name?: string
+      build?: string
+      commit?: string
+      released_at?: string
+      channel?: string
+      source?: string
+      required?: boolean
+      min_upgradable_version?: string
+      php?: string
+      database_migration?: boolean
+      package_url?: string
+      asset_api_url?: string
+      asset_name?: string
+      release_url?: string
+      digest?: string
+      size_bytes?: number
+      sha256?: string
+      release_notes?: string[]
+      [key: string]: any
+    }
+
+    interface VersionCurrentResponse {
+      current: VersionInfo
+      release: VersionReleaseConfig
+      installed?: Record<string, any>
+      last_task?: UpgradeTask
+      environment: VersionEnvironment
+    }
+
+    interface VersionCheckResponse {
+      current: VersionInfo
+      source_url: string
+      manifest: {
+        app: string
+        channel: string
+        latest: string
+        source?: string
+        platform?: Record<string, any>
+      }
+      latest?: VersionReleaseItem
+      upgrade_available: boolean
+    }
+
+    interface VersionPrecheckItem {
+      key: string
+      title: string
+      status: 'pass' | 'warn' | 'fail'
+      message: string
+    }
+
+    interface VersionPrecheckResponse {
+      can_upgrade: boolean
+      failed_count: number
+      warning_count: number
+      checks: VersionPrecheckItem[]
+      source_url: string
+      version: VersionReleaseItem
+    }
+
+    interface VersionDownloadResponse {
+      package_path: string
+      size_bytes: number
+      sha256: string
+      verification: {
+        sha256: string
+        remote_sha256: string
+        digest_checked: boolean
+        sha256_matched: boolean
+      }
+      source_url: string
+      version: VersionReleaseItem
+    }
+
+    type UpgradeTaskStatus =
+      | 'pending'
+      | 'queued'
+      | 'downloading'
+      | 'verifying'
+      | 'prechecking'
+      | 'backing_up'
+      | 'maintenance'
+      | 'installing'
+      | 'migrating'
+      | 'finishing'
+      | 'success'
+      | 'failed'
+      | 'rolling_back'
+      | 'rolled_back'
+      | 'rollback_failed'
+
+    interface UpgradeTaskLog {
+      time: string
+      level: 'info' | 'warn' | 'error' | string
+      message: string
+    }
+
+    interface UpgradeTask {
+      id: number
+      target_version: string
+      package_url?: string
+      package_path?: string
+      backup_path?: string
+      manifest_url?: string
+      manifest?: VersionReleaseItem
+      precheck?: VersionPrecheckResponse | Record<string, any>
+      status: UpgradeTaskStatus
+      progress: number
+      message: string
+      logs: UpgradeTaskLog[]
+      error?: string
+      operator_id?: number
+      started_at?: number | string
+      finished_at?: number | string
+      create_time?: number | string
+      update_time?: number | string
+      is_running?: boolean
+      [key: string]: any
+    }
+
     interface LogListItem {
       id: number
       create_time?: string

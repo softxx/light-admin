@@ -142,6 +142,76 @@ export function fetchClearRuntimeCache() {
   })
 }
 
+// 版本管理中心：基于可切换发布源检查、下载、预检、升级、回滚和任务轮询。
+type VersionReleaseRequestParams = {
+  source?: 'github' | 'gitlab' | 'gitee' | 'cnb' | string
+  owner?: string
+  repo?: string
+  project?: string
+  asset_pattern?: string
+  include_prerelease?: boolean
+  version?: string
+  package_path?: string
+}
+
+export function fetchGetVersionCurrent() {
+  return request.post<Api.SystemManage.VersionCurrentResponse>({
+    url: '/version/current'
+  })
+}
+
+export function fetchCheckVersion(params: VersionReleaseRequestParams) {
+  return request.post<Api.SystemManage.VersionCheckResponse>({
+    url: '/version/check',
+    params
+  })
+}
+
+export function fetchDownloadVersionPackage(params: VersionReleaseRequestParams) {
+  return request.post<Api.SystemManage.VersionDownloadResponse>({
+    url: '/version/download',
+    params,
+    showSuccessMessage: true
+  })
+}
+
+export function fetchPrecheckVersion(params: VersionReleaseRequestParams) {
+  return request.post<Api.SystemManage.VersionPrecheckResponse>({
+    url: '/version/precheck',
+    params
+  })
+}
+
+export function fetchStartVersionUpgrade(params: VersionReleaseRequestParams) {
+  return request.post<Api.SystemManage.UpgradeTask>({
+    url: '/version/upgrade',
+    params,
+    showSuccessMessage: true
+  })
+}
+
+export function fetchRollbackVersionTask(taskId?: number | string) {
+  return request.post<Api.SystemManage.UpgradeTask>({
+    url: '/version/rollback',
+    params: taskId ? { task_id: taskId } : {},
+    showSuccessMessage: true
+  })
+}
+
+export function fetchGetVersionTask(id: number | string) {
+  return request.post<Api.SystemManage.UpgradeTask>({
+    url: '/version/task',
+    params: { id }
+  })
+}
+
+export function fetchGetVersionTasks(limit = 20) {
+  return request.post<Api.SystemManage.UpgradeTask[]>({
+    url: '/version/tasks',
+    params: { limit }
+  })
+}
+
 export function fetchGetRoleList(params: Api.SystemManage.RoleSearchParams) {
   return request.post<Api.SystemManage.RoleList>({
     url: '/role/list',

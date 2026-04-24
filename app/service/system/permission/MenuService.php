@@ -180,25 +180,41 @@ class MenuService extends BaseService
             }
 
             $children = isset($menu['children']) && is_array($menu['children']) ? $menu['children'] : [];
-            if ($this->hasMenuPath($children, 'cache')) {
-                return $menus;
+            if (!$this->hasMenuPath($children, 'cache')) {
+                $children[] = [
+                    'id' => 900001,
+                    'pid' => $menu['id'] ?? 0,
+                    'path' => 'cache',
+                    'component' => 'system/cache-manage/index',
+                    'hidden' => 0,
+                    'title' => '缓存管理',
+                    'icon' => 'database-outlined',
+                    'sort' => 100,
+                    'type' => 1,
+                    'hide_children' => 0,
+                    'active_key' => '',
+                    'open_type' => 0,
+                    'link_url' => ''
+                ];
             }
 
-            $children[] = [
-                'id' => 900001,
-                'pid' => $menu['id'] ?? 0,
-                'path' => 'cache',
-                'component' => 'system/cache-manage/index',
-                'hidden' => 0,
-                'title' => '缓存管理',
-                'icon' => 'database-outlined',
-                'sort' => 100,
-                'type' => 1,
-                'hide_children' => 0,
-                'active_key' => '',
-                'open_type' => 0,
-                'link_url' => ''
-            ];
+            if (!$this->hasMenuPath($children, 'version')) {
+                $children[] = [
+                    'id' => 900002,
+                    'pid' => $menu['id'] ?? 0,
+                    'path' => 'version',
+                    'component' => 'system/version-manage/index',
+                    'hidden' => 0,
+                    'title' => '版本管理',
+                    'icon' => 'cloud-upload-outlined',
+                    'sort' => 101,
+                    'type' => 1,
+                    'hide_children' => 0,
+                    'active_key' => '',
+                    'open_type' => 0,
+                    'link_url' => ''
+                ];
+            }
 
             usort($children, function (array $left, array $right) {
                 return (int) ($left['sort'] ?? 0) <=> (int) ($right['sort'] ?? 0);
