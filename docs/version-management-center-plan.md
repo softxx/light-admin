@@ -427,3 +427,5 @@ RELEASE_TOKEN = your-cnb-token
 ASSET_PATTERN = light-admin-{version}.zip
 TIMEOUT = 60
 ```
+
+增量更新包的发版流程见：`docs/update-release-guide.md`。
