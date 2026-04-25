@@ -165,16 +165,16 @@ declare namespace Api {
 
     type UserSearchParams = DynamicFilterSearchParams &
       Partial<{
-      key: string
-      roles: number | string
-      status: number | string
-      dept_id: number | string
-      create_time: string[] | [string, string]
-      current: number
-      size: number
-      page: number
-      pageSize: number
-    }>
+        key: string
+        roles: number | string
+        status: number | string
+        dept_id: number | string
+        create_time: string[] | [string, string]
+        current: number
+        size: number
+        page: number
+        pageSize: number
+      }>
 
     interface UserPayload {
       id?: number
@@ -202,12 +202,12 @@ declare namespace Api {
 
     type RoleSearchParams = DynamicFilterSearchParams &
       Partial<{
-      key: string
-      current: number
-      size: number
-      page: number
-      pageSize: number
-    }>
+        key: string
+        current: number
+        size: number
+        page: number
+        pageSize: number
+      }>
 
     interface RolePayload {
       id?: number
@@ -286,8 +286,6 @@ declare namespace Api {
       logo?: string
       favicon?: string
       homepage_enabled?: number | string | boolean
-      homepage_title?: string
-      homepage_intro?: string
     }
 
     interface SystemSettingPayload {
@@ -295,8 +293,6 @@ declare namespace Api {
       logo?: string
       favicon?: string
       homepage_enabled?: number | string | boolean
-      homepage_title?: string
-      homepage_intro?: string
     }
 
     interface CacheOverview {

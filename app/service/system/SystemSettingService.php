@@ -11,9 +11,7 @@ class SystemSettingService extends BaseService
         'system_name' => 'Art Design Pro',
         'logo' => '',
         'favicon' => '',
-        'homepage_enabled' => 1,
-        'homepage_title' => '项目管理平台',
-        'homepage_intro' => '这里先作为项目的简洁首页，展示项目介绍与后台入口。后续可以在系统设置中继续调整文案，不需要每次修改源码。'
+        'homepage_enabled' => 1
     ];
 
     public function __construct(SystemSetting $model)
@@ -31,7 +29,7 @@ class SystemSettingService extends BaseService
 
         return array_merge(
             self::DEFAULT_SETTING,
-            array_pick('system_name,logo,favicon,homepage_enabled,homepage_title,homepage_intro', $setting->toArray())
+            array_pick('system_name,logo,favicon,homepage_enabled', $setting->toArray())
         );
     }
 
@@ -41,9 +39,7 @@ class SystemSettingService extends BaseService
             'system_name' => trim($data['system_name'] ?? '') ?: self::DEFAULT_SETTING['system_name'],
             'logo' => trim($data['logo'] ?? ''),
             'favicon' => trim($data['favicon'] ?? ''),
-            'homepage_enabled' => (int)($data['homepage_enabled'] ?? self::DEFAULT_SETTING['homepage_enabled']) === 0 ? 0 : 1,
-            'homepage_title' => trim($data['homepage_title'] ?? '') ?: self::DEFAULT_SETTING['homepage_title'],
-            'homepage_intro' => trim($data['homepage_intro'] ?? '') ?: self::DEFAULT_SETTING['homepage_intro']
+            'homepage_enabled' => (int)($data['homepage_enabled'] ?? self::DEFAULT_SETTING['homepage_enabled']) === 0 ? 0 : 1
         ];
 
         $setting = $this->model->order('id', 'asc')->find();

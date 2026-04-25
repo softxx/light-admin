@@ -7,7 +7,7 @@
             <div>
               <div class="text-lg font-semibold">系统设置</div>
               <div class="mt-1 text-sm text-[var(--art-gray-500)]">
-                统一维护系统名称、品牌图标和首页介绍内容。
+                统一维护系统名称、品牌图标和首页访问策略。
               </div>
             </div>
 
@@ -81,9 +81,7 @@
                 placeholder="上传图标"
                 tip="用于浏览器标签页图标，不上传时沿用当前默认 favicon。"
               />
-              <div class="system-setting-page__tip">
-                保存后浏览器标签页图标会即时更新。
-              </div>
+              <div class="system-setting-page__tip"> 保存后浏览器标签页图标会即时更新。 </div>
             </div>
           </ElFormItem>
 
@@ -102,34 +100,6 @@
               </div>
               <div class="system-setting-page__tip">
                 开启时访问网站会先显示首页，关闭后访问网站会直接进入登录页；已登录用户会直接进入工作台。
-              </div>
-            </div>
-          </ElFormItem>
-
-          <ElFormItem label="首页标题" prop="homepage_title">
-            <ElInput
-              v-model.trim="form.homepage_title"
-              :disabled="!isEditing"
-              maxlength="100"
-              show-word-limit
-              placeholder="请输入首页标题"
-            />
-          </ElFormItem>
-
-          <ElFormItem label="首页简介" prop="homepage_intro">
-            <div class="w-full">
-              <ElInput
-                v-model.trim="form.homepage_intro"
-                :disabled="!isEditing"
-                type="textarea"
-                :rows="5"
-                maxlength="1000"
-                show-word-limit
-                resize="vertical"
-                placeholder="请输入首页简介"
-              />
-              <div class="system-setting-page__tip">
-                这里先放项目介绍即可，等你后面想清楚首页方向后再继续补充内容。
               </div>
             </div>
           </ElFormItem>
@@ -176,31 +146,20 @@
 
             <div class="system-setting-preview__block">
               <div class="system-setting-preview__label">首页展示</div>
-              <div class="system-setting-preview__status" :class="{ 'is-disabled': !previewHomepageEnabled }">
+              <div
+                class="system-setting-preview__status"
+                :class="{ 'is-disabled': !previewHomepageEnabled }"
+              >
                 {{ previewHomepageEnabled ? '首页已开启' : '首页已关闭，访问网站会直接跳转登录页' }}
               </div>
               <div v-if="previewHomepageEnabled" class="system-setting-preview__home">
-                <div class="system-setting-preview__home-title">{{ previewHomepageTitle }}</div>
-                <div class="system-setting-preview__home-desc">{{ previewHomepageIntro }}</div>
+                <div class="system-setting-preview__home-title">{{ previewSystemName }}</div>
                 <div class="system-setting-preview__button">进入后台管理</div>
               </div>
               <div v-else class="system-setting-preview__disabled">
                 关闭后根路径不再展示首页内容，未登录用户会直接进入登录页，已登录用户会直接进入工作台。
               </div>
             </div>
-          </div>
-        </ElCard>
-
-        <ElCard>
-          <template #header>
-            <div class="font-semibold">说明</div>
-          </template>
-
-          <div class="text-sm leading-7 text-[var(--art-gray-600)]">
-            <p>1. 系统名称会同步影响登录页、菜单顶部和页面标题。</p>
-            <p>2. 首页开关关闭后，访问网站会直接跳到登录页，已登录用户会直接进入工作台。</p>
-            <p>3. 首页标题和简介先作为简洁介绍文案，后续可以继续扩展，不需要再改源码。</p>
-            <p>4. Logo 和 Favicon 保存后会立即同步到前端品牌展示。</p>
           </div>
         </ElCard>
       </div>
@@ -228,9 +187,6 @@
 
   const defaultSystemName = 'Art Design Pro'
   const defaultHomepageEnabled = 1
-  const defaultHomepageTitle = '项目管理平台'
-  const defaultHomepageIntro =
-    '这里先作为项目的简洁首页，展示项目介绍与后台入口。后续可以在系统设置中继续调整文案，不需要每次修改源码。'
 
   const formRef = ref<FormInstance>()
   const loading = ref(false)
@@ -241,32 +197,26 @@
     system_name: defaultSystemName,
     logo: '',
     favicon: '',
-    homepage_enabled: defaultHomepageEnabled,
-    homepage_title: defaultHomepageTitle,
-    homepage_intro: defaultHomepageIntro
+    homepage_enabled: defaultHomepageEnabled
   })
 
   const form = reactive<Api.SystemManage.SystemSettingPayload>({
     system_name: defaultSystemName,
     logo: '',
     favicon: '',
-    homepage_enabled: defaultHomepageEnabled,
-    homepage_title: defaultHomepageTitle,
-    homepage_intro: defaultHomepageIntro
+    homepage_enabled: defaultHomepageEnabled
   })
 
   const rules = reactive<FormRules<Api.SystemManage.SystemSettingPayload>>({
-    system_name: [{ required: true, message: '请输入系统名称', trigger: 'blur' }],
-    homepage_title: [{ max: 100, message: '首页标题不能超过100个字符', trigger: 'blur' }],
-    homepage_intro: [{ max: 1000, message: '首页简介不能超过1000个字符', trigger: 'blur' }]
+    system_name: [{ required: true, message: '请输入系统名称', trigger: 'blur' }]
   })
 
   const previewSystemName = computed(() => form.system_name?.trim() || defaultSystemName)
   const previewLogo = computed(() => form.logo || defaultLogo)
   const previewFavicon = computed(() => form.favicon || defaultFavicon)
-  const previewHomepageEnabled = computed(() => Number(form.homepage_enabled ?? defaultHomepageEnabled) !== 0)
-  const previewHomepageTitle = computed(() => form.homepage_title?.trim() || defaultHomepageTitle)
-  const previewHomepageIntro = computed(() => form.homepage_intro?.trim() || defaultHomepageIntro)
+  const previewHomepageEnabled = computed(
+    () => Number(form.homepage_enabled ?? defaultHomepageEnabled) !== 0
+  )
   const isDarkTheme = computed(() => settingStore.isDark)
 
   const assignForm = (payload: Api.SystemManage.SystemSettingPayload) => {
@@ -274,8 +224,6 @@
     form.logo = payload.logo || ''
     form.favicon = payload.favicon || ''
     form.homepage_enabled = Number(payload.homepage_enabled ?? defaultHomepageEnabled) === 0 ? 0 : 1
-    form.homepage_title = payload.homepage_title || defaultHomepageTitle
-    form.homepage_intro = payload.homepage_intro || defaultHomepageIntro
   }
 
   const loadSetting = async () => {
@@ -287,9 +235,7 @@
         system_name: data.system_name || defaultSystemName,
         logo: data.logo || '',
         favicon: data.favicon || '',
-        homepage_enabled: Number(data.homepage_enabled ?? defaultHomepageEnabled) === 0 ? 0 : 1,
-        homepage_title: data.homepage_title || defaultHomepageTitle,
-        homepage_intro: data.homepage_intro || defaultHomepageIntro
+        homepage_enabled: Number(data.homepage_enabled ?? defaultHomepageEnabled) === 0 ? 0 : 1
       }
       assignForm(initialForm.value)
       systemConfigStore.setSystemSetting(initialForm.value)
@@ -323,18 +269,14 @@
         system_name: previewSystemName.value,
         logo: form.logo || '',
         favicon: form.favicon || '',
-        homepage_enabled: previewHomepageEnabled.value ? 1 : 0,
-        homepage_title: previewHomepageTitle.value,
-        homepage_intro: previewHomepageIntro.value
+        homepage_enabled: previewHomepageEnabled.value ? 1 : 0
       })
 
       initialForm.value = {
         system_name: data.system_name || defaultSystemName,
         logo: data.logo || '',
         favicon: data.favicon || '',
-        homepage_enabled: Number(data.homepage_enabled ?? defaultHomepageEnabled) === 0 ? 0 : 1,
-        homepage_title: data.homepage_title || defaultHomepageTitle,
-        homepage_intro: data.homepage_intro || defaultHomepageIntro
+        homepage_enabled: Number(data.homepage_enabled ?? defaultHomepageEnabled) === 0 ? 0 : 1
       }
 
       assignForm(initialForm.value)
@@ -359,8 +301,8 @@
   .system-setting-page__upload {
     display: flex;
     flex-wrap: wrap;
-    align-items: center;
     gap: 18px;
+    align-items: center;
   }
 
   .system-setting-page__tip {
@@ -384,6 +326,7 @@
       radial-gradient(circle at top right, rgb(93 135 255 / 10%), transparent 42%);
     --preview-menu-color: var(--art-gray-800);
     --preview-menu-shadow: inset 0 1px 0 rgb(255 255 255 / 75%), 0 10px 24px rgb(15 23 42 / 6%);
+
     display: flex;
     flex-direction: column;
     gap: 18px;
@@ -411,9 +354,9 @@
 
   .system-setting-preview__block {
     padding: 16px;
+    background: var(--preview-card-bg);
     border: 1px solid var(--preview-card-border);
     border-radius: 16px;
-    background: var(--preview-card-bg);
     box-shadow: var(--preview-card-shadow);
     transition:
       background 0.2s ease,
@@ -431,8 +374,8 @@
   .system-setting-preview__menu,
   .system-setting-preview__favicon {
     display: flex;
-    align-items: center;
     gap: 12px;
+    align-items: center;
   }
 
   .system-setting-preview__logo,
@@ -440,9 +383,9 @@
     width: 44px;
     height: 44px;
     object-fit: cover;
+    background: var(--preview-surface-bg);
     border: 1px solid var(--preview-surface-border);
     border-radius: 12px;
-    background: var(--preview-surface-bg);
     transition:
       background 0.2s ease,
       border-color 0.2s ease;
@@ -457,10 +400,10 @@
 
   .system-setting-preview__menu {
     padding: 14px 16px;
-    border: 1px solid var(--preview-menu-border);
-    border-radius: 14px;
     color: var(--preview-menu-color);
     background: var(--preview-menu-bg);
+    border: 1px solid var(--preview-menu-border);
+    border-radius: 14px;
     box-shadow: var(--preview-menu-shadow);
     transition:
       background 0.2s ease,
@@ -487,23 +430,16 @@
     align-items: center;
     width: fit-content;
     padding: 6px 12px;
-    border-radius: 999px;
-    color: var(--el-color-success);
-    background: color-mix(in srgb, var(--el-color-success) 12%, transparent);
     font-size: 12px;
     font-weight: 600;
+    color: var(--el-color-success);
+    background: color-mix(in srgb, var(--el-color-success) 12%, transparent);
+    border-radius: 999px;
   }
 
   .system-setting-preview__status.is-disabled {
     color: var(--el-color-danger);
     background: color-mix(in srgb, var(--el-color-danger) 12%, transparent);
-  }
-
-  .system-setting-preview__home-desc {
-    font-size: 13px;
-    line-height: 1.75;
-    color: var(--art-gray-500);
-    white-space: pre-line;
   }
 
   .system-setting-preview__disabled {
@@ -521,9 +457,9 @@
     min-width: 128px;
     height: 40px;
     padding: 0 18px;
-    border-radius: 999px;
     color: #fff;
     background: linear-gradient(135deg, var(--el-color-primary), #3e63dd);
+    border-radius: 999px;
     box-shadow: 0 12px 24px rgb(93 135 255 / 24%);
   }
 </style>

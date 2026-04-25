@@ -9,10 +9,7 @@ const DEFAULT_SYSTEM_SETTING: Api.SystemManage.SystemSettingItem = {
   system_name: AppConfig.systemInfo.name,
   logo: '',
   favicon: '',
-  homepage_enabled: 1,
-  homepage_title: '项目管理平台',
-  homepage_intro:
-    '这里先作为项目的简洁首页，展示项目介绍与后台入口。后续可以在系统设置中继续调整文案，不需要每次修改源码。'
+  homepage_enabled: 1
 }
 
 function ensureFaviconLink(): HTMLLinkElement {
@@ -62,19 +59,9 @@ export const useSystemConfigStore = defineStore(
     const logoUrl = computed(() => systemSetting.value.logo || defaultLogo)
     const faviconUrl = computed(() => systemSetting.value.favicon || defaultFavicon)
     const homepageEnabled = computed(
-      () => Number(systemSetting.value.homepage_enabled ?? DEFAULT_SYSTEM_SETTING.homepage_enabled) !== 0
-    )
-    const homepageTitle = computed(
       () =>
-        systemSetting.value.homepage_title ||
-        DEFAULT_SYSTEM_SETTING.homepage_title ||
-        systemName.value
-    )
-    const homepageIntro = computed(
-      () =>
-        systemSetting.value.homepage_intro ||
-        DEFAULT_SYSTEM_SETTING.homepage_intro ||
-        '这里先作为项目的简洁首页，展示项目介绍与后台入口。'
+        Number(systemSetting.value.homepage_enabled ?? DEFAULT_SYSTEM_SETTING.homepage_enabled) !==
+        0
     )
 
     const applyFavicon = () => {
@@ -94,9 +81,7 @@ export const useSystemConfigStore = defineStore(
       logo: payload?.logo?.trim() || '',
       favicon: payload?.favicon?.trim() || '',
       homepage_enabled:
-        Number(payload?.homepage_enabled ?? DEFAULT_SYSTEM_SETTING.homepage_enabled) === 0 ? 0 : 1,
-      homepage_title: payload?.homepage_title?.trim() || DEFAULT_SYSTEM_SETTING.homepage_title,
-      homepage_intro: payload?.homepage_intro?.trim() || DEFAULT_SYSTEM_SETTING.homepage_intro
+        Number(payload?.homepage_enabled ?? DEFAULT_SYSTEM_SETTING.homepage_enabled) === 0 ? 0 : 1
     })
 
     const setSystemSetting = (
@@ -140,8 +125,6 @@ export const useSystemConfigStore = defineStore(
       logoUrl,
       faviconUrl,
       homepageEnabled,
-      homepageTitle,
-      homepageIntro,
       syncDocumentBranding,
       setSystemSetting,
       loadPublicSystemSetting

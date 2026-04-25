@@ -228,8 +228,6 @@ CREATE TABLE `light_system_setting` (
   `logo` varchar(500) NOT NULL DEFAULT '' COMMENT '系统Logo',
   `favicon` varchar(500) NOT NULL DEFAULT '' COMMENT '站点图标',
   `homepage_enabled` tinyint(1) NOT NULL DEFAULT '1' COMMENT '首页开关 1开启 0关闭',
-  `homepage_title` varchar(100) NOT NULL DEFAULT '' COMMENT '首页标题',
-  `homepage_intro` varchar(1000) NOT NULL DEFAULT '' COMMENT '首页简介',
   `create_time` int(10) unsigned NOT NULL DEFAULT '0' COMMENT '创建时间',
   `update_time` int(10) unsigned NOT NULL DEFAULT '0' COMMENT '更新时间',
   PRIMARY KEY (`id`) USING BTREE
