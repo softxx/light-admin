@@ -9,21 +9,21 @@ class LoginLog extends BaseModel
 {
     use LoginLogSearch;
 
-    //寮€鍚嚜鍔ㄥ啓鍏ユ椂闂存埑
+    //开启自动写入时间戳
     protected $autoWriteTimestamp = true;
 
-    //鑷姩鍐欏叆鏃堕棿鎴冲瓧娈?
+    //自动写入时间戳字段
     protected $createTime = 'login_time';
 
-    // 鍏抽棴鑷姩鍐欏叆update_time瀛楁
+    // 关闭自动写入update_time字段
     protected $updateTime = false;
 
-    //瀹氫箟绫诲瀷杞崲
+    //定义类型转换
     protected $type = [
         'login_time' => 'timestamp:Y/m/d H:i:s',
     ];
 
-    //瀹氫箟鐢ㄦ埛鐩稿鍏宠仈
+    //定义用户相对关联
     public function user()
     {
         return $this->belongsTo(User::class, 'account', 'username')->bind(['realname']);

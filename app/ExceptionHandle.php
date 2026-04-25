@@ -14,12 +14,12 @@ use think\Response;
 use Throwable;
 
 /**
- * 搴旂敤寮傚父澶勭悊绫?
+ * 应用异常处理类
  */
 class ExceptionHandle extends Handle
 {
     /**
-     * 涓嶉渶瑕佽褰曚俊鎭紙鏃ュ織锛夌殑寮傚父绫诲垪琛?
+     * 不需要记录信息（日志）的异常类列表
      * @var array
      */
     protected $ignoreReport = [

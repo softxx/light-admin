@@ -13,12 +13,12 @@ class JsonServer
     public $json_error_code = 0;
 
     /**
-     * 杩斿洖灏佽鍚庣殑 API 鏁版嵁鍒板鎴风
+     * 返回封装后的 API 数据到客户端
      * @access protected
-     * @param mixed  $data   瑕佽繑鍥炵殑鏁版嵁
-     * @param int    $code   杩斿洖鐨刢ode 鎴愬姛1, 澶辫触0
-     * @param mixed  $msg    鎻愮ず淇℃伅
-     * @param int    $http_response_code  http鐘舵€佺爜
+     * @param mixed  $data   要返回的数据
+     * @param int    $code   返回的code 成功1, 失败0
+     * @param mixed  $msg    提示信息
+     * @param int    $http_response_code  http状态码
      * @return void
      * @throws HttpResponseException
      */
@@ -52,7 +52,7 @@ class JsonServer
     }
 
     /**
-     * 杩斿洖鎿嶄綔
+     * 返回操作
      * @param array $data
      * @param int $http_status_code
      * @return void
@@ -69,7 +69,7 @@ class JsonServer
     }
 
     /**
-     * 杩斿洖鎿嶄綔鎴愬姛json
+     * 返回操作成功json
      * @param array|string $data
      * @param string $msg
      * @return void
@@ -85,7 +85,7 @@ class JsonServer
     }
 
     /**
-     * 杩斿洖鎿嶄綔澶辫触json
+     * 返回操作失败json
      * @param string $msg
      * @param array $data
      * @return void

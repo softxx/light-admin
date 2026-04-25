@@ -6,7 +6,7 @@ use app\service\user\AuthService;
 use core\exception\FailedException;
 use Spatie\Macroable\Macroable;
 
-// 搴旂敤璇锋眰瀵硅薄绫?
+// 应用请求对象类
 class Request extends \think\Request
 {
     use Macroable;
@@ -17,7 +17,7 @@ class Request extends \think\Request
     ];
 
     /**
-     * 褰撳墠鐧诲綍鐨勫悗鍙扮敤鎴?
+     * 当前登录的后台用户
      *
      * @return mixed
      */

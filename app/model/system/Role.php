@@ -13,9 +13,9 @@ class Role extends BaseModel
     use RoleMenuTrait;
     use RoleUserTrait;
 
-    public const ALL_DATA = 1; // 鍏ㄩ儴鏁版嵁
-    public const SELF_CHOOSE = 2; // 鑷畾涔夋暟鎹?
-    public const SELF_DATA = 3; // 鏈汉鏁版嵁
-    public const DEPARTMENT_DATA = 4; // 閮ㄩ棬鏁版嵁
-    public const DEPARTMENT_DOWN_DATA = 5; // 閮ㄩ棬鍙婁互涓嬫暟鎹?
+    public const ALL_DATA = 1; // 全部数据
+    public const SELF_CHOOSE = 2; // 自定义数据
+    public const SELF_DATA = 3; // 本人数据
+    public const DEPARTMENT_DATA = 4; // 部门数据
+    public const DEPARTMENT_DOWN_DATA = 5; // 部门及以下数据
 }
