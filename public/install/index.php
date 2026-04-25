@@ -82,7 +82,7 @@ $bootstrapJson = json_encode(
         <div class="g3">
           <div class="box"><h3>环境优先</h3><p>先检查 PHP 版本、扩展、安装 SQL 文件和目录权限，再继续安装。</p></div>
           <div class="box"><h3>空库安装</h3><p>安装器只接受空库初始化，不允许在已有表的数据库上覆盖安装。</p></div>
-          <div class="box"><h3>完成页停留</h3><p>安装成功后保留结果页，给出后台登录和首页两个手工跳转按钮。</p></div>
+          <div class="box"><h3>完成页停留</h3><p>安装成功后保留结果页，给出后台登录手工跳转按钮。</p></div>
         </div>
         <div class="actions"><button id="step1NextBtn" class="btn primary" type="button">下一步：检查环境</button></div>
       </section>
@@ -135,14 +135,14 @@ $bootstrapJson = json_encode(
       <section class="panel" data-step-panel="4">
         <div class="tag">Step 4</div>
         <h2 class="pt">安装已经完成</h2>
-        <p class="lead">系统初始化成功，当前页面会停留在这里。你可以查看默认管理员账号，并手工跳转到后台登录页或首页。</p>
+        <p class="lead">系统初始化成功，当前页面会停留在这里。你可以查看默认管理员账号，并手工跳转到后台登录页。</p>
         <div class="banner"><div><strong>安装成功</strong><p>安装能力已经被锁定，后台会继续尝试自动清理 <code>public/install</code> 目录。</p></div><span id="cleanupBadge" class="pill warn">等待清理</span></div>
         <div class="credentials">
           <div class="cred"><small>管理员账号</small><strong id="adminUsername">admin</strong></div>
           <div class="cred"><small>管理员密码</small><strong id="adminPassword">123456</strong></div>
         </div>
         <div class="success-box"><strong>安装目录清理状态</strong><p id="cleanupNote" class="muted" style="margin-top:8px;">安装成功后，系统会在后台尝试自动删除 <code>public/install</code> 目录。当前页面会继续停留，不会自动跳转。</p></div>
-        <div class="links"><a id="loginButton" class="link" href="/#/auth/login" target="_blank" rel="noreferrer noopener">进入后台登录</a><a id="homeButton" class="link" href="/" target="_blank" rel="noreferrer noopener">进入首页</a></div>
+        <div class="links"><a id="loginButton" class="link" href="/#/auth/login" target="_blank" rel="noreferrer noopener">进入后台登录</a></div>
       </section>
     </main>
   </div>
@@ -172,7 +172,6 @@ $bootstrapJson = json_encode(
         password: '密码'
       }
       $('loginButton').href = b.links?.login || '/#/auth/login'
-      $('homeButton').href = b.links?.home || '/'
 
       const esc = (v) => String(v ?? '').replaceAll('&', '&amp;').replaceAll('<', '&lt;').replaceAll('>', '&gt;').replaceAll('"', '&quot;').replaceAll("'", '&#39;')
       const badge = (el, cls, text) => { el.className = `pill ${cls}`; el.textContent = text }
@@ -381,7 +380,6 @@ $bootstrapJson = json_encode(
           $('adminUsername').textContent = result.admin?.username || 'admin'
           $('adminPassword').textContent = result.admin?.password || '123456'
           $('loginButton').href = result.links?.login || b.links?.login || '/#/auth/login'
-          $('homeButton').href = result.links?.home || b.links?.home || '/'
           log('安装完成', '系统初始化已经完成，安装入口已被锁定')
           setStatus('安装已完成', '当前页面会停留在成功页，后台会尝试自动删除 public/install 目录。')
           $('cleanupNote').innerHTML = '系统已完成初始化。为了保留当前结果页，安装目录会在后台异步删除，页面不会自动跳转。'

@@ -7,7 +7,7 @@
             <div>
               <div class="text-lg font-semibold">系统设置</div>
               <div class="mt-1 text-sm text-[var(--art-gray-500)]">
-                统一维护系统名称、品牌图标和首页访问策略。
+                统一维护系统名称和品牌图标。
               </div>
             </div>
 
@@ -85,24 +85,6 @@
             </div>
           </ElFormItem>
 
-          <ElFormItem label="首页开关" prop="homepage_enabled">
-            <div class="w-full">
-              <div class="flex items-center gap-3">
-                <ElSwitch
-                  v-model="form.homepage_enabled"
-                  :disabled="!isEditing"
-                  :active-value="1"
-                  :inactive-value="0"
-                />
-                <span class="text-sm text-[var(--art-gray-600)]">
-                  {{ previewHomepageEnabled ? '开启首页' : '关闭首页' }}
-                </span>
-              </div>
-              <div class="system-setting-page__tip">
-                开启时访问网站会先显示首页，关闭后访问网站会直接进入登录页；已登录用户会直接进入工作台。
-              </div>
-            </div>
-          </ElFormItem>
         </ElForm>
       </ElCard>
 
@@ -144,22 +126,6 @@
               </div>
             </div>
 
-            <div class="system-setting-preview__block">
-              <div class="system-setting-preview__label">首页展示</div>
-              <div
-                class="system-setting-preview__status"
-                :class="{ 'is-disabled': !previewHomepageEnabled }"
-              >
-                {{ previewHomepageEnabled ? '首页已开启' : '首页已关闭，访问网站会直接跳转登录页' }}
-              </div>
-              <div v-if="previewHomepageEnabled" class="system-setting-preview__home">
-                <div class="system-setting-preview__home-title">{{ previewSystemName }}</div>
-                <div class="system-setting-preview__button">进入后台管理</div>
-              </div>
-              <div v-else class="system-setting-preview__disabled">
-                关闭后根路径不再展示首页内容，未登录用户会直接进入登录页，已登录用户会直接进入工作台。
-              </div>
-            </div>
           </div>
         </ElCard>
       </div>
@@ -186,7 +152,6 @@
   const router = useRouter()
 
   const defaultSystemName = 'Art Design Pro'
-  const defaultHomepageEnabled = 1
 
   const formRef = ref<FormInstance>()
   const loading = ref(false)
@@ -196,15 +161,13 @@
   const initialForm = ref<Api.SystemManage.SystemSettingPayload>({
     system_name: defaultSystemName,
     logo: '',
-    favicon: '',
-    homepage_enabled: defaultHomepageEnabled
+    favicon: ''
   })
 
   const form = reactive<Api.SystemManage.SystemSettingPayload>({
     system_name: defaultSystemName,
     logo: '',
-    favicon: '',
-    homepage_enabled: defaultHomepageEnabled
+    favicon: ''
   })
 
   const rules = reactive<FormRules<Api.SystemManage.SystemSettingPayload>>({
@@ -214,16 +177,12 @@
   const previewSystemName = computed(() => form.system_name?.trim() || defaultSystemName)
   const previewLogo = computed(() => form.logo || defaultLogo)
   const previewFavicon = computed(() => form.favicon || defaultFavicon)
-  const previewHomepageEnabled = computed(
-    () => Number(form.homepage_enabled ?? defaultHomepageEnabled) !== 0
-  )
   const isDarkTheme = computed(() => settingStore.isDark)
 
   const assignForm = (payload: Api.SystemManage.SystemSettingPayload) => {
     form.system_name = payload.system_name || defaultSystemName
     form.logo = payload.logo || ''
     form.favicon = payload.favicon || ''
-    form.homepage_enabled = Number(payload.homepage_enabled ?? defaultHomepageEnabled) === 0 ? 0 : 1
   }
 
   const loadSetting = async () => {
@@ -234,8 +193,7 @@
       initialForm.value = {
         system_name: data.system_name || defaultSystemName,
         logo: data.logo || '',
-        favicon: data.favicon || '',
-        homepage_enabled: Number(data.homepage_enabled ?? defaultHomepageEnabled) === 0 ? 0 : 1
+        favicon: data.favicon || ''
       }
       assignForm(initialForm.value)
       systemConfigStore.setSystemSetting(initialForm.value)
@@ -268,15 +226,13 @@
       const data = await fetchUpdateSystemSetting({
         system_name: previewSystemName.value,
         logo: form.logo || '',
-        favicon: form.favicon || '',
-        homepage_enabled: previewHomepageEnabled.value ? 1 : 0
+        favicon: form.favicon || ''
       })
 
       initialForm.value = {
         system_name: data.system_name || defaultSystemName,
         logo: data.logo || '',
-        favicon: data.favicon || '',
-        homepage_enabled: Number(data.homepage_enabled ?? defaultHomepageEnabled) === 0 ? 0 : 1
+        favicon: data.favicon || ''
       }
 
       assignForm(initialForm.value)
@@ -412,54 +368,4 @@
       color 0.2s ease;
   }
 
-  .system-setting-preview__home {
-    display: flex;
-    flex-direction: column;
-    gap: 12px;
-    margin-top: 14px;
-  }
-
-  .system-setting-preview__home-title {
-    font-size: 18px;
-    font-weight: 600;
-    color: var(--preview-menu-color);
-  }
-
-  .system-setting-preview__status {
-    display: inline-flex;
-    align-items: center;
-    width: fit-content;
-    padding: 6px 12px;
-    font-size: 12px;
-    font-weight: 600;
-    color: var(--el-color-success);
-    background: color-mix(in srgb, var(--el-color-success) 12%, transparent);
-    border-radius: 999px;
-  }
-
-  .system-setting-preview__status.is-disabled {
-    color: var(--el-color-danger);
-    background: color-mix(in srgb, var(--el-color-danger) 12%, transparent);
-  }
-
-  .system-setting-preview__disabled {
-    margin-top: 14px;
-    font-size: 13px;
-    line-height: 1.8;
-    color: var(--art-gray-500);
-  }
-
-  .system-setting-preview__button {
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    width: fit-content;
-    min-width: 128px;
-    height: 40px;
-    padding: 0 18px;
-    color: #fff;
-    background: linear-gradient(135deg, var(--el-color-primary), #3e63dd);
-    border-radius: 999px;
-    box-shadow: 0 12px 24px rgb(93 135 255 / 24%);
-  }
 </style>

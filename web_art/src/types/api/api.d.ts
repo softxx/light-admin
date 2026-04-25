@@ -285,14 +285,12 @@ declare namespace Api {
       system_name: string
       logo?: string
       favicon?: string
-      homepage_enabled?: number | string | boolean
     }
 
     interface SystemSettingPayload {
       system_name: string
       logo?: string
       favicon?: string
-      homepage_enabled?: number | string | boolean
     }
 
     interface CacheOverview {

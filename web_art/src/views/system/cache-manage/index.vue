@@ -32,7 +32,7 @@
 
         <div class="cache-manage-card__body">
           <div class="cache-manage-card__note">
-            适合处理系统名称、Logo、首页配置更新后当前浏览器仍显示旧数据的情况。
+            适合处理系统名称、Logo、Favicon 更新后当前浏览器仍显示旧数据的情况。
           </div>
 
           <div class="cache-manage-card__action">

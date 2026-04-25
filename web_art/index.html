@@ -30,10 +30,6 @@
 
           const DEFAULT_SYSTEM_NAME = 'Art Design Pro'
           const DEFAULT_FAVICON = 'src/assets/images/favicon.ico'
-          const DEFAULT_HOMEPAGE_ENABLED = 1
-          const DEFAULT_HOMEPAGE_TITLE = '项目管理平台'
-          const DEFAULT_HOMEPAGE_INTRO =
-            '这里先作为项目的简洁首页，展示项目介绍与后台入口。后续可以在系统设置中继续调整文案，不需要每次修改源码。'
           const SYSTEM_CONFIG_STORE_KEY = 'sys-v%VITE_VERSION%-systemConfigStore'
           const SYSTEM_SETTING_URL = '%VITE_API_URL%/system_setting/public'
 
@@ -45,11 +41,7 @@
           const normalizeSetting = (payload) => ({
             system_name: payload?.system_name?.trim?.() || DEFAULT_SYSTEM_NAME,
             logo: payload?.logo?.trim?.() || '',
-            favicon: payload?.favicon?.trim?.() || '',
-            homepage_enabled:
-              Number(payload?.homepage_enabled ?? DEFAULT_HOMEPAGE_ENABLED) === 0 ? 0 : 1,
-            homepage_title: payload?.homepage_title?.trim?.() || DEFAULT_HOMEPAGE_TITLE,
-            homepage_intro: payload?.homepage_intro?.trim?.() || DEFAULT_HOMEPAGE_INTRO
+            favicon: payload?.favicon?.trim?.() || ''
           })
 
           const ensureFaviconLink = () => {

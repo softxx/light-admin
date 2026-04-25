@@ -5,7 +5,6 @@ import { fetchGetUserInfo } from '@/api/auth'
 import { useCommon } from '@/hooks/core/useCommon'
 import { useMenuStore } from '@/store/modules/menu'
 import { useSettingStore } from '@/store/modules/setting'
-import { useSystemConfigStore } from '@/store/modules/system-config'
 import { useUserStore } from '@/store/modules/user'
 import { useWorktabStore } from '@/store/modules/worktab'
 import { setWorktab } from '@/utils/navigation'
@@ -83,14 +82,13 @@ async function handleRouteGuard(
   router: Router
 ): Promise<void> {
   const settingStore = useSettingStore()
-  const systemConfigStore = useSystemConfigStore()
   const userStore = useUserStore()
 
   if (settingStore.showNprogress) {
     NProgress.start()
   }
 
-  if (handleHomepageStatus(to, next, userStore, systemConfigStore.homepageEnabled)) {
+  if (handleRootEntry(to, next, userStore)) {
     return
   }
 
@@ -168,13 +166,12 @@ function handleLoginStatus(
   return true
 }
 
-function handleHomepageStatus(
+function handleRootEntry(
   to: RouteLocationNormalized,
   next: NavigationGuardNext,
-  userStore: ReturnType<typeof useUserStore>,
-  homepageEnabled: boolean
+  userStore: ReturnType<typeof useUserStore>
 ): boolean {
-  if (to.path !== '/' || homepageEnabled) {
+  if (to.path !== '/') {
     return false
   }
 

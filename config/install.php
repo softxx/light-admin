@@ -8,8 +8,7 @@ return [
     'admin_username' => 'admin',
     'admin_password' => '123456',
     'links' => [
-        'home' => '/',
-        'login' => '/#/auth/login',
+        'login' => '/admin',
     ],
     'required_extensions' => [
         'ctype',

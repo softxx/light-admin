@@ -2,12 +2,6 @@ import { AppRouteRecordRaw } from '@/utils/router'
 
 export const staticRoutes: AppRouteRecordRaw[] = [
   {
-    path: '/',
-    name: 'PortalHome',
-    component: () => import('@views/portal/home/index.vue'),
-    meta: { title: '首页', isHideTab: true }
-  },
-  {
     path: '/auth/login',
     name: 'Login',
     component: () => import('@views/auth/login/index.vue'),

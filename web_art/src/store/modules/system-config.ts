@@ -8,8 +8,7 @@ type SystemSettingPayload = Partial<Api.SystemManage.SystemSettingItem>
 const DEFAULT_SYSTEM_SETTING: Api.SystemManage.SystemSettingItem = {
   system_name: AppConfig.systemInfo.name,
   logo: '',
-  favicon: '',
-  homepage_enabled: 1
+  favicon: ''
 }
 
 function ensureFaviconLink(): HTMLLinkElement {
@@ -58,11 +57,6 @@ export const useSystemConfigStore = defineStore(
     )
     const logoUrl = computed(() => systemSetting.value.logo || defaultLogo)
     const faviconUrl = computed(() => systemSetting.value.favicon || defaultFavicon)
-    const homepageEnabled = computed(
-      () =>
-        Number(systemSetting.value.homepage_enabled ?? DEFAULT_SYSTEM_SETTING.homepage_enabled) !==
-        0
-    )
 
     const applyFavicon = () => {
       const faviconLink = ensureFaviconLink()
@@ -79,9 +73,7 @@ export const useSystemConfigStore = defineStore(
     ): Api.SystemManage.SystemSettingItem => ({
       system_name: payload?.system_name?.trim() || DEFAULT_SYSTEM_SETTING.system_name,
       logo: payload?.logo?.trim() || '',
-      favicon: payload?.favicon?.trim() || '',
-      homepage_enabled:
-        Number(payload?.homepage_enabled ?? DEFAULT_SYSTEM_SETTING.homepage_enabled) === 0 ? 0 : 1
+      favicon: payload?.favicon?.trim() || ''
     })
 
     const setSystemSetting = (
@@ -124,7 +116,6 @@ export const useSystemConfigStore = defineStore(
       systemName,
       logoUrl,
       faviconUrl,
-      homepageEnabled,
       syncDocumentBranding,
       setSystemSetting,
       loadPublicSystemSetting

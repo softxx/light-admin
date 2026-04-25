@@ -10,8 +10,7 @@ class SystemSettingService extends BaseService
     private const DEFAULT_SETTING = [
         'system_name' => 'Art Design Pro',
         'logo' => '',
-        'favicon' => '',
-        'homepage_enabled' => 1
+        'favicon' => ''
     ];
 
     public function __construct(SystemSetting $model)
@@ -29,7 +28,7 @@ class SystemSettingService extends BaseService
 
         return array_merge(
             self::DEFAULT_SETTING,
-            array_pick('system_name,logo,favicon,homepage_enabled', $setting->toArray())
+            array_pick('system_name,logo,favicon', $setting->toArray())
         );
     }
 
@@ -38,8 +37,7 @@ class SystemSettingService extends BaseService
         $payload = [
             'system_name' => trim($data['system_name'] ?? '') ?: self::DEFAULT_SETTING['system_name'],
             'logo' => trim($data['logo'] ?? ''),
-            'favicon' => trim($data['favicon'] ?? ''),
-            'homepage_enabled' => (int)($data['homepage_enabled'] ?? self::DEFAULT_SETTING['homepage_enabled']) === 0 ? 0 : 1
+            'favicon' => trim($data['favicon'] ?? '')
         ];
 
         $setting = $this->model->order('id', 'asc')->find();

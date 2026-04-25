@@ -468,7 +468,6 @@ class InstallService
     private function getLinks(): array
     {
         return (array) config('install.links', [
-            'home' => '/',
             'login' => '/#/auth/login',
         ]);
     }
