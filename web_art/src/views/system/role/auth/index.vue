@@ -86,7 +86,7 @@
   const treeData = ref<PermissionTreeNode[]>([])
   const checkedKeys = ref<Array<number | string>>([])
 
-  const roleId = computed(() => String(route.params.id || ''))
+  const roleId = computed(() => String(route.query.id || route.params.id || ''))
   const isProtectedRole = computed(() => roleId.value === SUPER_ADMIN_ROLE_ID)
 
   const treeProps = {
@@ -165,7 +165,7 @@
   }
 
   watch(
-    () => route.params.id,
+    roleId,
     () => {
       loadData()
     },
