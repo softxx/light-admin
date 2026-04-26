@@ -8,7 +8,7 @@ use core\base\BaseService;
 class SystemSettingService extends BaseService
 {
     private const DEFAULT_SETTING = [
-        'system_name' => 'Art Design Pro',
+        'system_name' => 'Light Admin',
         'logo' => '',
         'favicon' => ''
     ];

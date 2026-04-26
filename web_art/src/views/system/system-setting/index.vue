@@ -84,7 +84,6 @@
               <div class="system-setting-page__tip"> 保存后浏览器标签页图标会即时更新。 </div>
             </div>
           </ElFormItem>
-
         </ElForm>
       </ElCard>
 
@@ -125,7 +124,6 @@
                 <span class="truncate">系统设置 - {{ previewSystemName }}</span>
               </div>
             </div>
-
           </div>
         </ElCard>
       </div>
@@ -151,7 +149,7 @@
   const systemConfigStore = useSystemConfigStore()
   const router = useRouter()
 
-  const defaultSystemName = 'Art Design Pro'
+  const defaultSystemName = 'Light Admin'
 
   const formRef = ref<FormInstance>()
   const loading = ref(false)
@@ -367,5 +365,4 @@
       box-shadow 0.2s ease,
       color 0.2s ease;
   }
-
 </style>
