@@ -52,6 +52,12 @@ Route::group(function () {
         Route::post('attachment', 'system.file/uploadAttachment');
     });
 
+    // 文件管理：只提供列表和删除，上传继续复用 upload 分组。
+    Route::group('file', function () {
+        Route::post('list', 'system.file/index');
+        Route::post('delete', 'system.file/delete');
+    });
+
     Route::group('system_setting', function () {
         Route::post('query', 'system.system_setting/index');
         Route::post('', 'system.system_setting/update');

@@ -48,12 +48,14 @@ class UploadService
             $this->throwHttpException('上传失败，请重试!');
         }
 
-        $url = $this->getCloudDomain() . $path;
+        // 统一使用 URL 分隔符，避免 Windows 本地路径影响前端预览。
+        $normalizedPath = str_replace('\\', '/', $path);
+        $url = rtrim(str_replace('\\', '/', $this->getCloudDomain()), '/') . '/' . ltrim($normalizedPath, '/');
         $fileData = $this->getFileData($file);
 
         $result = File::create([
             'url' => $url,
-            'path'=> $path,
+            'path'=> $normalizedPath,
             'user_id' => request()->uid(),
             ...$fileData
         ]);
@@ -62,7 +64,7 @@ class UploadService
             'id' => $result->id,
             'url' => $url,
             'name' => $file->getOriginalName(),
-            'path' => $path
+            'path' => $normalizedPath
         ];
     }
 
@@ -89,7 +91,8 @@ class UploadService
     {
         $head = str_shuffle('ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz1234567890');
         $filename = substr($head, mt_rand(0, 30), $length);
-        return  date('y/m/d') . DIRECTORY_SEPARATOR . $filename;
+        // 存储路径统一用 /，兼容本地和云存储返回 URL。
+        return date('y/m/d') . '/' . $filename;
     }
 
 

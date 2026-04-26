@@ -102,6 +102,24 @@ export function fetchUploadAttachment(data: FormData) {
   })
 }
 
+// 文件管理列表，复用后台通用分页和动态筛选参数。
+export function fetchGetFileList(params?: Api.SystemManage.FileSearchParams) {
+  return request.post<Api.SystemManage.FileList>({
+    url: '/file/list',
+    params: normalizeListParams(params as Record<string, any>)
+  })
+}
+
+// 删除文件记录，同时后端会尝试删除本地物理文件。
+export function fetchDeleteFile(id: number | string, options: RequestMessageOptions = {}) {
+  return request.post<void>({
+    url: '/file/delete',
+    params: { id },
+    showSuccessMessage: true,
+    ...options
+  })
+}
+
 export function fetchGetPublicSystemSetting() {
   return request.get<Api.SystemManage.SystemSettingItem>({
     url: '/system_setting/public'

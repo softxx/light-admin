@@ -92,6 +92,9 @@ INSERT INTO `light_auth_access` (`id`, `role_id`, `menu_id`) VALUES (5717, 1, 24
 INSERT INTO `light_auth_access` (`id`, `role_id`, `menu_id`) VALUES (5718, 1, 243);
 INSERT INTO `light_auth_access` (`id`, `role_id`, `menu_id`) VALUES (5719, 1, 244);
 INSERT INTO `light_auth_access` (`id`, `role_id`, `menu_id`) VALUES (5720, 1, 245);
+INSERT INTO `light_auth_access` (`id`, `role_id`, `menu_id`) VALUES (5724, 1, 246);
+INSERT INTO `light_auth_access` (`id`, `role_id`, `menu_id`) VALUES (5725, 1, 247);
+INSERT INTO `light_auth_access` (`id`, `role_id`, `menu_id`) VALUES (5726, 1, 248);
 INSERT INTO `light_auth_access` (`id`, `role_id`, `menu_id`) VALUES (5686, 2, 107);
 INSERT INTO `light_auth_access` (`id`, `role_id`, `menu_id`) VALUES (5687, 2, 119);
 INSERT INTO `light_auth_access` (`id`, `role_id`, `menu_id`) VALUES (5688, 2, 114);
@@ -367,6 +370,9 @@ INSERT INTO `light_menu` (`id`, `pid`, `path`, `component`, `hidden`, `title`, `
 INSERT INTO `light_menu` (`id`, `pid`, `path`, `component`, `hidden`, `title`, `icon`, `rules`, `sort`, `type`, `hide_children`, `active_key`, `open_type`, `link_url`) VALUES (242, 241, '', '', 0, '访问缓存管理', '', 'system:cache:index', 1, 2, 0, '', 0, '');
 INSERT INTO `light_menu` (`id`, `pid`, `path`, `component`, `hidden`, `title`, `icon`, `rules`, `sort`, `type`, `hide_children`, `active_key`, `open_type`, `link_url`) VALUES (243, 241, '', '', 0, '刷新字典缓存', '', 'system:cache:refreshdict', 1, 2, 0, '', 0, '');
 INSERT INTO `light_menu` (`id`, `pid`, `path`, `component`, `hidden`, `title`, `icon`, `rules`, `sort`, `type`, `hide_children`, `active_key`, `open_type`, `link_url`) VALUES (244, 241, '', '', 0, '清理运行缓存', '', 'system:cache:clearruntime', 1, 2, 0, '', 0, '');
+INSERT INTO `light_menu` (`id`, `pid`, `path`, `component`, `hidden`, `title`, `icon`, `rules`, `sort`, `type`, `hide_children`, `active_key`, `open_type`, `link_url`) VALUES (246, 13, 'file', 'system/file-manage/index', 0, '文件管理', 'folder-open-outlined', '', 102, 1, 0, '', 0, '');
+INSERT INTO `light_menu` (`id`, `pid`, `path`, `component`, `hidden`, `title`, `icon`, `rules`, `sort`, `type`, `hide_children`, `active_key`, `open_type`, `link_url`) VALUES (247, 246, '', '', 0, '查看列表', '', 'system:file:index', 1, 2, 0, '', 0, '');
+INSERT INTO `light_menu` (`id`, `pid`, `path`, `component`, `hidden`, `title`, `icon`, `rules`, `sort`, `type`, `hide_children`, `active_key`, `open_type`, `link_url`) VALUES (248, 246, '', '', 0, '删除文件', '', 'system:file:delete', 2, 2, 0, '', 0, '');
 COMMIT;
 
 -- ----------------------------

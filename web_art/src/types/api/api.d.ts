@@ -293,6 +293,42 @@ declare namespace Api {
       favicon?: string
     }
 
+    interface FileListItem {
+      id: number
+      url: string
+      mime_type: string
+      file_ext: string
+      file_size: number
+      filename: string
+      create_time?: string
+      user_id?: number | string
+      realname?: string
+      username?: string
+      user?: {
+        id: number
+        realname?: string
+        username?: string
+      }
+      [key: string]: any
+    }
+
+    type FileList = Api.Common.PaginatedResponse<FileListItem>
+
+    // 文件管理页查询参数，quick_filter / filters 由表格筛选组件序列化。
+    type FileSearchParams = DynamicFilterSearchParams &
+      Partial<{
+        filename: string
+        file_ext: string
+        mime_type: string
+        file_size: number
+        user_id: number | string
+        create_time: string[] | [string, string]
+        current: number
+        size: number
+        page: number
+        pageSize: number
+      }>
+
     interface CacheOverview {
       browser: {
         scope: string

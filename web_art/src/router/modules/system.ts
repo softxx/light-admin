@@ -58,6 +58,17 @@ export const systemRoutes: AppRouteRecord = {
       }
     },
     {
+      path: 'file',
+      name: 'FileManage',
+      component: '/system/file-manage',
+      meta: {
+        // 后端菜单模式下由 light_menu 控制入口，这里用于前端模式兜底。
+        title: '文件管理',
+        keepAlive: true,
+        roles: ['R_SUPER', 'R_ADMIN']
+      }
+    },
+    {
       path: 'version',
       name: 'VersionManage',
       component: '/system/version-manage',
