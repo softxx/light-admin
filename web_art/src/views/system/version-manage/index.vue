@@ -3,14 +3,27 @@
     <div class="version-manage-page__header">
       <div>
         <div class="text-2xl font-semibold">版本管理</div>
-        <div class="mt-2 text-sm text-[var(--art-gray-500)]">
+        <div class="mt-2 text-sm text-(--art-gray-500)">
           当前通过可切换发布源检查新版本，升级任务会在服务端后台执行。
         </div>
       </div>
 
       <div class="version-manage-page__actions">
-        <ElButton :icon="Refresh" :loading="loading" @click="loadInitialData">刷新</ElButton>
-        <ElButton :icon="Search" type="primary" :loading="checking" @click="handleCheck">
+        <ElButton
+          v-auth="'system:version:current'"
+          :icon="Refresh"
+          :loading="loading"
+          @click="loadInitialData"
+        >
+          刷新
+        </ElButton>
+        <ElButton
+          v-auth="'system:version:check'"
+          :icon="Search"
+          type="primary"
+          :loading="checking"
+          @click="handleCheck"
+        >
           检查更新
         </ElButton>
       </div>
@@ -30,8 +43,15 @@
             </ElFormItem>
           </ElCol>
           <ElCol :xs="24" :md="8">
-            <ElFormItem v-if="usesProjectField" :label="releaseForm.source === 'cnb' ? '仓库路径' : 'Project'">
-              <ElInput v-model.trim="releaseForm.project" clearable :placeholder="projectPlaceholder" />
+            <ElFormItem
+              v-if="usesProjectField"
+              :label="releaseForm.source === 'cnb' ? '仓库路径' : 'Project'"
+            >
+              <ElInput
+                v-model.trim="releaseForm.project"
+                clearable
+                :placeholder="projectPlaceholder"
+              />
             </ElFormItem>
             <ElFormItem v-else label="Owner">
               <ElInput v-model.trim="releaseForm.owner" clearable placeholder="用户或组织" />
@@ -70,7 +90,9 @@
           <ElDescriptionsItem label="版本号">{{ current?.version || '-' }}</ElDescriptionsItem>
           <ElDescriptionsItem label="构建号">{{ current?.build || '-' }}</ElDescriptionsItem>
           <ElDescriptionsItem label="发布通道">{{ current?.channel || '-' }}</ElDescriptionsItem>
-          <ElDescriptionsItem label="PHP">{{ currentData?.environment?.php_version || '-' }}</ElDescriptionsItem>
+          <ElDescriptionsItem label="PHP">{{
+            currentData?.environment?.php_version || '-'
+          }}</ElDescriptionsItem>
           <ElDescriptionsItem label="ThinkPHP">
             {{ currentData?.environment?.thinkphp_version || '-' }}
           </ElDescriptionsItem>
@@ -87,7 +109,8 @@
             <div>
               <div class="version-latest__number">{{ latestVersion.version }}</div>
               <div class="version-latest__meta">
-                {{ latestVersion.tag_name || '-' }} / {{ formatReleaseTime(latestVersion.released_at) }}
+                {{ latestVersion.tag_name || '-' }} /
+                {{ formatReleaseTime(latestVersion.released_at) }}
               </div>
             </div>
             <ElTag :type="upgradeAvailable ? 'success' : 'info'">
@@ -99,7 +122,9 @@
             <ElTag v-if="latestVersion.required" type="danger">强制升级</ElTag>
             <ElTag v-if="latestVersion.database_migration" type="warning">包含数据库迁移</ElTag>
             <ElTag v-if="latestVersion.php" type="info">PHP {{ latestVersion.php }}</ElTag>
-            <ElTag v-if="latestVersion.asset_name" type="info">{{ latestVersion.asset_name }}</ElTag>
+            <ElTag v-if="latestVersion.asset_name" type="info">{{
+              latestVersion.asset_name
+            }}</ElTag>
           </div>
 
           <ElLink
@@ -126,6 +151,7 @@
           <div class="version-card__title">升级操作</div>
           <div class="version-card__buttons">
             <ElButton
+              v-auth="'system:version:download'"
               :icon="Download"
               :disabled="!latestVersion"
               :loading="downloading"
@@ -134,6 +160,7 @@
               下载
             </ElButton>
             <ElButton
+              v-auth="'system:version:precheck'"
               :icon="CircleCheck"
               :disabled="!latestVersion"
               :loading="prechecking"
@@ -142,6 +169,7 @@
               预检查
             </ElButton>
             <ElButton
+              v-auth="'system:version:upgrade'"
               :icon="Promotion"
               type="primary"
               :disabled="!canStartUpgrade"
@@ -151,6 +179,7 @@
               一键升级
             </ElButton>
             <ElButton
+              v-auth="'system:version:rollback'"
               :icon="RefreshLeft"
               type="warning"
               plain
@@ -172,7 +201,9 @@
           </div>
           <div>
             <span>包大小</span>
-            <strong>{{ formatBytes(packageInfo?.size_bytes || latestVersion?.size_bytes || 0) }}</strong>
+            <strong>{{
+              formatBytes(packageInfo?.size_bytes || latestVersion?.size_bytes || 0)
+            }}</strong>
           </div>
           <div>
             <span>SHA256</span>
@@ -264,7 +295,14 @@
 </template>
 
 <script setup lang="ts">
-  import { CircleCheck, Download, Promotion, Refresh, RefreshLeft, Search } from '@element-plus/icons-vue'
+  import {
+    CircleCheck,
+    Download,
+    Promotion,
+    Refresh,
+    RefreshLeft,
+    Search
+  } from '@element-plus/icons-vue'
   import { ElMessage, ElMessageBox } from 'element-plus'
   import {
     fetchCheckVersion,
@@ -324,11 +362,15 @@
 
     return true
   })
-  const rollbackTask = computed(() => tasks.value.find((item) => item.status === 'success' && item.backup_path))
+  const rollbackTask = computed(() =>
+    tasks.value.find((item) => item.status === 'success' && item.backup_path)
+  )
   const progressStatus = computed(() => {
     if (!activeTask.value) return undefined
-    if (activeTask.value.status === 'success' || activeTask.value.status === 'rolled_back') return 'success'
-    if (activeTask.value.status === 'failed' || activeTask.value.status === 'rollback_failed') return 'exception'
+    if (activeTask.value.status === 'success' || activeTask.value.status === 'rolled_back')
+      return 'success'
+    if (activeTask.value.status === 'failed' || activeTask.value.status === 'rollback_failed')
+      return 'exception'
     return undefined
   })
   const packageSha256Text = computed(() => {
@@ -465,15 +507,11 @@
   const handleRollback = async () => {
     if (!rollbackTask.value) return
 
-    await ElMessageBox.confirm(
-      `确认回滚版本 ${rollbackTask.value.target_version}？`,
-      '回滚版本',
-      {
-        type: 'warning',
-        confirmButtonText: '确认回滚',
-        cancelButtonText: '取消'
-      }
-    )
+    await ElMessageBox.confirm(`确认回滚版本 ${rollbackTask.value.target_version}？`, '回滚版本', {
+      type: 'warning',
+      confirmButtonText: '确认回滚',
+      cancelButtonText: '取消'
+    })
 
     rollingBack.value = true
     try {
@@ -553,7 +591,8 @@
   const taskTagType = (status: Api.SystemManage.UpgradeTaskStatus) => {
     if (status === 'success' || status === 'rolled_back') return 'success'
     if (status === 'failed' || status === 'rollback_failed') return 'danger'
-    if (status === 'maintenance' || status === 'migrating' || status === 'rolling_back') return 'warning'
+    if (status === 'maintenance' || status === 'migrating' || status === 'rolling_back')
+      return 'warning'
     return 'info'
   }
 

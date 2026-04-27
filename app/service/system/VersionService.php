@@ -23,8 +23,6 @@ class VersionService extends BaseService
      */
     public function current(): array
     {
-        $this->ensureSuperAdmin();
-
         return [
             'current' => $this->getCurrentVersion(),
             'release' => $this->releaseConfigForClient(),
@@ -39,8 +37,6 @@ class VersionService extends BaseService
      */
     public function check(array $params): array
     {
-        $this->ensureSuperAdmin();
-
         [$sourceUrl, $manifest] = $this->loadManifest($params);
         $latest = $this->resolveVersionEntry($manifest, (string) ($params['version'] ?? ''));
         $current = $this->getCurrentVersion();
@@ -67,8 +63,6 @@ class VersionService extends BaseService
      */
     public function download(array $params): array
     {
-        $this->ensureSuperAdmin();
-
         [$sourceUrl, $manifest] = $this->loadManifest($params);
         $version = $this->resolveVersionEntry($manifest, (string) ($params['version'] ?? ''));
         if (!$version) {
@@ -87,8 +81,6 @@ class VersionService extends BaseService
      */
     public function precheck(array $params): array
     {
-        $this->ensureSuperAdmin();
-
         [$sourceUrl, $manifest] = $this->loadManifest($params);
         $version = $this->resolveVersionEntry($manifest, (string) ($params['version'] ?? ''));
         if (!$version) {
@@ -106,8 +98,6 @@ class VersionService extends BaseService
      */
     public function startUpgrade(array $params): array
     {
-        $this->ensureSuperAdmin();
-
         [$sourceUrl, $manifest] = $this->loadManifest($params);
         $version = $this->resolveVersionEntry($manifest, (string) ($params['version'] ?? ''));
         if (!$version) {
@@ -149,8 +139,6 @@ class VersionService extends BaseService
      */
     public function startRollback(array $params): array
     {
-        $this->ensureSuperAdmin();
-
         $taskId = (int) ($params['task_id'] ?? 0);
         if ($taskId <= 0) {
             $task = UpgradeTask::where('status', 'success')->where('backup_path', '<>', '')->order('id', 'desc')->find();
@@ -185,8 +173,6 @@ class VersionService extends BaseService
 
     public function tasks(int $limit = 20): array
     {
-        $this->ensureSuperAdmin();
-
         $limit = max(1, min($limit, 50));
         return array_map(
             fn(array $task) => $this->normalizeTask($task),
@@ -536,13 +522,6 @@ class VersionService extends BaseService
         }
 
         return ($value >= 10 || $index === 0 ? number_format($value, 0) : number_format($value, 1)) . ' ' . $units[$index];
-    }
-
-    private function ensureSuperAdmin(): void
-    {
-        if (!is_super_admin()) {
-            throw new FailedException('仅超级管理员可操作', 403, [], 403);
-        }
     }
 
     private function releaseConfigForClient(): array

@@ -3,12 +3,14 @@
     <div class="cache-manage-page__hero">
       <div>
         <div class="text-2xl font-semibold">缓存管理</div>
-        <div class="mt-2 text-sm text-[var(--art-gray-500)]">
-          仅超级管理员可见。这里提供当前浏览器缓存、字典缓存和安全运行缓存的清理入口。
+        <div class="mt-2 text-sm text-(--art-gray-500)">
+          这里提供当前浏览器缓存、字典缓存和安全运行缓存的清理入口。
         </div>
       </div>
 
-      <ElButton :loading="loading" @click="loadOverview">刷新概览</ElButton>
+      <ElButton v-auth="'system:cache:index'" :loading="loading" @click="loadOverview"
+        >刷新概览</ElButton
+      >
     </div>
 
     <ElAlert
@@ -36,7 +38,12 @@
           </div>
 
           <div class="cache-manage-card__action">
-            <ElButton class="cache-manage-card__button" type="primary" @click="handleClearBrowserCache" v-ripple>
+            <ElButton
+              class="cache-manage-card__button"
+              type="primary"
+              @click="handleClearBrowserCache"
+              v-ripple
+            >
               清缓存
             </ElButton>
           </div>
@@ -48,7 +55,9 @@
           <div class="cache-manage-card__header">
             <div>
               <div class="cache-manage-card__title">字典缓存</div>
-              <div class="cache-manage-card__desc">刷新后会重建字典缓存，适合字典修改后立即生效。</div>
+              <div class="cache-manage-card__desc"
+                >刷新后会重建字典缓存，适合字典修改后立即生效。</div
+              >
             </div>
             <div class="cache-manage-card__metrics">
               <span>类型 {{ overview.dict.type_count }}</span>
@@ -67,6 +76,7 @@
               class="cache-manage-card__button"
               type="primary"
               :loading="dictLoading"
+              v-auth="'system:cache:refreshdict'"
               @click="handleRefreshDictCache"
               v-ripple
             >
@@ -109,9 +119,7 @@
             <template v-if="overview.runtime.supported">
               会清掉运行时文件缓存中的普通缓存项，适合排查缓存滞留、配置更新不一致等问题。
             </template>
-            <template v-else>
-              当前缓存驱动不是文件缓存，暂不支持运行缓存清理。
-            </template>
+            <template v-else> 当前缓存驱动不是文件缓存，暂不支持运行缓存清理。 </template>
           </div>
 
           <div class="cache-manage-card__action">
@@ -120,6 +128,7 @@
               type="danger"
               :disabled="!overview.runtime.supported"
               :loading="runtimeLoading"
+              v-auth="'system:cache:clearruntime'"
               @click="handleClearRuntimeCache"
               v-ripple
             >
@@ -134,21 +143,14 @@
 
 <script setup lang="ts">
   import { ElAlert, ElMessageBox, ElTag } from 'element-plus'
-  import { storeToRefs } from 'pinia'
-  import { useRouter } from 'vue-router'
   import {
     fetchClearRuntimeCache,
     fetchGetCacheOverview,
     fetchRefreshDictCache
   } from '@/api/system-manage'
-  import { useUserStore } from '@/store/modules/user'
   import { clearBrowserCacheAndLogout } from '@/utils/auth/session-actions'
 
   defineOptions({ name: 'CacheManage' })
-
-  const router = useRouter()
-  const userStore = useUserStore()
-  const { info } = storeToRefs(userStore)
 
   const loading = ref(false)
   const dictLoading = ref(false)
@@ -171,8 +173,6 @@
       protected_file_count: 0
     }
   })
-
-  const isSuperAdmin = computed(() => Boolean(info.value?.is_super_admin))
 
   const assignOverview = (data: Api.SystemManage.CacheOverview) => {
     overview.browser = data.browser
@@ -197,20 +197,7 @@
     return `${value >= 10 || index === 0 ? value.toFixed(0) : value.toFixed(1)} ${units[index]}`
   }
 
-  const ensureSuperAdmin = () => {
-    if (!isSuperAdmin.value) {
-      router.replace('/403')
-      return false
-    }
-
-    return true
-  }
-
   const loadOverview = async () => {
-    if (!ensureSuperAdmin()) {
-      return
-    }
-
     loading.value = true
 
     try {

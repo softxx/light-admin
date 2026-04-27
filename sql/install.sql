@@ -318,7 +318,7 @@ CREATE TABLE `light_menu` (
   `open_type` tinyint(1) NOT NULL DEFAULT '0' COMMENT '打开方式 0组件，1内链，2外链',
   `link_url` varchar(500) NOT NULL DEFAULT '' COMMENT '内链地址',
   PRIMARY KEY (`id`) USING BTREE
-) ENGINE=InnoDB AUTO_INCREMENT=246 DEFAULT CHARSET=utf8mb4 ROW_FORMAT=DYNAMIC COMMENT='菜单表';
+) ENGINE=InnoDB AUTO_INCREMENT=258 DEFAULT CHARSET=utf8mb4 ROW_FORMAT=DYNAMIC COMMENT='菜单表';
 
 -- ----------------------------
 -- Records of light_menu
@@ -368,8 +368,17 @@ INSERT INTO `light_menu` (`id`, `pid`, `path`, `component`, `hidden`, `title`, `
 INSERT INTO `light_menu` (`id`, `pid`, `path`, `component`, `hidden`, `title`, `icon`, `rules`, `sort`, `type`, `hide_children`, `active_key`, `open_type`, `link_url`) VALUES (240, 238, '', '', 0, '保存配置', '', 'system:systemsetting:update', 1, 2, 0, '', 0, '');
 INSERT INTO `light_menu` (`id`, `pid`, `path`, `component`, `hidden`, `title`, `icon`, `rules`, `sort`, `type`, `hide_children`, `active_key`, `open_type`, `link_url`) VALUES (241, 13, 'cache', 'system/cache-manage/index', 0, '缓存管理', 'database-outlined', '', 100, 1, 0, '', 0, '');
 INSERT INTO `light_menu` (`id`, `pid`, `path`, `component`, `hidden`, `title`, `icon`, `rules`, `sort`, `type`, `hide_children`, `active_key`, `open_type`, `link_url`) VALUES (242, 241, '', '', 0, '访问缓存管理', '', 'system:cache:index', 1, 2, 0, '', 0, '');
-INSERT INTO `light_menu` (`id`, `pid`, `path`, `component`, `hidden`, `title`, `icon`, `rules`, `sort`, `type`, `hide_children`, `active_key`, `open_type`, `link_url`) VALUES (243, 241, '', '', 0, '刷新字典缓存', '', 'system:cache:refreshdict', 1, 2, 0, '', 0, '');
-INSERT INTO `light_menu` (`id`, `pid`, `path`, `component`, `hidden`, `title`, `icon`, `rules`, `sort`, `type`, `hide_children`, `active_key`, `open_type`, `link_url`) VALUES (244, 241, '', '', 0, '清理运行缓存', '', 'system:cache:clearruntime', 1, 2, 0, '', 0, '');
+INSERT INTO `light_menu` (`id`, `pid`, `path`, `component`, `hidden`, `title`, `icon`, `rules`, `sort`, `type`, `hide_children`, `active_key`, `open_type`, `link_url`) VALUES (243, 241, '', '', 0, '刷新字典缓存', '', 'system:cache:refreshdict', 2, 2, 0, '', 0, '');
+INSERT INTO `light_menu` (`id`, `pid`, `path`, `component`, `hidden`, `title`, `icon`, `rules`, `sort`, `type`, `hide_children`, `active_key`, `open_type`, `link_url`) VALUES (244, 241, '', '', 0, '清理运行缓存', '', 'system:cache:clearruntime', 3, 2, 0, '', 0, '');
+INSERT INTO `light_menu` (`id`, `pid`, `path`, `component`, `hidden`, `title`, `icon`, `rules`, `sort`, `type`, `hide_children`, `active_key`, `open_type`, `link_url`) VALUES (249, 13, 'version', 'system/version-manage/index', 0, '版本管理', 'cloud-upload-outlined', '', 101, 1, 0, '', 0, '');
+INSERT INTO `light_menu` (`id`, `pid`, `path`, `component`, `hidden`, `title`, `icon`, `rules`, `sort`, `type`, `hide_children`, `active_key`, `open_type`, `link_url`) VALUES (250, 249, '', '', 0, '查看版本信息', '', 'system:version:current', 1, 2, 0, '', 0, '');
+INSERT INTO `light_menu` (`id`, `pid`, `path`, `component`, `hidden`, `title`, `icon`, `rules`, `sort`, `type`, `hide_children`, `active_key`, `open_type`, `link_url`) VALUES (251, 249, '', '', 0, '检查更新', '', 'system:version:check', 2, 2, 0, '', 0, '');
+INSERT INTO `light_menu` (`id`, `pid`, `path`, `component`, `hidden`, `title`, `icon`, `rules`, `sort`, `type`, `hide_children`, `active_key`, `open_type`, `link_url`) VALUES (252, 249, '', '', 0, '下载安装包', '', 'system:version:download', 3, 2, 0, '', 0, '');
+INSERT INTO `light_menu` (`id`, `pid`, `path`, `component`, `hidden`, `title`, `icon`, `rules`, `sort`, `type`, `hide_children`, `active_key`, `open_type`, `link_url`) VALUES (253, 249, '', '', 0, '升级预检', '', 'system:version:precheck', 4, 2, 0, '', 0, '');
+INSERT INTO `light_menu` (`id`, `pid`, `path`, `component`, `hidden`, `title`, `icon`, `rules`, `sort`, `type`, `hide_children`, `active_key`, `open_type`, `link_url`) VALUES (254, 249, '', '', 0, '执行升级', '', 'system:version:upgrade', 5, 2, 0, '', 0, '');
+INSERT INTO `light_menu` (`id`, `pid`, `path`, `component`, `hidden`, `title`, `icon`, `rules`, `sort`, `type`, `hide_children`, `active_key`, `open_type`, `link_url`) VALUES (255, 249, '', '', 0, '执行回滚', '', 'system:version:rollback', 6, 2, 0, '', 0, '');
+INSERT INTO `light_menu` (`id`, `pid`, `path`, `component`, `hidden`, `title`, `icon`, `rules`, `sort`, `type`, `hide_children`, `active_key`, `open_type`, `link_url`) VALUES (256, 249, '', '', 0, '查看任务详情', '', 'system:version:task', 7, 2, 0, '', 0, '');
+INSERT INTO `light_menu` (`id`, `pid`, `path`, `component`, `hidden`, `title`, `icon`, `rules`, `sort`, `type`, `hide_children`, `active_key`, `open_type`, `link_url`) VALUES (257, 249, '', '', 0, '查看升级记录', '', 'system:version:tasks', 8, 2, 0, '', 0, '');
 INSERT INTO `light_menu` (`id`, `pid`, `path`, `component`, `hidden`, `title`, `icon`, `rules`, `sort`, `type`, `hide_children`, `active_key`, `open_type`, `link_url`) VALUES (246, 13, 'file', 'system/file-manage/index', 0, '文件管理', 'folder-open-outlined', '', 102, 1, 0, '', 0, '');
 INSERT INTO `light_menu` (`id`, `pid`, `path`, `component`, `hidden`, `title`, `icon`, `rules`, `sort`, `type`, `hide_children`, `active_key`, `open_type`, `link_url`) VALUES (247, 246, '', '', 0, '查看列表', '', 'system:file:index', 1, 2, 0, '', 0, '');
 INSERT INTO `light_menu` (`id`, `pid`, `path`, `component`, `hidden`, `title`, `icon`, `rules`, `sort`, `type`, `hide_children`, `active_key`, `open_type`, `link_url`) VALUES (248, 246, '', '', 0, '删除文件', '', 'system:file:delete', 2, 2, 0, '', 0, '');
