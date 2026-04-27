@@ -15,11 +15,12 @@
       <!-- 盒子样式 -->
       <BoxStyleSettings />
       <!-- 容器宽度 -->
-      <ContainerSettings />
+      <!-- <ContainerSettings /> -->
       <!-- 基础配置 -->
       <BasicSettings />
-      <!-- 操作按钮 -->
+      <!-- 操作按钮
       <SettingActions />
+      -->
     </SettingDrawer>
   </div>
 </template>
@@ -34,9 +35,9 @@
   import MenuStyleSettings from './widget/MenuStyleSettings.vue'
   import ColorSettings from './widget/ColorSettings.vue'
   import BoxStyleSettings from './widget/BoxStyleSettings.vue'
-  import ContainerSettings from './widget/ContainerSettings.vue'
+  //import ContainerSettings from './widget/ContainerSettings.vue'
   import BasicSettings from './widget/BasicSettings.vue'
-  import SettingActions from './widget/SettingActions.vue'
+  // import SettingActions from './widget/SettingActions.vue'
 
   defineOptions({ name: 'ArtSettingsPanel' })
 
