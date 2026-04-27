@@ -13,6 +13,8 @@
         <ElCol
           v-for="item in visibleFormItems"
           :key="item.key"
+          class="search-item-column"
+          :class="{ 'search-item-column--custom': Boolean(item.render) }"
           :xs="getColSpan(item.span, 'xs')"
           :sm="getColSpan(item.span, 'sm')"
           :md="getColSpan(item.span, 'md')"
@@ -556,9 +558,49 @@
   }
 
   // 响应式优化
+  @media (width <= 1200px) {
+    .art-search-bar {
+      :deep(.search-item-column--custom) {
+        flex: 0 0 100%;
+        max-width: 100%;
+      }
+    }
+  }
+
   @media (width <= 768px) {
     .art-search-bar {
       padding: 16px 16px 0;
+
+      :deep(.el-row) {
+        margin-right: 0 !important;
+        margin-left: 0 !important;
+      }
+
+      :deep(.el-col) {
+        flex: 0 0 100%;
+        max-width: 100%;
+        padding-right: 0 !important;
+        padding-left: 0 !important;
+      }
+
+      :deep(.el-form-item) {
+        display: block;
+        margin-bottom: 14px;
+      }
+
+      :deep(.el-form-item__label) {
+        justify-content: flex-start;
+        width: 100% !important;
+        height: auto !important;
+        margin-bottom: 8px;
+        line-height: 20px !important;
+        text-align: left;
+      }
+
+      :deep(.el-form-item__content) {
+        width: 100%;
+        margin-left: 0 !important;
+      }
 
       .action-column {
         .action-buttons-wrapper {

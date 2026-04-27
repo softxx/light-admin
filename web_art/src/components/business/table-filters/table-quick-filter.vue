@@ -262,13 +262,13 @@
     width: 100%;
   }
 
-  @media (width <= 1200px) {
+  @media (width <= 900px) {
     .table-quick-filter {
       grid-template-columns: 1fr 1fr;
     }
   }
 
-  @media (width <= 900px) {
+  @media (width <= 768px) {
     .table-quick-filter {
       grid-template-columns: 1fr;
     }
