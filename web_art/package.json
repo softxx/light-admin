@@ -8,6 +8,8 @@
   },
   "scripts": {
     "dev": "vite --open",
+    "icons:generate": "node scripts/generate-iconify-icons.mjs",
+    "prebuild": "node scripts/generate-iconify-icons.mjs",
     "build": "vue-tsc --noEmit && vite build",
     "serve": "vite preview",
     "lint": "eslint",
