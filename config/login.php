@@ -17,5 +17,10 @@ return [
         'length' => 4,
         'width' => 130,
         'height' => 40,
+        // 干扰元素数量，适当增加可以提升验证码复杂度。
+        'noise_line_count' => 8,
+        'noise_curve_count' => 3,
+        'noise_dot_count' => 24,
+        'noise_overlay_line_count' => 2,
     ],
 ];

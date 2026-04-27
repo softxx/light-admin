@@ -102,7 +102,7 @@ class LoginCaptchaService
 
         return [
             'captchaId' => $captchaId,
-            'image' => 'data:image/svg+xml;base64,' . base64_encode($this->buildSvg($code)),
+            'image' => $this->buildCaptchaImage($code),
             'expireIn' => $this->getTtl(),
         ];
     }
@@ -195,6 +195,46 @@ class LoginCaptchaService
         return max(36, (int) config('login.captcha.height', 40));
     }
 
+    /**
+     * 获取背景干扰直线数量。
+     *
+     * @return int
+     */
+    private function getNoiseLineCount(): int
+    {
+        return min(16, max(4, (int) config('login.captcha.noise_line_count', 8)));
+    }
+
+    /**
+     * 获取背景干扰曲线数量。
+     *
+     * @return int
+     */
+    private function getNoiseCurveCount(): int
+    {
+        return min(10, max(1, (int) config('login.captcha.noise_curve_count', 3)));
+    }
+
+    /**
+     * 获取噪点数量。
+     *
+     * @return int
+     */
+    private function getNoiseDotCount(): int
+    {
+        return min(48, max(10, (int) config('login.captcha.noise_dot_count', 24)));
+    }
+
+    /**
+     * 获取覆盖在字符上的轻量干扰线数量。
+     *
+     * @return int
+     */
+    private function getNoiseOverlayLineCount(): int
+    {
+        return min(6, max(0, (int) config('login.captcha.noise_overlay_line_count', 2)));
+    }
+
     private function getCacheKey(string $captchaId): string
     {
         return $this->cachePrefix . $captchaId;
@@ -241,6 +281,17 @@ class LoginCaptchaService
     }
 
     /**
+     * Restore the previous captcha style by always returning the SVG variant.
+     *
+     * @param string $code
+     * @return string
+     */
+    private function buildCaptchaImage(string $code): string
+    {
+        return 'data:image/svg+xml;base64,' . base64_encode($this->buildSvg($code));
+    }
+
+    /**
      * 使用 SVG 生成轻量验证码图片，避免额外 GD 依赖。
      *
      * @param string $code 验证码内容
@@ -252,6 +303,7 @@ class LoginCaptchaService
         $height = $this->getHeight();
         $chars = str_split($code);
         $charWidth = $width / (count($chars) + 1);
+        $filterId = 'captcha_distort_' . substr(bin2hex(random_bytes(4)), 0, 8);
 
         $svg = [
             sprintf(
@@ -261,69 +313,442 @@ class LoginCaptchaService
                 $width,
                 $height
             ),
-            sprintf('<rect width="100%%" height="100%%" rx="8" fill="%s"/>', $this->randomLightColor()),
+            $this->buildDistortionDefinition($filterId),
+            sprintf(
+                '<rect x="0.5" y="0.5" width="%d" height="%d" rx="2" fill="%s" stroke="%s" stroke-width="1"/>',
+                $width - 1,
+                $height - 1,
+                $this->randomLightColor(),
+                $this->randomBorderColor()
+            ),
         ];
 
-        // 干扰线。
-        for ($index = 0; $index < 5; $index++) {
-            $svg[] = sprintf(
-                '<line x1="%d" y1="%d" x2="%d" y2="%d" stroke="%s" stroke-width="1.2" stroke-opacity="0.45"/>',
-                random_int(0, $width),
-                random_int(0, $height),
-                random_int(0, $width),
-                random_int(0, $height),
-                $this->randomLineColor()
-            );
-        }
+        // 先铺一层细碎底噪和划痕，让画布不再是完全规整的纯白背景。
+        $this->appendNoiseLines($svg, $width, $height);
+        $this->appendNoiseDots($svg, $width, $height);
+        $this->appendAccentStrokes($svg, $width, $height, false, $filterId);
 
-        // 干扰点。
-        for ($index = 0; $index < 18; $index++) {
-            $svg[] = sprintf(
-                '<circle cx="%d" cy="%d" r="%d" fill="%s" fill-opacity="0.35"/>',
-                random_int(4, max(4, $width - 4)),
-                random_int(4, max(4, $height - 4)),
-                random_int(1, 2),
-                $this->randomLineColor()
-            );
-        }
+        // 字符本身改成更接近手写笔迹的双层绘制，再叠加轻微形变滤镜。
+        $this->appendHandwrittenChars($svg, $chars, $charWidth, $height, $filterId);
 
-        // 验证码字符。
-        foreach ($chars as $index => $char) {
-            $x = (int) (($index + 0.72) * $charWidth) + random_int(-2, 2);
-            $y = random_int((int) ($height * 0.62), (int) ($height * 0.82));
-            $fontSize = random_int((int) ($height * 0.52), (int) ($height * 0.66));
-            $rotate = random_int(-20, 20);
-
-            $svg[] = sprintf(
-                '<text x="%d" y="%d" fill="%s" font-size="%d" font-family="Arial, sans-serif" font-weight="700" transform="rotate(%d %d %d)">%s</text>',
-                $x,
-                $y,
-                $this->randomTextColor(),
-                $fontSize,
-                $rotate,
-                $x,
-                $y,
-                htmlspecialchars($char, ENT_QUOTES)
-            );
-        }
+        // 最后叠加彩色横划线和波浪线，风格更接近手写验证码截图。
+        $this->appendNoiseCurves($svg, $width, $height);
+        $this->appendOverlayNoiseLines($svg, $width, $height, $filterId);
+        $this->appendAccentStrokes($svg, $width, $height, true, $filterId);
 
         $svg[] = '</svg>';
 
         return implode('', $svg);
     }
 
+    /**
+     * 追加背景直线干扰。
+     *
+     * @param array $svg
+     * @param int $width
+     * @param int $height
+     * @return void
+     */
+    private function appendNoiseLines(array &$svg, int $width, int $height): void
+    {
+        for ($index = 0; $index < $this->getNoiseLineCount(); $index++) {
+            $svg[] = sprintf(
+                '<line x1="%d" y1="%d" x2="%d" y2="%d" stroke="%s" stroke-width="%s" stroke-opacity="%s"/>',
+                random_int(0, $width),
+                random_int(0, $height),
+                random_int(0, $width),
+                random_int(0, $height),
+                $this->randomLineColor(),
+                $this->randomStrokeWidth(6, 12),
+                $this->randomOpacity(10, 20)
+            );
+        }
+    }
+
+    /**
+     * 追加背景曲线干扰，让字符轮廓不再过于规则。
+     *
+     * @param array $svg
+     * @param int $width
+     * @param int $height
+     * @return void
+     */
+    private function appendNoiseCurves(array &$svg, int $width, int $height): void
+    {
+        for ($index = 0; $index < $this->getNoiseCurveCount(); $index++) {
+            $startY = random_int((int) ($height * 0.18), (int) ($height * 0.82));
+            $endY = random_int((int) ($height * 0.18), (int) ($height * 0.82));
+            $controlX = random_int((int) ($width * 0.2), (int) ($width * 0.8));
+            $controlY = random_int(-8, $height + 8);
+
+            $svg[] = sprintf(
+                '<path d="M 0 %d Q %d %d %d %d" fill="none" stroke="%s" stroke-width="%s" stroke-opacity="%s" stroke-linecap="round"/>',
+                $startY,
+                $controlX,
+                $controlY,
+                $width,
+                $endY,
+                $this->randomAccentColor(),
+                $this->randomStrokeWidth(8, 14),
+                $this->randomOpacity(24, 38)
+            );
+        }
+    }
+
+    /**
+     * 追加背景噪点，进一步打散颜色分布。
+     *
+     * @param array $svg
+     * @param int $width
+     * @param int $height
+     * @return void
+     */
+    private function appendNoiseDots(array &$svg, int $width, int $height): void
+    {
+        for ($index = 0; $index < $this->getNoiseDotCount(); $index++) {
+            $svg[] = sprintf(
+                '<circle cx="%d" cy="%d" r="%d" fill="%s" fill-opacity="%s"/>',
+                random_int(4, max(4, $width - 4)),
+                random_int(4, max(4, $height - 4)),
+                random_int(1, 2),
+                $this->randomLineColor(),
+                $this->randomOpacity(12, 22)
+            );
+        }
+    }
+
+    /**
+     * 追加轻量覆盖线，让字符之间的边界更难被直接切分。
+     *
+     * @param array $svg
+     * @param int $width
+     * @param int $height
+     * @return void
+     */
+    private function appendOverlayNoiseLines(array &$svg, int $width, int $height, string $filterId): void
+    {
+        for ($index = 0; $index < $this->getNoiseOverlayLineCount(); $index++) {
+            $startX = random_int(0, (int) ($width * 0.12));
+            $startY = random_int((int) ($height * 0.28), (int) ($height * 0.76));
+            $controlX = random_int((int) ($width * 0.3), (int) ($width * 0.7));
+            $controlY = random_int(0, $height);
+            $endX = random_int((int) ($width * 0.88), $width);
+            $endY = random_int((int) ($height * 0.3), (int) ($height * 0.8));
+
+            $svg[] = sprintf(
+                '<path d="M %d %d Q %d %d %d %d" fill="none" stroke="%s" stroke-width="%s" stroke-opacity="%s" stroke-linecap="round" filter="url(#%s)"/>',
+                $startX,
+                $startY,
+                $controlX,
+                $controlY,
+                $endX,
+                $endY,
+                $this->randomAccentColor(),
+                $this->randomStrokeWidth(10, 16),
+                $this->randomOpacity(30, 44),
+                $filterId
+            );
+        }
+    }
+
+    /**
+     * 以双层笔触绘制字符，让轮廓更像手写和涂抹过的效果。
+     *
+     * @param array $svg
+     * @param array $chars
+     * @param float $charWidth
+     * @param int $height
+     * @param string $filterId
+     * @return void
+     */
+    private function appendHandwrittenChars(
+        array &$svg,
+        array $chars,
+        float $charWidth,
+        int $height,
+        string $filterId
+    ): void {
+        foreach ($chars as $index => $char) {
+            $x = (int) (($index + 0.66) * $charWidth) + random_int(-2, 3);
+            $y = random_int((int) ($height * 0.58), (int) ($height * 0.82));
+            $fontSize = random_int((int) ($height * 0.56), (int) ($height * 0.72));
+            $rotate = random_int(-16, 16);
+            $skew = random_int(-18, 18) / 10;
+            $shadowX = $x + random_int(0, 2);
+            $shadowY = $y + random_int(0, 2);
+            $escapedChar = htmlspecialchars($char, ENT_QUOTES);
+
+            $svg[] = sprintf(
+                '<g filter="url(#%s)"><text x="%d" y="%d" fill="%s" fill-opacity="0.28" font-size="%d" font-family="%s" font-style="italic" font-weight="700" transform="rotate(%d %d %d) skewX(%s)">%s</text><text x="%d" y="%d" fill="%s" stroke="%s" stroke-width="%s" paint-order="stroke" font-size="%d" font-family="%s" font-style="italic" font-weight="700" transform="rotate(%d %d %d) skewX(%s)">%s</text></g>',
+                $filterId,
+                $shadowX,
+                $shadowY,
+                $this->randomInkShadowColor(),
+                $fontSize,
+                $this->getHandwrittenFontFamily(),
+                $rotate,
+                $shadowX,
+                $shadowY,
+                number_format($skew + (random_int(-4, 4) / 10), 1, '.', ''),
+                $escapedChar,
+                $x,
+                $y,
+                $this->randomTextColor(),
+                $this->randomTextStrokeColor(),
+                $this->randomStrokeWidth(5, 9),
+                $fontSize,
+                $this->getHandwrittenFontFamily(),
+                $rotate,
+                $x,
+                $y,
+                number_format($skew, 1, '.', ''),
+                $escapedChar
+            );
+        }
+    }
+
+    /**
+     * 追加彩色划线，让整体观感更接近手写验证码截图。
+     *
+     * @param array $svg
+     * @param int $width
+     * @param int $height
+     * @param bool $overlay
+     * @param string $filterId
+     * @return void
+     */
+    private function appendAccentStrokes(
+        array &$svg,
+        int $width,
+        int $height,
+        bool $overlay,
+        string $filterId
+    ): void {
+        $strokeCount = $overlay ? 2 : 1;
+
+        for ($index = 0; $index < $strokeCount; $index++) {
+            $startY = $overlay
+                ? random_int((int) ($height * 0.35), (int) ($height * 0.7))
+                : random_int((int) ($height * 0.18), (int) ($height * 0.38));
+            $endY = $overlay
+                ? random_int((int) ($height * 0.3), (int) ($height * 0.72))
+                : random_int((int) ($height * 0.2), (int) ($height * 0.42));
+
+            $svg[] = sprintf(
+                '<path d="M %d %d C %d %d %d %d %d %d" fill="none" stroke="%s" stroke-width="%s" stroke-opacity="%s" stroke-linecap="round" filter="url(#%s)"/>',
+                random_int(0, 8),
+                $startY,
+                random_int((int) ($width * 0.18), (int) ($width * 0.34)),
+                random_int(0, $height),
+                random_int((int) ($width * 0.48), (int) ($width * 0.7)),
+                random_int(0, $height),
+                random_int((int) ($width * 0.88), $width),
+                $endY,
+                $this->randomAccentColor(),
+                $overlay ? $this->randomStrokeWidth(9, 15) : $this->randomStrokeWidth(6, 11),
+                $overlay ? $this->randomOpacity(34, 50) : $this->randomOpacity(20, 32),
+                $filterId
+            );
+        }
+    }
+
     private function randomLightColor(): string
     {
-        return sprintf('#%02X%02X%02X', random_int(235, 250), random_int(240, 252), random_int(245, 255));
+        return $this->toHexColor($this->randomPaperRgb());
+    }
+
+    /**
+     * 返回接近手写验证码常见的边框颜色。
+     *
+     * @return string
+     */
+    private function randomBorderColor(): string
+    {
+        return $this->toHexColor($this->randomBorderRgb());
     }
 
     private function randomLineColor(): string
     {
-        return sprintf('#%02X%02X%02X', random_int(120, 190), random_int(130, 210), random_int(140, 220));
+        return $this->toHexColor($this->randomNoiseRgb());
+    }
+
+    /**
+     * 返回强调划线使用的亮色系颜色。
+     *
+     * @return string
+     */
+    private function randomAccentColor(): string
+    {
+        return $this->toHexColor($this->randomAccentRgb());
     }
 
     private function randomTextColor(): string
     {
-        return sprintf('#%02X%02X%02X', random_int(40, 110), random_int(60, 130), random_int(80, 160));
+        return $this->toHexColor($this->randomInkRgb());
+    }
+
+    /**
+     * 返回字符描边颜色，增强笔画厚薄不均的感觉。
+     *
+     * @return string
+     */
+    private function randomTextStrokeColor(): string
+    {
+        return $this->toHexColor($this->randomInkStrokeRgb());
+    }
+
+    /**
+     * 返回字符阴影颜色，模拟笔迹叠画后的毛边。
+     *
+     * @return string
+     */
+    private function randomInkShadowColor(): string
+    {
+        return $this->toHexColor($this->randomInkShadowRgb());
+    }
+
+    /**
+     * Palette used for off-white raster backgrounds.
+     *
+     * @return array
+     */
+    private function randomPaperRgb(): array
+    {
+        return [random_int(248, 255), random_int(248, 255), random_int(247, 254)];
+    }
+
+    /**
+     * Palette used for light borders around the captcha.
+     *
+     * @return array
+     */
+    private function randomBorderRgb(): array
+    {
+        return [random_int(220, 234), random_int(220, 234), random_int(218, 232)];
+    }
+
+    /**
+     * Palette used for low-priority background noise.
+     *
+     * @return array
+     */
+    private function randomNoiseRgb(): array
+    {
+        return [random_int(162, 206), random_int(168, 214), random_int(172, 220)];
+    }
+
+    /**
+     * Palette used for stronger colored sweep lines.
+     *
+     * @return array
+     */
+    private function randomAccentRgb(): array
+    {
+        $palette = [
+            [98, 192, 199],
+            [112, 206, 216],
+            [173, 92, 120],
+            [192, 104, 136],
+        ];
+
+        return $palette[array_rand($palette)];
+    }
+
+    /**
+     * Main ink palette for captcha characters.
+     *
+     * @return array
+     */
+    private function randomInkRgb(): array
+    {
+        return [random_int(110, 148), random_int(52, 90), random_int(76, 116)];
+    }
+
+    /**
+     * Stroke palette used to roughen character edges.
+     *
+     * @return array
+     */
+    private function randomInkStrokeRgb(): array
+    {
+        return [random_int(124, 164), random_int(58, 96), random_int(82, 124)];
+    }
+
+    /**
+     * Shadow palette used to fake layered ink strokes.
+     *
+     * @return array
+     */
+    private function randomInkShadowRgb(): array
+    {
+        return [random_int(150, 188), random_int(82, 118), random_int(104, 142)];
+    }
+
+    /**
+     * 获取更偏手写风格的字体族，尽量靠近示例图的观感。
+     *
+     * @return string
+     */
+    private function getHandwrittenFontFamily(): string
+    {
+        return 'Segoe Print, Bradley Hand ITC, Comic Sans MS, cursive';
+    }
+
+    /**
+     * Convert an RGB triplet to a CSS hex color string.
+     *
+     * @param array $rgb
+     * @return string
+     */
+    private function toHexColor(array $rgb): string
+    {
+        return sprintf(
+            '#%02X%02X%02X',
+            max(0, min(255, (int) ($rgb[0] ?? 0))),
+            max(0, min(255, (int) ($rgb[1] ?? 0))),
+            max(0, min(255, (int) ($rgb[2] ?? 0)))
+        );
+    }
+
+    /**
+     * 生成形变滤镜，让字符和干扰线带一点抖动感。
+     *
+     * @param string $filterId
+     * @return string
+     */
+    private function buildDistortionDefinition(string $filterId): string
+    {
+        return sprintf(
+            '<defs><filter id="%s" x="-12%%" y="-18%%" width="124%%" height="136%%"><feTurbulence type="fractalNoise" baseFrequency="%s %s" numOctaves="1" seed="%d" result="noise"/><feDisplacementMap in="SourceGraphic" in2="noise" scale="%s" xChannelSelector="R" yChannelSelector="G"/></filter></defs>',
+            $filterId,
+            number_format(random_int(12, 18) / 1000, 3, '.', ''),
+            number_format(random_int(48, 72) / 1000, 3, '.', ''),
+            random_int(1, 999),
+            number_format(random_int(14, 24) / 10, 1, '.', '')
+        );
+    }
+
+    /**
+     * 生成 SVG 透明度值。
+     *
+     * @param int $minPercent
+     * @param int $maxPercent
+     * @return string
+     */
+    private function randomOpacity(int $minPercent, int $maxPercent): string
+    {
+        return number_format(random_int($minPercent, $maxPercent) / 100, 2, '.', '');
+    }
+
+    /**
+     * 生成 SVG 线宽值。
+     *
+     * @param int $minTenths
+     * @param int $maxTenths
+     * @return string
+     */
+    private function randomStrokeWidth(int $minTenths, int $maxTenths): string
+    {
+        return number_format(random_int($minTenths, $maxTenths) / 10, 1, '.', '');
     }
 }
