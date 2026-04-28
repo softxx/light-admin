@@ -42,10 +42,6 @@ Route::group(function () {
         Route::put('updateInfo', 'system.user/updateInfo');
     });
 
-    Route::group('role', function () {
-        Route::post('all', 'system.role/all');
-    });
-
     Route::group('upload', function () {
         Route::post('file', 'system.file/uploadFile');
         Route::post('image', 'system.file/uploadImg');
@@ -83,20 +79,16 @@ Route::group(function () {
     Route::group(function () {
         Route::post('user/list', 'system.user/index');
         Route::post('user/:id/edit', 'system.user/edit');
+        // 用户权限配置：权限不再挂角色，直接按用户读取和保存菜单节点。
         Route::post('authAccess/index', 'system.authAccess/index');
-        Route::post('role/list', 'system.role/index');
-        Route::post('role/:id/edit', 'system.role/edit');
-        Route::post('department/list', 'system.department/index');
-        Route::post('department/:id/edit', 'system.department/edit');
         Route::post('dict/list', 'system.dict/index');
         Route::post('menu/list', 'system.menu/index');
         Route::post('login_log/list', 'system.LoginLog/index');
         Route::post('operate_log/list', 'system.OperateLog/index');
 
+        // Department and role resources were removed; user is now the permission boundary.
         Route::resource('user', 'system.user')->except(['index', 'read', 'edit']);
         Route::resource('authAccess', 'system.authAccess')->only(['save']);
-        Route::resource('role', 'system.role')->except(['index', 'read', 'edit']);
-        Route::resource('department', 'system.department')->except(['index', 'read', 'edit']);
         Route::resource('dict', 'system.dict')->except(['index', 'read', 'edit']);
         Route::resource('menu', 'system.menu')->except(['index', 'read', 'edit']);
     });

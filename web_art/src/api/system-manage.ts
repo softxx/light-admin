@@ -230,54 +230,20 @@ export function fetchGetVersionTasks(limit = 20) {
   })
 }
 
-export function fetchGetRoleList(params: Api.SystemManage.RoleSearchParams) {
-  return request.post<Api.SystemManage.RoleList>({
-    url: '/role/list',
-    params: normalizeListParams(params as Record<string, any>)
-  })
-}
-
-export function fetchGetRoleAll() {
-  return request.post<Api.SystemManage.RoleOption[]>({
-    url: '/role/all'
-  })
-}
-
-export function fetchGetRoleDetail(id: number | string) {
-  return request.post<Api.SystemManage.RoleListItem>({
-    url: `/role/${id}/edit`
-  })
-}
-
-export function fetchSaveRole(params: Api.SystemManage.RolePayload) {
-  return request.request<void>({
-    url: params.id ? `/role/${params.id}` : '/role',
-    method: params.id ? 'PUT' : 'POST',
-    params,
-    showSuccessMessage: true
-  })
-}
-
-export function fetchDeleteRole(id: number | string, options: RequestMessageOptions = {}) {
-  return request.del<void>({
-    url: `/role/${id}`,
-    showSuccessMessage: true,
-    ...options
-  })
-}
-
-export function fetchGetRolePermission(id: number | string) {
+export function fetchGetUserPermission(id: number | string) {
+  // 用户权限配置：后端按用户 ID 返回权限树和已勾选节点。
   return request.post<Api.Backend.AuthAccessResponse>({
     url: '/authAccess/index',
     params: { id }
   })
 }
 
-export function fetchSaveRolePermission(roleId: number | string, menuIds: Array<number | string>) {
+export function fetchSaveUserPermission(userId: number | string, menuIds: Array<number | string>) {
+  // 角色已移除，权限保存时直接提交 user_id + menu_id[]。
   return request.post<void>({
     url: '/authAccess',
     params: {
-      role_id: roleId,
+      user_id: userId,
       menu_id: menuIds
     },
     showSuccessMessage: true
@@ -303,36 +269,6 @@ export function fetchSaveMenu(params: Api.SystemManage.MenuPayload) {
 export function fetchDeleteMenu(id: number | string, options: RequestMessageOptions = {}) {
   return request.del<void>({
     url: `/menu/${id}`,
-    showSuccessMessage: true,
-    ...options
-  })
-}
-
-export function fetchGetDepartmentList(params?: Record<string, any>) {
-  return request.post<Api.SystemManage.DepartmentOption[]>({
-    url: '/department/list',
-    params
-  })
-}
-
-export function fetchGetDepartmentDetail(id: number | string) {
-  return request.post<Api.SystemManage.DepartmentOption>({
-    url: `/department/${id}/edit`
-  })
-}
-
-export function fetchSaveDepartment(params: Record<string, any>) {
-  return request.request<void>({
-    url: params.id ? `/department/${params.id}` : '/department',
-    method: params.id ? 'PUT' : 'POST',
-    params,
-    showSuccessMessage: true
-  })
-}
-
-export function fetchDeleteDepartment(id: number | string, options: RequestMessageOptions = {}) {
-  return request.del<void>({
-    url: `/department/${id}`,
     showSuccessMessage: true,
     ...options
   })

@@ -5,15 +5,17 @@ namespace core;
 use think\facade\Db;
 
 /**
- * 权限校验
+ * 权限校验。
+ */
+/**
+ * 角色移除后，接口权限直接通过 auth_access.user_id -> menu.rules 校验。
  */
 class Permissions
 {
     public $permissions_db = 'auth_access';
-    public $user_role_db = 'user_role';
 
     /**
-     * 检查权限
+     * 检查用户是否拥有指定权限。
      *
      * @param string|array $name
      * @param int $uid
@@ -33,25 +35,22 @@ class Permissions
             } else {
                 $findAuthRuleCount = Db::name('menu')->where(['rules' => $name])->count();
                 if ($findAuthRuleCount == 0) {
+                    // 保留原有兼容逻辑：未登记到菜单表的规则不拦截。
                     return true;
                 }
                 $name = [$name];
             }
         }
 
-        $roles = $this->getRoles($uid);
-        if (empty($roles)) {
-            return false;
-        }
-
-        if ($this->isSuperAdmin($roles)) {
+        if ($this->isSuperAdmin($uid)) {
             return true;
         }
 
+        // 用户权限直接关联菜单节点，不再经过角色或部门数据范围。
         $rules = Db::name($this->permissions_db)
             ->alias('a')
             ->join('menu b', 'a.menu_id = b.id')
-            ->whereIn('a.role_id', $roles)
+            ->where('a.user_id', $uid)
             ->whereIn('b.rules', $name)
             ->select();
 
@@ -73,21 +72,14 @@ class Permissions
     }
 
     /**
-     * 根据用户 id 获取角色
-     *
-     * @param int $uid
-     * @return array
+     * 管理员账号默认拥有全部权限。
      */
-    private function getRoles($uid)
+    private function isSuperAdmin($uid): bool
     {
-        return Db::name($this->user_role_db)->where('user_id', $uid)->column('role_id');
-    }
+        if ((string) $uid === (string) config('system.super_admin_id')) {
+            return true;
+        }
 
-    /**
-     * 是否为超级管理员
-     */
-    private function isSuperAdmin(array $roles): bool
-    {
-        return in_array((int) config('system.super_admin_id'), array_map('intval', $roles), true);
+        return (int) Db::name('user')->where('id', $uid)->value('is_admin') === 1;
     }
 }

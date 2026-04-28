@@ -64,9 +64,10 @@ class InstallGuard
             ]);
 
             $prefix = (string) ($config['prefix'] ?? config('install.default_table_prefix', 'light_'));
+            // Role and department tables are no longer required core tables.
             $tables = [
                 $prefix . 'user',
-                $prefix . 'role',
+                $prefix . 'menu',
                 $prefix . 'system_setting',
             ];
 

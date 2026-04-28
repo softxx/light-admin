@@ -7,6 +7,12 @@ use app\model\system\{AuthAccess, Menu, User};
 use core\base\BaseService;
 use core\exception\FailedException;
 
+/**
+ * 菜单服务。
+ *
+ * 菜单仍然是前后端权限的唯一节点来源；角色移除后，路由只按当前用户的
+ * auth_access 授权结果过滤。
+ */
 class MenuService extends BaseService
 {
     public function __construct(Menu $model)
@@ -14,11 +20,6 @@ class MenuService extends BaseService
         $this->model = $model;
     }
 
-    /**
-     * 列表
-     *
-     * @return array
-     */
     public function getList()
     {
         return $this->model
@@ -29,43 +30,24 @@ class MenuService extends BaseService
             ->toTree();
     }
 
-    /**
-     * 添加
-     *
-     * @param array $data
-     * @return int
-     */
     public function save($data)
     {
         $this->validate($data);
         $menuId = $this->model->storeBy($data);
 
-        // 超级管理员默认拥有全部权限，新菜单自动补齐授权
+        // 新增菜单默认授予系统管理员，避免管理员创建后自己看不到入口。
         $authAccess = app()->make(AuthAccessService::class);
         $authAccess->create($menuId, config('system.super_admin_id'));
 
         return $menuId;
     }
 
-    /**
-     * 更新
-     *
-     * @param string|int $id
-     * @param array $data
-     * @return bool
-     */
     public function update($id, $data)
     {
         $this->validate($data);
         return $this->model->updateBy($id, $data);
     }
 
-    /**
-     * 删除
-     *
-     * @param string|int $id
-     * @return bool
-     */
     public function delete($id)
     {
         $children = $this->model->where('pid', $id)->find();
@@ -85,16 +67,15 @@ class MenuService extends BaseService
         }
     }
 
-    /**
-     * 获取路由
-     *
-     * @return array
-     */
     public function getRouter()
     {
-        $roleIds = User::find(request()->uid())->getRolesId();
+        $user = User::find(request()->uid());
+        if (!$user) {
+            return [];
+        }
 
-        if ($this->isSuperAdmin($roleIds)) {
+        // 管理员拥有全量菜单；普通用户只返回直接授予的菜单节点。
+        if ($this->isSuperAdmin($user)) {
             return $this->model
                 ->whereIn('type', [0, 1])
                 ->order('sort', 'asc')
@@ -102,7 +83,7 @@ class MenuService extends BaseService
                 ->toTree();
         }
 
-        $menuIds = AuthAccess::getPermission($roleIds);
+        $menuIds = AuthAccess::getPermission($user->id);
         return $this->model
             ->whereIn('id', $menuIds)
             ->whereIn('type', [0, 1])
@@ -111,13 +92,9 @@ class MenuService extends BaseService
             ->toTree();
     }
 
-    /**
-     * 获取全部菜单权限节点
-     *
-     * @return array
-     */
     public static function getRuleAll()
     {
+        // 权限配置弹窗需要目录、菜单和按钮节点，外链类型不参与授权。
         return Menu::field('id,title,pid')
             ->where('type', '<>', 3)
             ->order('sort', 'asc')
@@ -125,11 +102,6 @@ class MenuService extends BaseService
             ->toTree();
     }
 
-    /**
-     * 参数校验
-     *
-     * @throws \think\ValidateException
-     */
     public function validate($data)
     {
         if (!isset($data['type'])) {
@@ -158,11 +130,9 @@ class MenuService extends BaseService
         validate(MenuValidate::class)->check($data);
     }
 
-    /**
-     * 是否包含超级管理员角色
-     */
-    private function isSuperAdmin(array $roleIds): bool
+    private function isSuperAdmin(User $user): bool
     {
-        return in_array((int) config('system.super_admin_id'), array_map('intval', $roleIds), true);
+        return (int) ($user->is_admin ?? 0) === 1
+            || (string) $user->id === (string) config('system.super_admin_id');
     }
 }

@@ -10,15 +10,13 @@ const componentAliasMap: Record<string, string> = {
   'home/index': '/dashboard/console',
   'user/center/index': '/system/user-center',
   'system/user/index': '/system/user',
-  'system/role/index': '/system/role',
-  'system/role/auth': '/system/role/auth',
   'system/menu/index': '/system/menu',
-  'system/department/index': '/system/department',
   'system/dict/index': '/system/dict',
   'system/logs/login-log': '/system/logs/login-log',
   'system/logs/operate-log': '/system/logs/operate-log'
 }
 
+// Backend menu component values are normalized into local route component aliases.
 function withLeadingSlash(path = '') {
   if (!path) return ''
   if (path.startsWith('/') || path.startsWith('http://') || path.startsWith('https://')) {
@@ -99,6 +97,7 @@ function transformRouteMenu(
 }
 
 function normalizeUserInfo(userInfo: Record<string, any>): Api.Auth.UserInfo {
+  // Role fields were removed; the user info payload exposes direct button rules instead.
   const buttons = Array.isArray(userInfo?.rules) ? userInfo.rules : []
 
   return {
@@ -110,8 +109,6 @@ function normalizeUserInfo(userInfo: Record<string, any>): Api.Auth.UserInfo {
     email: userInfo?.email || '',
     avatar: userInfo?.avatar || '',
     is_super_admin: Boolean(userInfo?.is_super_admin),
-    roles: Array.isArray(userInfo?.roles) ? userInfo.roles : [],
-    role_name: Array.isArray(userInfo?.role_name) ? userInfo.role_name : [],
     rules: buttons,
     buttons
   }

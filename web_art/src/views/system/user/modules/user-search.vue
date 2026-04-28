@@ -18,8 +18,6 @@
 
   interface Props {
     modelValue: TableFilterFormModel
-    roleOptions?: Api.SystemManage.RoleOption[]
-    departmentOptions?: Api.SystemManage.DepartmentOption[]
   }
 
   interface Emits {
@@ -28,11 +26,7 @@
     (e: 'reset'): void
   }
 
-  const props = withDefaults(defineProps<Props>(), {
-    roleOptions: () => [],
-    departmentOptions: () => []
-  })
-
+  const props = defineProps<Props>()
   const emit = defineEmits<Emits>()
   const searchBarRef = ref()
 
@@ -44,9 +38,8 @@
     set: (value) => emit('update:modelValue', value)
   })
 
-  const filterFields = computed(() =>
-    createUserFilterFields(props.roleOptions, props.departmentOptions)
-  )
+  // 搜索项与用户字段保持一致，不再包含部门或角色条件。
+  const filterFields = computed(() => createUserFilterFields())
 
   const formItems = computed(() => [
     {

@@ -157,11 +157,6 @@
     },
     "title": "欢迎回来",
     "subTitle": "输入您的账号和密码登录",
-    "roles": {
-      "super": "超级管理员",
-      "admin": "管理员",
-      "user": "普通用户"
-    },
     "placeholder": {
       "username": "请输入账号",
       "password": "请输入密码",
@@ -262,7 +257,6 @@
     "system": {
       "title": "系统管理",
       "user": "用户管理",
-      "role": "角色管理",
       "userCenter": "个人中心",
       "menu": "菜单管理"
     }

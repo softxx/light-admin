@@ -82,10 +82,8 @@ declare namespace Api {
       email: string
       phone?: string
       avatar?: string
-      department_name?: string
-      role_name?: string[]
       is_super_admin?: boolean
-      roles: Array<number | string>
+      // Direct button permissions returned by the backend for the current user.
       rules: string[]
       buttons: string[]
       [key: string]: any
@@ -117,41 +115,23 @@ declare namespace Api {
     }
 
     interface AuthAccessResponse {
+      // Permission tree plus the checked leaf nodes used by the user permission dialog.
       authNode: AuthTreeNode[]
       checked: number[]
     }
   }
 
   namespace SystemManage {
-    interface RoleOption {
-      id: number
-      name: string
-      role_key?: string
-      [key: string]: any
-    }
-
-    interface DepartmentOption {
-      id: number
-      value: number | string
-      title: string
-      name: string
-      parent_id?: number | string
-      children?: DepartmentOption[]
-      [key: string]: any
-    }
-
     interface UserListItem {
       id: number
       username: string
       realname: string
       phone?: string
       email?: string
-      dept_id?: number
-      department_name?: string
       avatar?: string
       status: number | string
       is_admin?: number
-      roles?: RoleOption[]
+      // Department and role fields are intentionally absent in the no-department version.
       create_time?: string
       [key: string]: any
     }
@@ -166,9 +146,7 @@ declare namespace Api {
     type UserSearchParams = DynamicFilterSearchParams &
       Partial<{
         key: string
-        roles: number | string
         status: number | string
-        dept_id: number | string
         create_time: string[] | [string, string]
         current: number
         size: number
@@ -182,40 +160,7 @@ declare namespace Api {
       realname: string
       phone?: string
       email?: string
-      dept_id: number | string
-      roles: Array<number | string>
       avatar?: string
-    }
-
-    interface RoleListItem {
-      id: number
-      name: string
-      role_key: string
-      note?: string
-      data_range?: number | string
-      departments?: Array<number | string>
-      create_time?: string
-      [key: string]: any
-    }
-
-    type RoleList = Api.Common.PaginatedResponse<RoleListItem>
-
-    type RoleSearchParams = DynamicFilterSearchParams &
-      Partial<{
-        key: string
-        current: number
-        size: number
-        page: number
-        pageSize: number
-      }>
-
-    interface RolePayload {
-      id?: number
-      name: string
-      role_key: string
-      note?: string
-      data_range: number | string
-      departments?: Array<number | string>
     }
 
     interface MenuListItem {

@@ -2,10 +2,16 @@
 
 namespace app\service\user;
 
-use app\model\system\{AuthAccess, menu, User};
+use app\model\system\{AuthAccess, Menu, User};
 use core\base\BaseService;
 use core\exception\FailedException;
 
+/**
+ * 用户服务。
+ *
+ * 当前版本去掉部门、角色和数据权限，用户列表只维护账号基础信息；
+ * 菜单和按钮权限通过 auth_access 直接挂到用户身上。
+ */
 class UserService extends BaseService
 {
     public function __construct(User $model)
@@ -14,7 +20,7 @@ class UserService extends BaseService
     }
 
     /**
-     * 获取列表
+     * 获取用户列表。
      *
      * @return array
      */
@@ -24,12 +30,11 @@ class UserService extends BaseService
             ->search()
             ->withoutField('password')
             ->order('id', 'desc')
-            ->with(['roles', 'department'])
             ->paginate();
     }
 
     /**
-     * 获取激活的用户
+     * 获取启用用户。
      *
      * @return array
      */
@@ -38,14 +43,13 @@ class UserService extends BaseService
         return $this->model
             ->search()
             ->where('status', 1)
-            ->field('id,realname,dept_id,avatar')
-            ->with(['department'])
+            ->field('id,realname,avatar')
             ->cache(60)
             ->paginate();
     }
 
     /**
-     * 获取用户信息
+     * 获取当前用户信息。
      *
      * @return array
      */
@@ -53,41 +57,49 @@ class UserService extends BaseService
     {
         $id = request()->uid();
         $user = $this->model
-            ->with(['department'])
             ->withoutField('password,create_time,status,pinyin')
             ->find($id);
-        $role = $user->getRoles();
-        $user->roles = $role->column('id');
-        $user->role_name = $role->column('name');
-        $user->rules = $this->getRules($role->column('id'));
-        $user->is_super_admin = in_array((int) config('system.super_admin_id'), array_map('intval', $user->roles), true);
+
+        if (!$user) {
+            throw new FailedException('用户不存在');
+        }
+
+        // 前端同时兼容 rules/buttons 字段，这里统一返回按钮权限标识。
+        $user->rules = $this->getRules($user);
+        $user->buttons = $user->rules;
+        $user->is_super_admin = $this->isSuperAdmin($user);
         $user->avatar = $user->avatar ?: config('system.default_avatar');
         return $user;
     }
 
     /**
-     * 获取角色权限
-     *
-     * @param array $roles
-     * @return array
+     * 获取用户按钮权限。
      */
-    private function getRules(array $roles)
+    private function getRules(User $user): array
     {
-        $roleIds = array_map('intval', $roles);
-
-        if (in_array((int) config('system.super_admin_id'), $roleIds, true)) {
-            return menu::where('type', 2)
+        if ($this->isSuperAdmin($user)) {
+            // 管理员不读取授权明细，直接拥有所有按钮权限。
+            return Menu::where('type', 2)
                 ->where('rules', '<>', '')
                 ->sort('asc')
                 ->column('rules');
         }
 
-        $menuId = AuthAccess::getPermission($roleIds);
-        return menu::where('type', 2)->whereIn('id', $menuId)->sort('asc')->column('rules');
+        // 普通用户只拥有 auth_access 中直接授予的按钮权限。
+        $menuId = AuthAccess::getPermission($user->id);
+        if (empty($menuId)) {
+            return [];
+        }
+
+        return Menu::where('type', 2)
+            ->whereIn('id', $menuId)
+            ->where('rules', '<>', '')
+            ->sort('asc')
+            ->column('rules');
     }
 
     /**
-     * 根据 id 获取用户
+     * 根据 id 获取用户。
      *
      * @param array $ids
      * @return array
@@ -98,42 +110,30 @@ class UserService extends BaseService
     }
 
     /**
-     * 保存
+     * 保存用户。
      *
      * @param array $data
-     * @return bool
+     * @return bool|int
      */
     public function save(array $data)
     {
-        $this->startTrans();
-        try {
-            $data['password'] = config('system.def_password');
-            $this->model->storeBy($data);
-            $this->model->saveRoles($data['roles']);
-            $this->commit();
-        } catch (\Exception $e) {
-            $this->rollback();
-            return false;
-        }
-
-        return true;
+        $data['password'] = config('system.def_password');
+        return $this->model->storeBy($data);
     }
 
     /**
-     * 获取编辑数据
+     * 获取编辑数据。
      *
      * @param int $id
      * @return array
      */
     public function edit($id)
     {
-        $user = $this->model->withoutField(['password'])->findOrFail($id);
-        $user->roles = $user->getRolesId();
-        return $user;
+        return $this->model->withoutField(['password'])->findOrFail($id);
     }
 
     /**
-     * 修改
+     * 修改用户。
      *
      * @param int $id
      * @param array $data
@@ -141,20 +141,11 @@ class UserService extends BaseService
      */
     public function update($id, array $data)
     {
-        $this->startTrans();
-        try {
-            $this->model->updateBy($id, $data);
-            $this->model->find($id)->updateRoles($data['roles']);
-            $this->commit();
-            return true;
-        } catch (\Exception $e) {
-            $this->rollback();
-            return false;
-        }
+        return $this->model->updateBy($id, $data);
     }
 
     /**
-     * 修改状态
+     * 修改状态。
      *
      * @param int $id
      * @return bool
@@ -165,7 +156,7 @@ class UserService extends BaseService
     }
 
     /**
-     * 修改密码
+     * 修改密码。
      *
      * @param array $data
      * @return mixed
@@ -176,7 +167,7 @@ class UserService extends BaseService
     }
 
     /**
-     * 更新个人信息
+     * 更新个人信息。
      *
      * @param int $id
      * @param array $data
@@ -188,7 +179,7 @@ class UserService extends BaseService
     }
 
     /**
-     * 重置密码
+     * 重置密码。
      *
      * @param int $id
      * @return array|bool
@@ -201,7 +192,7 @@ class UserService extends BaseService
     }
 
     /**
-     * 删除用户
+     * 删除用户。
      *
      * @param int $id
      * @return bool
@@ -223,12 +214,22 @@ class UserService extends BaseService
 
         try {
             $this->transaction(function () use ($id, $user) {
-                $user->roles()->detach();
+                // 删除用户时同步清理用户权限，避免 auth_access 残留孤儿数据。
+                AuthAccess::where('user_id', $user->id)->delete();
                 $this->model->deleteBy($id);
             });
             return true;
         } catch (\Exception $e) {
             return false;
         }
+    }
+
+    /**
+     * 管理员账号默认拥有全部权限。
+     */
+    private function isSuperAdmin(User $user): bool
+    {
+        return (int) ($user->is_admin ?? 0) === 1
+            || (string) $user->id === (string) config('system.super_admin_id');
     }
 }

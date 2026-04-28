@@ -46,14 +46,13 @@ export interface RouteMeta extends Record<string | number | symbol, unknown> {
   /** 是否缓存 */
   keepAlive?: boolean
   /** 操作权限 */
+  // Optional button auth metadata; route-level roles were removed.
   authList?: Array<{
     title: string
     authMark: string
   }>
   /** 是否为一级菜单 */
   isFirstLevel?: boolean
-  /** 角色权限 */
-  roles?: string[]
   /** 是否固定标签页 */
   fixedTab?: boolean
   /** 激活菜单路径 */

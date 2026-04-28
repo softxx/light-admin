@@ -45,13 +45,12 @@ class User extends BaseController
      */
     public function save()
     {
+        // 部门和角色已移除，新增用户只接收账号基础信息。
         $data = $this->request->param([
             'username',
             'phone',
             'email',
-            'roles',
             'realname',
-            'dept_id',
             'avatar'
         ]);
         validate(UserValidate::class)->scene('add')->check($data);
@@ -79,13 +78,12 @@ class User extends BaseController
      */
     public function update($id)
     {
+        // 用户名只允许新增时设置；编辑时维护基础资料。
         $data = $this->request->param([
             'id',
             'email',
-            'roles',
             'realname',
             'phone',
-            'dept_id',
             'avatar'
         ]);
         validate(UserValidate::class)->scene('edit')->check($data);

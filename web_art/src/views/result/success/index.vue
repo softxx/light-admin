@@ -6,7 +6,7 @@
     iconCode="ri:check-fill"
   >
     <template #content>
-      <p>已提交申请，等待部门审核。</p>
+      <p>已提交申请，等待审核。</p>
     </template>
     <template #buttons>
       <ElButton type="primary" v-ripple>返回修改</ElButton>

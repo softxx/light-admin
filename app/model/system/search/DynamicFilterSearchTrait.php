@@ -50,7 +50,7 @@ trait DynamicFilterSearchTrait
      * Field config example:
      * [
      *   'status' => ['type' => 'select'],
-     *   'dept_id' => ['type' => 'select', 'handler' => 'applyDeptFilterCondition'],
+     *   'created_at' => ['type' => 'date'],
      * ]
      */
     protected function getDynamicFilterFieldConfigs(): array

@@ -5,23 +5,24 @@ namespace app\adminapi\validate\system;
 use app\model\system\User;
 use core\base\BaseValidate;
 
+/**
+ * 用户校验。
+ *
+ * 部门和角色字段已移除，用户保存只校验账号基础信息。
+ */
 class UserValidate extends BaseValidate
 {
     protected $rule = [
         'id' => 'require|checkAdmin',
         'username' => 'require|max:30|unique:user|alphaNum',
-        'roles' => 'require|array',
         'realname' => 'require|max:10',
-        'dept_id' => 'require',
         'phone' => 'mobile|unique:user',
         'email' => 'email|unique:user'
     ];
 
     public $field = [
         'realname' => '姓名',
-        'roles' => '角色',
         'username' => '用户名',
-        'dept_id' => '部门',
         'email' => '邮箱',
         'phone' => '手机号'
     ];
@@ -33,7 +34,7 @@ class UserValidate extends BaseValidate
 
     public function sceneEdit()
     {
-        return $this->only(['id', 'realname', 'roles', 'dept_id', 'phone', 'email']);
+        return $this->only(['id', 'realname', 'phone', 'email']);
     }
 
     public function sceneUpdateInfo()
@@ -47,7 +48,7 @@ class UserValidate extends BaseValidate
     }
 
     /**
-     * 校验用户是否允许操作
+     * 校验用户是否允许操作。
      */
     public function checkAdmin($value)
     {

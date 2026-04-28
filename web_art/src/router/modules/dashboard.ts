@@ -5,9 +5,9 @@ export const dashboardRoutes: AppRouteRecord = {
   path: '/dashboard',
   component: '/index/index',
   meta: {
+    // Dashboard no longer declares role constraints; backend/user permissions decide access.
     title: 'menus.dashboard.title',
-    icon: 'ri:pie-chart-line',
-    roles: ['R_SUPER', 'R_ADMIN']
+    icon: 'ri:pie-chart-line'
   },
   children: [
     {

@@ -36,34 +36,6 @@
           </ElFormItem>
         </ElCol>
 
-        <ElCol :span="12">
-          <ElFormItem label="角色" prop="roles">
-            <ElSelect v-model="form.roles" multiple placeholder="请选择角色" style="width: 100%">
-              <ElOption
-                v-for="item in roleOptions"
-                :key="item.id"
-                :label="item.name"
-                :value="item.id"
-              />
-            </ElSelect>
-          </ElFormItem>
-        </ElCol>
-
-        <ElCol :span="12">
-          <ElFormItem label="部门" prop="dept_id">
-            <ElTreeSelect
-              v-model="form.dept_id"
-              :data="departmentOptions"
-              clearable
-              filterable
-              node-key="id"
-              style="width: 100%"
-              placeholder="请选择部门"
-              :props="treeProps"
-            />
-          </ElFormItem>
-        </ElCol>
-
         <ElCol :span="24">
           <ElFormItem label="头像" prop="avatar">
             <div class="w-full flex flex-col gap-3">
@@ -99,8 +71,6 @@
     visible: boolean
     type: DialogType
     userData?: Partial<Api.SystemManage.UserListItem>
-    roleOptions?: Api.SystemManage.RoleOption[]
-    departmentOptions?: Api.SystemManage.DepartmentOption[]
   }
 
   interface Emits {
@@ -111,9 +81,7 @@
   const props = withDefaults(defineProps<Props>(), {
     visible: false,
     type: 'add',
-    userData: () => ({}),
-    roleOptions: () => [],
-    departmentOptions: () => []
+    userData: () => ({})
   })
 
   const emit = defineEmits<Emits>()
@@ -127,6 +95,7 @@
     set: (value) => emit('update:visible', value)
   })
 
+  // 部门和角色字段已移除，新增/编辑用户只维护账号基础信息。
   const form = reactive<
     Api.SystemManage.UserPayload & {
       username: string
@@ -137,16 +106,8 @@
     realname: '',
     phone: '',
     email: '',
-    dept_id: '',
-    roles: [],
     avatar: ''
   })
-
-  const treeProps = {
-    label: 'name',
-    value: 'id',
-    children: 'children'
-  }
 
   const rules = reactive<FormRules>({
     username: [
@@ -162,8 +123,6 @@
       }
     ],
     realname: [{ required: true, message: '请输入姓名', trigger: 'blur' }],
-    roles: [{ required: true, message: '请选择角色', trigger: 'change' }],
-    dept_id: [{ required: true, message: '请选择部门', trigger: 'change' }],
     email: [{ type: 'email', message: '邮箱格式不正确', trigger: 'blur' }]
   })
 
@@ -174,8 +133,6 @@
       realname: '',
       phone: '',
       email: '',
-      dept_id: '',
-      roles: [],
       avatar: ''
     })
   }
@@ -196,8 +153,6 @@
         realname: detail.realname || '',
         phone: detail.phone || '',
         email: detail.email || '',
-        dept_id: detail.dept_id || '',
-        roles: Array.isArray(detail.roles) ? detail.roles : [],
         avatar: detail.avatar || ''
       })
     } finally {
@@ -220,8 +175,6 @@
         realname: form.realname,
         phone: form.phone,
         email: form.email,
-        dept_id: form.dept_id,
-        roles: form.roles,
         avatar: form.avatar
       })
       visible.value = false

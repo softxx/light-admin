@@ -8,7 +8,6 @@
  */
 
 import type { AppRouteRecord } from '@/types/router'
-import { useUserStore } from '@/store/modules/user'
 import { useAppMode } from '@/hooks/core/useAppMode'
 import { fetchGetMenuRoutes } from '@/api/auth'
 import { asyncRoutes } from '../routes/asyncRoutes'
@@ -41,25 +40,15 @@ export class MenuProcessor {
    * 处理前端控制模式的菜单
    */
   private async processFrontendMenu(): Promise<AppRouteRecord[]> {
-    const userStore = useUserStore()
-    const roles = Array.isArray(userStore.info?.roles)
-      ? userStore.info.roles.map((role) => String(role))
-      : []
-
-    let menuList = [...asyncRoutes]
-
-    // 根据角色过滤菜单
-    if (roles.length > 0) {
-      menuList = this.filterMenuByRoles(menuList, roles)
-    }
-
-    return this.filterEmptyMenus(menuList)
+    // Frontend mode keeps the static route tree; role-based filtering has been removed.
+    return this.filterEmptyMenus([...asyncRoutes])
   }
 
   /**
    * 处理后端控制模式的菜单
    */
   private async processBackendMenu(): Promise<AppRouteRecord[]> {
+    // Backend mode trusts /getRouter, which is already filtered by direct user permissions.
     const list = await fetchGetMenuRoutes()
     const backendMenu = this.ensureDefaultHome(list)
     return this.filterEmptyMenus(this.mergeLocalHiddenRoutes(backendMenu))
@@ -149,26 +138,6 @@ export class MenuProcessor {
     }
 
     return Boolean(route.children?.some((child) => this.containsDashboardRoute(child)))
-  }
-
-  /**
-   * 根据角色过滤菜单
-   */
-  private filterMenuByRoles(menu: AppRouteRecord[], roles: string[]): AppRouteRecord[] {
-    return menu.reduce((acc: AppRouteRecord[], item) => {
-      const itemRoles = item.meta?.roles
-      const hasPermission = !itemRoles || itemRoles.some((role) => roles?.includes(role))
-
-      if (hasPermission) {
-        const filteredItem = { ...item }
-        if (filteredItem.children?.length) {
-          filteredItem.children = this.filterMenuByRoles(filteredItem.children, roles)
-        }
-        acc.push(filteredItem)
-      }
-
-      return acc
-    }, [])
   }
 
   /**

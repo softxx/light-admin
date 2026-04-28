@@ -49,12 +49,14 @@ function get_dict_map($type, $value, $pattern = '-', $fullInfo = false)
  */
 function is_super_admin()
 {
-    $roles = request()->user()->getRolesId();
-    $super_admin_id = config('system.super_admin_id');
-    if (in_array($super_admin_id, $roles)) {
-        return true;
+    $user = request()->user();
+    if (!$user) {
+        return false;
     }
-    return false;
+
+    // 角色移除后，超级管理员只由用户表 is_admin 或配置的管理员 ID 判定。
+    return (int) ($user->is_admin ?? 0) === 1
+        || (string) ($user->id ?? '') === (string) config('system.super_admin_id');
 }
 
 

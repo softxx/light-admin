@@ -12,8 +12,7 @@ use core\base\BaseModel;
  */
 trait BaseModelTrait {
 
-
-    use DataRangScopeTrait;
+    // 数据权限范围已移除，基础模型只保留通用 CRUD 能力。
 
 
     /**

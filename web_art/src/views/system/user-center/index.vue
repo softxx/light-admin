@@ -10,18 +10,9 @@
             </h2>
             <p class="mt-2 text-sm text-g-500">{{ userInfo.username || '--' }}</p>
 
-            <div class="mt-4 flex flex-wrap justify-center gap-2">
-              <ElTag v-for="role in roleNames" :key="role" effect="plain">
-                {{ role }}
-              </ElTag>
-              <ElTag v-if="!roleNames.length" type="info" effect="plain">未分配角色</ElTag>
-            </div>
           </div>
 
           <ElDescriptions :column="1" border class="mt-6">
-            <ElDescriptionsItem label="部门">
-              {{ userInfo.department_name || '--' }}
-            </ElDescriptionsItem>
             <ElDescriptionsItem label="邮箱">
               {{ userInfo.email || '--' }}
             </ElDescriptionsItem>
@@ -221,10 +212,8 @@
   defineOptions({ name: 'UserCenter' })
 
   const userStore = useUserStore()
+  // User profile no longer displays department or role data.
   const userInfo = computed(() => userStore.getUserInfo)
-  const roleNames = computed(() =>
-    Array.isArray(userInfo.value.role_name) ? userInfo.value.role_name.filter(Boolean) : []
-  )
 
   const profileFormRef = ref<FormInstance>()
   const passwordFormRef = ref<FormInstance>()

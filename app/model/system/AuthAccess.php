@@ -4,16 +4,15 @@ namespace app\model\system;
 
 use core\base\BaseModel;
 
+/**
+ * 用户权限关联模型。
+ *
+ * auth_access 现在保存 user_id 和 menu_id 的直接映射，不再保存 role_id。
+ */
 class AuthAccess extends BaseModel
 {
-
-    /**
-     * 获取对应角色的权限
-     * @param  string $role_id  角色id
-     * @return array
-     */
-    public static function getPermission($role_id)
+    public static function getPermission($userId)
     {
-        return self::whereIn('role_id', $role_id)->column('menu_id');
+        return self::where('user_id', $userId)->column('menu_id');
     }
 }

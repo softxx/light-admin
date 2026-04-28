@@ -400,9 +400,10 @@ class InstallService
 
     private function verifyInstallation(PDO $pdo, string $prefix): void
     {
+        // Role and department tables were removed; installation is valid with these core tables.
         $requiredTables = [
             $prefix . 'user',
-            $prefix . 'role',
+            $prefix . 'menu',
             $prefix . 'system_setting',
         ];
 

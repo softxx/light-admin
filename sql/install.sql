@@ -4,161 +4,70 @@ SET FOREIGN_KEY_CHECKS = 0;
 -- ----------------------------
 -- Table structure for light_auth_access
 -- ----------------------------
+-- auth_access now maps users directly to menus; role_id is intentionally absent.
 DROP TABLE IF EXISTS `light_auth_access`;
 CREATE TABLE `light_auth_access` (
   `id` int(10) NOT NULL AUTO_INCREMENT,
-  `role_id` int(10) NOT NULL DEFAULT '0' COMMENT '角色id',
+  `user_id` int(10) NOT NULL DEFAULT '0' COMMENT 'user id',
   `menu_id` int(10) NOT NULL DEFAULT '0' COMMENT '菜单id',
-  PRIMARY KEY (`id`) USING BTREE
-) ENGINE=InnoDB AUTO_INCREMENT=5751 DEFAULT CHARSET=utf8mb4 ROW_FORMAT=DYNAMIC COMMENT='权限菜单关联表';
+  PRIMARY KEY (`id`) USING BTREE,
+  UNIQUE KEY `user_menu` (`user_id`, `menu_id`) USING BTREE,
+  KEY `menu_id` (`menu_id`) USING BTREE
+) ENGINE=InnoDB AUTO_INCREMENT=50 DEFAULT CHARSET=utf8mb4 ROW_FORMAT=DYNAMIC COMMENT='user auth menu map';
 
 -- ----------------------------
 -- Records of light_auth_access
 -- ----------------------------
 BEGIN;
-INSERT INTO `light_auth_access` (`id`, `role_id`, `menu_id`) VALUES (5167, 3, 2);
-INSERT INTO `light_auth_access` (`id`, `role_id`, `menu_id`) VALUES (5168, 3, 1);
-INSERT INTO `light_auth_access` (`id`, `role_id`, `menu_id`) VALUES (5169, 3, 28);
-INSERT INTO `light_auth_access` (`id`, `role_id`, `menu_id`) VALUES (5170, 3, 14);
-INSERT INTO `light_auth_access` (`id`, `role_id`, `menu_id`) VALUES (5171, 3, 29);
-INSERT INTO `light_auth_access` (`id`, `role_id`, `menu_id`) VALUES (5172, 3, 30);
-INSERT INTO `light_auth_access` (`id`, `role_id`, `menu_id`) VALUES (5173, 3, 77);
-INSERT INTO `light_auth_access` (`id`, `role_id`, `menu_id`) VALUES (5174, 3, 114);
-INSERT INTO `light_auth_access` (`id`, `role_id`, `menu_id`) VALUES (5175, 3, 106);
-INSERT INTO `light_auth_access` (`id`, `role_id`, `menu_id`) VALUES (5176, 3, 107);
-INSERT INTO `light_auth_access` (`id`, `role_id`, `menu_id`) VALUES (5177, 3, 38);
-INSERT INTO `light_auth_access` (`id`, `role_id`, `menu_id`) VALUES (5178, 3, 80);
-INSERT INTO `light_auth_access` (`id`, `role_id`, `menu_id`) VALUES (5179, 3, 108);
-INSERT INTO `light_auth_access` (`id`, `role_id`, `menu_id`) VALUES (5180, 3, 40);
-INSERT INTO `light_auth_access` (`id`, `role_id`, `menu_id`) VALUES (5182, 3, 45);
-INSERT INTO `light_auth_access` (`id`, `role_id`, `menu_id`) VALUES (5183, 3, 21);
-INSERT INTO `light_auth_access` (`id`, `role_id`, `menu_id`) VALUES (5184, 3, 46);
-INSERT INTO `light_auth_access` (`id`, `role_id`, `menu_id`) VALUES (5185, 3, 47);
-INSERT INTO `light_auth_access` (`id`, `role_id`, `menu_id`) VALUES (5186, 3, 81);
-INSERT INTO `light_auth_access` (`id`, `role_id`, `menu_id`) VALUES (5187, 3, 53);
-INSERT INTO `light_auth_access` (`id`, `role_id`, `menu_id`) VALUES (5188, 3, 50);
-INSERT INTO `light_auth_access` (`id`, `role_id`, `menu_id`) VALUES (5189, 3, 54);
-INSERT INTO `light_auth_access` (`id`, `role_id`, `menu_id`) VALUES (5190, 3, 82);
-INSERT INTO `light_auth_access` (`id`, `role_id`, `menu_id`) VALUES (5191, 3, 110);
-INSERT INTO `light_auth_access` (`id`, `role_id`, `menu_id`) VALUES (5192, 3, 36);
-INSERT INTO `light_auth_access` (`id`, `role_id`, `menu_id`) VALUES (5193, 3, 32);
-INSERT INTO `light_auth_access` (`id`, `role_id`, `menu_id`) VALUES (5194, 3, 78);
-INSERT INTO `light_auth_access` (`id`, `role_id`, `menu_id`) VALUES (5195, 3, 122);
-INSERT INTO `light_auth_access` (`id`, `role_id`, `menu_id`) VALUES (5196, 3, 13);
-INSERT INTO `light_auth_access` (`id`, `role_id`, `menu_id`) VALUES (5197, 3, 113);
-INSERT INTO `light_auth_access` (`id`, `role_id`, `menu_id`) VALUES (5198, 3, 105);
-INSERT INTO `light_auth_access` (`id`, `role_id`, `menu_id`) VALUES (5199, 3, 16);
-INSERT INTO `light_auth_access` (`id`, `role_id`, `menu_id`) VALUES (5200, 3, 20);
-INSERT INTO `light_auth_access` (`id`, `role_id`, `menu_id`) VALUES (5201, 3, 121);
-INSERT INTO `light_auth_access` (`id`, `role_id`, `menu_id`) VALUES (5722, 3, 245);
-INSERT INTO `light_auth_access` (`id`, `role_id`, `menu_id`) VALUES (5579, 1, 107);
-INSERT INTO `light_auth_access` (`id`, `role_id`, `menu_id`) VALUES (5580, 1, 106);
-INSERT INTO `light_auth_access` (`id`, `role_id`, `menu_id`) VALUES (5581, 1, 119);
-INSERT INTO `light_auth_access` (`id`, `role_id`, `menu_id`) VALUES (5582, 1, 114);
-INSERT INTO `light_auth_access` (`id`, `role_id`, `menu_id`) VALUES (5583, 1, 120);
-INSERT INTO `light_auth_access` (`id`, `role_id`, `menu_id`) VALUES (5584, 1, 116);
-INSERT INTO `light_auth_access` (`id`, `role_id`, `menu_id`) VALUES (5585, 1, 130);
-INSERT INTO `light_auth_access` (`id`, `role_id`, `menu_id`) VALUES (5586, 1, 38);
-INSERT INTO `light_auth_access` (`id`, `role_id`, `menu_id`) VALUES (5587, 1, 108);
-INSERT INTO `light_auth_access` (`id`, `role_id`, `menu_id`) VALUES (5588, 1, 80);
-INSERT INTO `light_auth_access` (`id`, `role_id`, `menu_id`) VALUES (5590, 1, 40);
-INSERT INTO `light_auth_access` (`id`, `role_id`, `menu_id`) VALUES (5592, 1, 81);
-INSERT INTO `light_auth_access` (`id`, `role_id`, `menu_id`) VALUES (5593, 1, 45);
-INSERT INTO `light_auth_access` (`id`, `role_id`, `menu_id`) VALUES (5594, 1, 46);
-INSERT INTO `light_auth_access` (`id`, `role_id`, `menu_id`) VALUES (5595, 1, 47);
-INSERT INTO `light_auth_access` (`id`, `role_id`, `menu_id`) VALUES (5596, 1, 110);
-INSERT INTO `light_auth_access` (`id`, `role_id`, `menu_id`) VALUES (5597, 1, 82);
-INSERT INTO `light_auth_access` (`id`, `role_id`, `menu_id`) VALUES (5598, 1, 53);
-INSERT INTO `light_auth_access` (`id`, `role_id`, `menu_id`) VALUES (5599, 1, 54);
-INSERT INTO `light_auth_access` (`id`, `role_id`, `menu_id`) VALUES (5600, 1, 78);
-INSERT INTO `light_auth_access` (`id`, `role_id`, `menu_id`) VALUES (5601, 1, 36);
-INSERT INTO `light_auth_access` (`id`, `role_id`, `menu_id`) VALUES (5602, 1, 105);
-INSERT INTO `light_auth_access` (`id`, `role_id`, `menu_id`) VALUES (5603, 1, 113);
-INSERT INTO `light_auth_access` (`id`, `role_id`, `menu_id`) VALUES (5604, 1, 32);
-INSERT INTO `light_auth_access` (`id`, `role_id`, `menu_id`) VALUES (5605, 1, 16);
-INSERT INTO `light_auth_access` (`id`, `role_id`, `menu_id`) VALUES (5606, 1, 20);
-INSERT INTO `light_auth_access` (`id`, `role_id`, `menu_id`) VALUES (5607, 1, 21);
-INSERT INTO `light_auth_access` (`id`, `role_id`, `menu_id`) VALUES (5608, 1, 50);
-INSERT INTO `light_auth_access` (`id`, `role_id`, `menu_id`) VALUES (5609, 1, 156);
-INSERT INTO `light_auth_access` (`id`, `role_id`, `menu_id`) VALUES (5611, 1, 14);
-INSERT INTO `light_auth_access` (`id`, `role_id`, `menu_id`) VALUES (5612, 1, 77);
-INSERT INTO `light_auth_access` (`id`, `role_id`, `menu_id`) VALUES (5613, 1, 28);
-INSERT INTO `light_auth_access` (`id`, `role_id`, `menu_id`) VALUES (5614, 1, 29);
-INSERT INTO `light_auth_access` (`id`, `role_id`, `menu_id`) VALUES (5615, 1, 30);
-INSERT INTO `light_auth_access` (`id`, `role_id`, `menu_id`) VALUES (5616, 1, 13);
-INSERT INTO `light_auth_access` (`id`, `role_id`, `menu_id`) VALUES (5684, 1, 236);
-INSERT INTO `light_auth_access` (`id`, `role_id`, `menu_id`) VALUES (5716, 1, 241);
-INSERT INTO `light_auth_access` (`id`, `role_id`, `menu_id`) VALUES (5717, 1, 242);
-INSERT INTO `light_auth_access` (`id`, `role_id`, `menu_id`) VALUES (5718, 1, 243);
-INSERT INTO `light_auth_access` (`id`, `role_id`, `menu_id`) VALUES (5719, 1, 244);
-INSERT INTO `light_auth_access` (`id`, `role_id`, `menu_id`) VALUES (5720, 1, 245);
-INSERT INTO `light_auth_access` (`id`, `role_id`, `menu_id`) VALUES (5724, 1, 246);
-INSERT INTO `light_auth_access` (`id`, `role_id`, `menu_id`) VALUES (5725, 1, 247);
-INSERT INTO `light_auth_access` (`id`, `role_id`, `menu_id`) VALUES (5726, 1, 248);
-INSERT INTO `light_auth_access` (`id`, `role_id`, `menu_id`) VALUES (5686, 2, 107);
-INSERT INTO `light_auth_access` (`id`, `role_id`, `menu_id`) VALUES (5687, 2, 119);
-INSERT INTO `light_auth_access` (`id`, `role_id`, `menu_id`) VALUES (5688, 2, 114);
-INSERT INTO `light_auth_access` (`id`, `role_id`, `menu_id`) VALUES (5689, 2, 80);
-INSERT INTO `light_auth_access` (`id`, `role_id`, `menu_id`) VALUES (5690, 2, 40);
-INSERT INTO `light_auth_access` (`id`, `role_id`, `menu_id`) VALUES (5692, 2, 81);
-INSERT INTO `light_auth_access` (`id`, `role_id`, `menu_id`) VALUES (5693, 2, 45);
-INSERT INTO `light_auth_access` (`id`, `role_id`, `menu_id`) VALUES (5694, 2, 46);
-INSERT INTO `light_auth_access` (`id`, `role_id`, `menu_id`) VALUES (5695, 2, 47);
-INSERT INTO `light_auth_access` (`id`, `role_id`, `menu_id`) VALUES (5696, 2, 36);
-INSERT INTO `light_auth_access` (`id`, `role_id`, `menu_id`) VALUES (5697, 2, 78);
-INSERT INTO `light_auth_access` (`id`, `role_id`, `menu_id`) VALUES (5698, 2, 32);
-INSERT INTO `light_auth_access` (`id`, `role_id`, `menu_id`) VALUES (5699, 2, 21);
-INSERT INTO `light_auth_access` (`id`, `role_id`, `menu_id`) VALUES (5700, 2, 106);
-INSERT INTO `light_auth_access` (`id`, `role_id`, `menu_id`) VALUES (5701, 2, 105);
-INSERT INTO `light_auth_access` (`id`, `role_id`, `menu_id`) VALUES (5702, 2, 113);
-INSERT INTO `light_auth_access` (`id`, `role_id`, `menu_id`) VALUES (5703, 2, 20);
-INSERT INTO `light_auth_access` (`id`, `role_id`, `menu_id`) VALUES (5704, 2, 156);
-INSERT INTO `light_auth_access` (`id`, `role_id`, `menu_id`) VALUES (5705, 2, 13);
-INSERT INTO `light_auth_access` (`id`, `role_id`, `menu_id`) VALUES (5721, 2, 245);
-INSERT INTO `light_auth_access` (`id`, `role_id`, `menu_id`) VALUES (5706, 5, 156);
-INSERT INTO `light_auth_access` (`id`, `role_id`, `menu_id`) VALUES (5707, 5, 105);
-INSERT INTO `light_auth_access` (`id`, `role_id`, `menu_id`) VALUES (5708, 5, 113);
-INSERT INTO `light_auth_access` (`id`, `role_id`, `menu_id`) VALUES (5709, 5, 106);
-INSERT INTO `light_auth_access` (`id`, `role_id`, `menu_id`) VALUES (5710, 5, 119);
-INSERT INTO `light_auth_access` (`id`, `role_id`, `menu_id`) VALUES (5711, 5, 107);
-INSERT INTO `light_auth_access` (`id`, `role_id`, `menu_id`) VALUES (5712, 5, 120);
-INSERT INTO `light_auth_access` (`id`, `role_id`, `menu_id`) VALUES (5713, 5, 114);
-INSERT INTO `light_auth_access` (`id`, `role_id`, `menu_id`) VALUES (5714, 5, 116);
-INSERT INTO `light_auth_access` (`id`, `role_id`, `menu_id`) VALUES (5715, 5, 13);
-INSERT INTO `light_auth_access` (`id`, `role_id`, `menu_id`) VALUES (5723, 5, 245);
-COMMIT;
-
--- ----------------------------
--- Table structure for light_department
--- ----------------------------
-DROP TABLE IF EXISTS `light_department`;
-CREATE TABLE `light_department` (
-  `id` int(11) NOT NULL AUTO_INCREMENT,
-  `name` varchar(30) NOT NULL DEFAULT '' COMMENT '部门名称',
-  `parent_id` int(11) NOT NULL DEFAULT '0' COMMENT '父级部门',
-  `sort` smallint(5) NOT NULL DEFAULT '8' COMMENT '部门排序',
-  `leader_id` int(11) NOT NULL DEFAULT '0' COMMENT '部门负责人',
-  PRIMARY KEY (`id`) USING BTREE
-) ENGINE=InnoDB AUTO_INCREMENT=21 DEFAULT CHARSET=utf8mb4 ROW_FORMAT=DYNAMIC COMMENT='部门表';
-
--- ----------------------------
--- Records of light_department
--- ----------------------------
-BEGIN;
-INSERT INTO `light_department` (`id`, `name`, `parent_id`, `sort`, `leader_id`) VALUES (1, '人事部', 4, 8, 9);
-INSERT INTO `light_department` (`id`, `name`, `parent_id`, `sort`, `leader_id`) VALUES (2, '财务部', 4, 8, 22);
-INSERT INTO `light_department` (`id`, `name`, `parent_id`, `sort`, `leader_id`) VALUES (3, '技术部', 4, 8, 11);
-INSERT INTO `light_department` (`id`, `name`, `parent_id`, `sort`, `leader_id`) VALUES (4, '总公司', 0, 8, 18);
-INSERT INTO `light_department` (`id`, `name`, `parent_id`, `sort`, `leader_id`) VALUES (5, '市场部', 4, 8, 1);
-INSERT INTO `light_department` (`id`, `name`, `parent_id`, `sort`, `leader_id`) VALUES (7, '上海分公司', 0, 8, 1);
-INSERT INTO `light_department` (`id`, `name`, `parent_id`, `sort`, `leader_id`) VALUES (8, '广东分公司', 0, 8, 1);
-INSERT INTO `light_department` (`id`, `name`, `parent_id`, `sort`, `leader_id`) VALUES (13, '北京分公司', 0, 8, 0);
-INSERT INTO `light_department` (`id`, `name`, `parent_id`, `sort`, `leader_id`) VALUES (14, '人事部', 7, 8, 0);
-INSERT INTO `light_department` (`id`, `name`, `parent_id`, `sort`, `leader_id`) VALUES (15, '研发部', 4, 8, 0);
-INSERT INTO `light_department` (`id`, `name`, `parent_id`, `sort`, `leader_id`) VALUES (16, '技术部', 7, 8, 0);
-INSERT INTO `light_department` (`id`, `name`, `parent_id`, `sort`, `leader_id`) VALUES (17, '开发部', 8, 8, 0);
-INSERT INTO `light_department` (`id`, `name`, `parent_id`, `sort`, `leader_id`) VALUES (18, '人事部', 8, 8, 22);
-INSERT INTO `light_department` (`id`, `name`, `parent_id`, `sort`, `leader_id`) VALUES (19, '人事部', 13, 8, 20);
+INSERT INTO `light_auth_access` (`id`, `user_id`, `menu_id`) VALUES (1, 1, 13);
+INSERT INTO `light_auth_access` (`id`, `user_id`, `menu_id`) VALUES (2, 1, 14);
+INSERT INTO `light_auth_access` (`id`, `user_id`, `menu_id`) VALUES (3, 1, 20);
+INSERT INTO `light_auth_access` (`id`, `user_id`, `menu_id`) VALUES (4, 1, 28);
+INSERT INTO `light_auth_access` (`id`, `user_id`, `menu_id`) VALUES (5, 1, 29);
+INSERT INTO `light_auth_access` (`id`, `user_id`, `menu_id`) VALUES (6, 1, 30);
+INSERT INTO `light_auth_access` (`id`, `user_id`, `menu_id`) VALUES (7, 1, 36);
+INSERT INTO `light_auth_access` (`id`, `user_id`, `menu_id`) VALUES (8, 1, 40);
+INSERT INTO `light_auth_access` (`id`, `user_id`, `menu_id`) VALUES (9, 1, 50);
+INSERT INTO `light_auth_access` (`id`, `user_id`, `menu_id`) VALUES (10, 1, 53);
+INSERT INTO `light_auth_access` (`id`, `user_id`, `menu_id`) VALUES (11, 1, 54);
+INSERT INTO `light_auth_access` (`id`, `user_id`, `menu_id`) VALUES (12, 1, 77);
+INSERT INTO `light_auth_access` (`id`, `user_id`, `menu_id`) VALUES (13, 1, 78);
+INSERT INTO `light_auth_access` (`id`, `user_id`, `menu_id`) VALUES (14, 1, 80);
+INSERT INTO `light_auth_access` (`id`, `user_id`, `menu_id`) VALUES (15, 1, 82);
+INSERT INTO `light_auth_access` (`id`, `user_id`, `menu_id`) VALUES (16, 1, 105);
+INSERT INTO `light_auth_access` (`id`, `user_id`, `menu_id`) VALUES (17, 1, 106);
+INSERT INTO `light_auth_access` (`id`, `user_id`, `menu_id`) VALUES (18, 1, 107);
+INSERT INTO `light_auth_access` (`id`, `user_id`, `menu_id`) VALUES (19, 1, 108);
+INSERT INTO `light_auth_access` (`id`, `user_id`, `menu_id`) VALUES (20, 1, 110);
+INSERT INTO `light_auth_access` (`id`, `user_id`, `menu_id`) VALUES (21, 1, 113);
+INSERT INTO `light_auth_access` (`id`, `user_id`, `menu_id`) VALUES (22, 1, 114);
+INSERT INTO `light_auth_access` (`id`, `user_id`, `menu_id`) VALUES (23, 1, 116);
+INSERT INTO `light_auth_access` (`id`, `user_id`, `menu_id`) VALUES (24, 1, 119);
+INSERT INTO `light_auth_access` (`id`, `user_id`, `menu_id`) VALUES (25, 1, 120);
+INSERT INTO `light_auth_access` (`id`, `user_id`, `menu_id`) VALUES (26, 1, 156);
+INSERT INTO `light_auth_access` (`id`, `user_id`, `menu_id`) VALUES (27, 1, 167);
+INSERT INTO `light_auth_access` (`id`, `user_id`, `menu_id`) VALUES (28, 1, 236);
+INSERT INTO `light_auth_access` (`id`, `user_id`, `menu_id`) VALUES (29, 1, 237);
+INSERT INTO `light_auth_access` (`id`, `user_id`, `menu_id`) VALUES (30, 1, 238);
+INSERT INTO `light_auth_access` (`id`, `user_id`, `menu_id`) VALUES (31, 1, 239);
+INSERT INTO `light_auth_access` (`id`, `user_id`, `menu_id`) VALUES (32, 1, 240);
+INSERT INTO `light_auth_access` (`id`, `user_id`, `menu_id`) VALUES (33, 1, 241);
+INSERT INTO `light_auth_access` (`id`, `user_id`, `menu_id`) VALUES (34, 1, 242);
+INSERT INTO `light_auth_access` (`id`, `user_id`, `menu_id`) VALUES (35, 1, 243);
+INSERT INTO `light_auth_access` (`id`, `user_id`, `menu_id`) VALUES (36, 1, 244);
+INSERT INTO `light_auth_access` (`id`, `user_id`, `menu_id`) VALUES (37, 1, 245);
+INSERT INTO `light_auth_access` (`id`, `user_id`, `menu_id`) VALUES (38, 1, 246);
+INSERT INTO `light_auth_access` (`id`, `user_id`, `menu_id`) VALUES (39, 1, 247);
+INSERT INTO `light_auth_access` (`id`, `user_id`, `menu_id`) VALUES (40, 1, 248);
+INSERT INTO `light_auth_access` (`id`, `user_id`, `menu_id`) VALUES (41, 1, 249);
+INSERT INTO `light_auth_access` (`id`, `user_id`, `menu_id`) VALUES (42, 1, 250);
+INSERT INTO `light_auth_access` (`id`, `user_id`, `menu_id`) VALUES (43, 1, 251);
+INSERT INTO `light_auth_access` (`id`, `user_id`, `menu_id`) VALUES (44, 1, 252);
+INSERT INTO `light_auth_access` (`id`, `user_id`, `menu_id`) VALUES (45, 1, 253);
+INSERT INTO `light_auth_access` (`id`, `user_id`, `menu_id`) VALUES (46, 1, 254);
+INSERT INTO `light_auth_access` (`id`, `user_id`, `menu_id`) VALUES (47, 1, 255);
+INSERT INTO `light_auth_access` (`id`, `user_id`, `menu_id`) VALUES (48, 1, 256);
+INSERT INTO `light_auth_access` (`id`, `user_id`, `menu_id`) VALUES (49, 1, 257);
 COMMIT;
 
 -- ----------------------------
@@ -326,27 +235,17 @@ CREATE TABLE `light_menu` (
 BEGIN;
 INSERT INTO `light_menu` (`id`, `pid`, `path`, `component`, `hidden`, `title`, `icon`, `rules`, `sort`, `type`, `hide_children`, `active_key`, `open_type`, `link_url`) VALUES (13, 0, 'system', 'Layout', 0, '系统管理', 'setting-outlined', '', 5, 0, 0, '', 0, '');
 INSERT INTO `light_menu` (`id`, `pid`, `path`, `component`, `hidden`, `title`, `icon`, `rules`, `sort`, `type`, `hide_children`, `active_key`, `open_type`, `link_url`) VALUES (14, 13, 'menu', 'system/menu/index', 0, '菜单管理', 'menu-outlined', '', 1, 1, 0, '', 0, '');
-INSERT INTO `light_menu` (`id`, `pid`, `path`, `component`, `hidden`, `title`, `icon`, `rules`, `sort`, `type`, `hide_children`, `active_key`, `open_type`, `link_url`) VALUES (16, 13, 'department', 'system/department/index', 0, '部门管理', 'apartment-outlined', '', 2, 1, 0, '', 0, '');
 INSERT INTO `light_menu` (`id`, `pid`, `path`, `component`, `hidden`, `title`, `icon`, `rules`, `sort`, `type`, `hide_children`, `active_key`, `open_type`, `link_url`) VALUES (20, 13, 'user', 'system/user/index', 0, '用户管理', 'team-outlined', '', 3, 1, 0, '', 0, '');
-INSERT INTO `light_menu` (`id`, `pid`, `path`, `component`, `hidden`, `title`, `icon`, `rules`, `sort`, `type`, `hide_children`, `active_key`, `open_type`, `link_url`) VALUES (21, 13, 'role', 'system/role/index', 0, '角色管理', 'user-outlined', '', 4, 1, 0, '', 0, '');
 INSERT INTO `light_menu` (`id`, `pid`, `path`, `component`, `hidden`, `title`, `icon`, `rules`, `sort`, `type`, `hide_children`, `active_key`, `open_type`, `link_url`) VALUES (28, 14, '', '', 0, '添加菜单', '', 'system:menu:save', 1, 2, 0, '', 0, '');
 INSERT INTO `light_menu` (`id`, `pid`, `path`, `component`, `hidden`, `title`, `icon`, `rules`, `sort`, `type`, `hide_children`, `active_key`, `open_type`, `link_url`) VALUES (29, 14, '', '', 0, '修改菜单', '', 'system:menu:update', 1, 2, 0, '', 0, '');
 INSERT INTO `light_menu` (`id`, `pid`, `path`, `component`, `hidden`, `title`, `icon`, `rules`, `sort`, `type`, `hide_children`, `active_key`, `open_type`, `link_url`) VALUES (30, 14, '', '', 0, '删除菜单', '', 'system:menu:delete', 1, 2, 0, '', 0, '');
-INSERT INTO `light_menu` (`id`, `pid`, `path`, `component`, `hidden`, `title`, `icon`, `rules`, `sort`, `type`, `hide_children`, `active_key`, `open_type`, `link_url`) VALUES (32, 21, 'auth', 'system/role/auth', 1, '权限设置', 'insurance-outlined', '', 10, 1, 0, 'system/role', 0, '');
-INSERT INTO `light_menu` (`id`, `pid`, `path`, `component`, `hidden`, `title`, `icon`, `rules`, `sort`, `type`, `hide_children`, `active_key`, `open_type`, `link_url`) VALUES (36, 32, '', '', 1, '保存权限', '', 'system:authAccess:save', 1, 2, 0, '', 0, '');
-INSERT INTO `light_menu` (`id`, `pid`, `path`, `component`, `hidden`, `title`, `icon`, `rules`, `sort`, `type`, `hide_children`, `active_key`, `open_type`, `link_url`) VALUES (38, 16, '', '', 0, '删除部门', '', 'system:department:delete', 1, 2, 0, '', 0, '');
 INSERT INTO `light_menu` (`id`, `pid`, `path`, `component`, `hidden`, `title`, `icon`, `rules`, `sort`, `type`, `hide_children`, `active_key`, `open_type`, `link_url`) VALUES (245, 20, '', '', 0, '新增用户', '', 'system:user:save', 1, 2, 0, '', 0, '');
 INSERT INTO `light_menu` (`id`, `pid`, `path`, `component`, `hidden`, `title`, `icon`, `rules`, `sort`, `type`, `hide_children`, `active_key`, `open_type`, `link_url`) VALUES (40, 20, '', '', 0, '更新用户', '', 'system:user:update', 2, 2, 0, '', 0, '');
-INSERT INTO `light_menu` (`id`, `pid`, `path`, `component`, `hidden`, `title`, `icon`, `rules`, `sort`, `type`, `hide_children`, `active_key`, `open_type`, `link_url`) VALUES (45, 21, '', '', 0, '添加角色', '', 'system:role:save', 1, 2, 0, '', 0, '');
-INSERT INTO `light_menu` (`id`, `pid`, `path`, `component`, `hidden`, `title`, `icon`, `rules`, `sort`, `type`, `hide_children`, `active_key`, `open_type`, `link_url`) VALUES (46, 21, '', '', 0, '修改角色', '', 'system:role:update', 1, 2, 0, '', 0, '');
-INSERT INTO `light_menu` (`id`, `pid`, `path`, `component`, `hidden`, `title`, `icon`, `rules`, `sort`, `type`, `hide_children`, `active_key`, `open_type`, `link_url`) VALUES (47, 21, '', '', 0, '删除角色', '', 'system:role:delete', 1, 2, 0, '', 0, '');
 INSERT INTO `light_menu` (`id`, `pid`, `path`, `component`, `hidden`, `title`, `icon`, `rules`, `sort`, `type`, `hide_children`, `active_key`, `open_type`, `link_url`) VALUES (50, 13, 'dict', 'system/dict/index', 0, '字典管理', 'deployment-unit-outlined', '', 5, 1, 0, '', 0, '');
 INSERT INTO `light_menu` (`id`, `pid`, `path`, `component`, `hidden`, `title`, `icon`, `rules`, `sort`, `type`, `hide_children`, `active_key`, `open_type`, `link_url`) VALUES (53, 50, '', '', 0, '修改字典', '', 'system:dict:update', 1, 2, 0, '', 0, '');
 INSERT INTO `light_menu` (`id`, `pid`, `path`, `component`, `hidden`, `title`, `icon`, `rules`, `sort`, `type`, `hide_children`, `active_key`, `open_type`, `link_url`) VALUES (54, 50, '', '', 0, '删除字典', '', 'system:dict:delete', 1, 2, 0, '', 0, '');
 INSERT INTO `light_menu` (`id`, `pid`, `path`, `component`, `hidden`, `title`, `icon`, `rules`, `sort`, `type`, `hide_children`, `active_key`, `open_type`, `link_url`) VALUES (77, 14, '', '', 0, '查看列表', '', 'system:menu:index', 1, 2, 0, '', 0, '');
-INSERT INTO `light_menu` (`id`, `pid`, `path`, `component`, `hidden`, `title`, `icon`, `rules`, `sort`, `type`, `hide_children`, `active_key`, `open_type`, `link_url`) VALUES (78, 32, '', '', 1, '查看权限', '', 'system:authAccess:index', 1, 2, 0, '', 0, '');
 INSERT INTO `light_menu` (`id`, `pid`, `path`, `component`, `hidden`, `title`, `icon`, `rules`, `sort`, `type`, `hide_children`, `active_key`, `open_type`, `link_url`) VALUES (80, 20, '', '', 0, '查看列表', '', 'system:user:index', 1, 2, 0, '', 0, '');
-INSERT INTO `light_menu` (`id`, `pid`, `path`, `component`, `hidden`, `title`, `icon`, `rules`, `sort`, `type`, `hide_children`, `active_key`, `open_type`, `link_url`) VALUES (81, 21, '', '', 0, '查看列表', '', 'system:role:index', 1, 2, 0, '', 0, '');
 INSERT INTO `light_menu` (`id`, `pid`, `path`, `component`, `hidden`, `title`, `icon`, `rules`, `sort`, `type`, `hide_children`, `active_key`, `open_type`, `link_url`) VALUES (82, 50, '', '', 0, '查看列表', '', 'system:dict:index', 1, 2, 0, '', 0, '');
 INSERT INTO `light_menu` (`id`, `pid`, `path`, `component`, `hidden`, `title`, `icon`, `rules`, `sort`, `type`, `hide_children`, `active_key`, `open_type`, `link_url`) VALUES (105, 156, 'operate', 'system/logs/operate-log', 0, '操作日志', 'profile-outlined', '', 1, 1, 0, '', 0, '');
 INSERT INTO `light_menu` (`id`, `pid`, `path`, `component`, `hidden`, `title`, `icon`, `rules`, `sort`, `type`, `hide_children`, `active_key`, `open_type`, `link_url`) VALUES (106, 105, '', '', 0, '查看列表', '', 'system:operateLog:index', 1, 2, 0, '', 0, '');
@@ -358,11 +257,12 @@ INSERT INTO `light_menu` (`id`, `pid`, `path`, `component`, `hidden`, `title`, `
 INSERT INTO `light_menu` (`id`, `pid`, `path`, `component`, `hidden`, `title`, `icon`, `rules`, `sort`, `type`, `hide_children`, `active_key`, `open_type`, `link_url`) VALUES (116, 113, '', '', 0, '清空日志', '', 'system:loginLog:clear', 1, 2, 0, '', 0, '');
 INSERT INTO `light_menu` (`id`, `pid`, `path`, `component`, `hidden`, `title`, `icon`, `rules`, `sort`, `type`, `hide_children`, `active_key`, `open_type`, `link_url`) VALUES (119, 105, '', '', 0, '删除日志', '', 'system:operateLog:delete', 1, 2, 0, '', 0, '');
 INSERT INTO `light_menu` (`id`, `pid`, `path`, `component`, `hidden`, `title`, `icon`, `rules`, `sort`, `type`, `hide_children`, `active_key`, `open_type`, `link_url`) VALUES (120, 113, '', '', 0, '删除日志', '', 'system:loginLog:delete', 1, 2, 0, '', 0, '');
-INSERT INTO `light_menu` (`id`, `pid`, `path`, `component`, `hidden`, `title`, `icon`, `rules`, `sort`, `type`, `hide_children`, `active_key`, `open_type`, `link_url`) VALUES (130, 16, '', '', 0, '添加部门', '', 'system:department:save', 1, 2, 0, '', 0, '');
 INSERT INTO `light_menu` (`id`, `pid`, `path`, `component`, `hidden`, `title`, `icon`, `rules`, `sort`, `type`, `hide_children`, `active_key`, `open_type`, `link_url`) VALUES (156, 13, 'log', 'RouteView', 0, '日志管理', 'file-text-outlined', '', 1, 0, 0, '', 0, '');
 INSERT INTO `light_menu` (`id`, `pid`, `path`, `component`, `hidden`, `title`, `icon`, `rules`, `sort`, `type`, `hide_children`, `active_key`, `open_type`, `link_url`) VALUES (167, 165, 'filetype', 'system/login_log/index', 0, '附件类型', '', '', 1, 1, 0, '', 0, '');
 INSERT INTO `light_menu` (`id`, `pid`, `path`, `component`, `hidden`, `title`, `icon`, `rules`, `sort`, `type`, `hide_children`, `active_key`, `open_type`, `link_url`) VALUES (236, 20, '', '', 0, '重置密码', '', 'system:user:resetPassword', 1, 2, 0, '', 0, '');
 INSERT INTO `light_menu` (`id`, `pid`, `path`, `component`, `hidden`, `title`, `icon`, `rules`, `sort`, `type`, `hide_children`, `active_key`, `open_type`, `link_url`) VALUES (237, 20, '', '', 0, '删除用户', '', 'system:user:delete', 1, 2, 0, '', 0, '');
+INSERT INTO `light_menu` (`id`, `pid`, `path`, `component`, `hidden`, `title`, `icon`, `rules`, `sort`, `type`, `hide_children`, `active_key`, `open_type`, `link_url`) VALUES (36, 20, '', '', 0, '保存权限', '', 'system:authAccess:save', 1, 2, 0, '', 0, '');
+INSERT INTO `light_menu` (`id`, `pid`, `path`, `component`, `hidden`, `title`, `icon`, `rules`, `sort`, `type`, `hide_children`, `active_key`, `open_type`, `link_url`) VALUES (78, 20, '', '', 0, '查看权限', '', 'system:authAccess:index', 1, 2, 0, '', 0, '');
 INSERT INTO `light_menu` (`id`, `pid`, `path`, `component`, `hidden`, `title`, `icon`, `rules`, `sort`, `type`, `hide_children`, `active_key`, `open_type`, `link_url`) VALUES (238, 13, 'setting', 'system/system-setting/index', 0, '系统设置', 'setting-outlined', '', 99, 1, 0, '', 0, '');
 INSERT INTO `light_menu` (`id`, `pid`, `path`, `component`, `hidden`, `title`, `icon`, `rules`, `sort`, `type`, `hide_children`, `active_key`, `open_type`, `link_url`) VALUES (239, 238, '', '', 0, '查看配置', '', 'system:systemsetting:index', 1, 2, 0, '', 0, '');
 INSERT INTO `light_menu` (`id`, `pid`, `path`, `component`, `hidden`, `title`, `icon`, `rules`, `sort`, `type`, `hide_children`, `active_key`, `open_type`, `link_url`) VALUES (240, 238, '', '', 0, '保存配置', '', 'system:systemsetting:update', 1, 2, 0, '', 0, '');
@@ -408,49 +308,6 @@ BEGIN;
 COMMIT;
 
 -- ----------------------------
--- Table structure for light_role
--- ----------------------------
-DROP TABLE IF EXISTS `light_role`;
-CREATE TABLE `light_role` (
-  `id` mediumint(11) NOT NULL AUTO_INCREMENT,
-  `status` tinyint(1) unsigned NOT NULL DEFAULT '1' COMMENT '状态',
-  `name` varchar(30) NOT NULL DEFAULT '' COMMENT '名称',
-  `note` varchar(100) NOT NULL DEFAULT '' COMMENT '备注',
-  `role_key` varchar(30) NOT NULL DEFAULT '' COMMENT '权限标识',
-  `data_range` tinyint(1) NOT NULL DEFAULT '1' COMMENT '1 全部数据 2 自定义数据 3 仅本人数据 4 部门数据 5 部门及以下数据',
-  `delete_time` int(10) NOT NULL DEFAULT '0' COMMENT '删除时间',
-  PRIMARY KEY (`id`) USING BTREE,
-  UNIQUE KEY `role_key` (`role_key`) USING BTREE
-) ENGINE=InnoDB AUTO_INCREMENT=10 DEFAULT CHARSET=utf8mb4 ROW_FORMAT=DYNAMIC COMMENT='角色表';
-
--- ----------------------------
--- Records of light_role
--- ----------------------------
-BEGIN;
-INSERT INTO `light_role` (`id`, `status`, `name`, `note`, `role_key`, `data_range`, `delete_time`) VALUES (1, 1, '超级管理员', '内置角色，不可维护', 'super_admin', 1, 0);
-INSERT INTO `light_role` (`id`, `status`, `name`, `note`, `role_key`, `data_range`, `delete_time`) VALUES (2, 1, '管理员', '业务权限', 'admin', 1, 0);
-INSERT INTO `light_role` (`id`, `status`, `name`, `note`, `role_key`, `data_range`, `delete_time`) VALUES (3, 1, '总经理', '', 'general', 1, 0);
-INSERT INTO `light_role` (`id`, `status`, `name`, `note`, `role_key`, `data_range`, `delete_time`) VALUES (5, 1, '部门经理', '', 'manager', 1, 0);
-COMMIT;
-
--- ----------------------------
--- Table structure for light_role_department
--- ----------------------------
-DROP TABLE IF EXISTS `light_role_department`;
-CREATE TABLE `light_role_department` (
-  `id` int(11) NOT NULL AUTO_INCREMENT,
-  `role_id` int(11) NOT NULL,
-  `dept_id` int(11) NOT NULL,
-  PRIMARY KEY (`id`) USING BTREE
-) ENGINE=InnoDB AUTO_INCREMENT=10 DEFAULT CHARSET=latin1 ROW_FORMAT=DYNAMIC COMMENT='部门角色关联表';
-
--- ----------------------------
--- Records of light_role_department
--- ----------------------------
-BEGIN;
-COMMIT;
-
--- ----------------------------
 -- Table structure for light_user
 -- ----------------------------
 DROP TABLE IF EXISTS `light_user`;
@@ -462,7 +319,6 @@ CREATE TABLE `light_user` (
   `pinyin` varchar(10) NOT NULL DEFAULT '' COMMENT '拼音',
   `phone` varchar(15) NOT NULL DEFAULT '' COMMENT '手机',
   `email` varchar(50) NOT NULL DEFAULT '' COMMENT '邮箱',
-  `dept_id` int(10) unsigned NOT NULL DEFAULT '0' COMMENT '部门id',
   `status` tinyint(3) unsigned NOT NULL DEFAULT '1' COMMENT '1启用，2禁用',
   `create_time` int(10) unsigned NOT NULL DEFAULT '0' COMMENT '添加时间',
   `avatar` varchar(255) NOT NULL DEFAULT '' COMMENT '头像',
@@ -477,55 +333,16 @@ CREATE TABLE `light_user` (
 -- Records of light_user
 -- ----------------------------
 BEGIN;
-INSERT INTO `light_user` (`id`, `username`, `password`, `realname`, `pinyin`, `phone`, `email`, `dept_id`, `status`, `create_time`, `avatar`, `last_login_time`, `last_login_ip`, `is_admin`) VALUES (1, 'admin', '$2y$10$mH5jYh4WxS8HjqTN9Q1tu.SUyMMezQthe6.LDkZjPu7sABJTyprn6', 'admin', '', '18899996666', '', 4, 1, 1748939339, '', 1750173840, '', 1);
-INSERT INTO `light_user` (`id`, `username`, `password`, `realname`, `pinyin`, `phone`, `email`, `dept_id`, `status`, `create_time`, `avatar`, `last_login_time`, `last_login_ip`, `is_admin`) VALUES (2, 'demo', '$2y$10$mH5jYh4WxS8HjqTN9Q1tu.SUyMMezQthe6.LDkZjPu7sABJTyprn6', 'demo', '', '', '', 4, 1, 1748939339, '', 1750173831, '', 0);
-INSERT INTO `light_user` (`id`, `username`, `password`, `realname`, `pinyin`, `phone`, `email`, `dept_id`, `status`, `create_time`, `avatar`, `last_login_time`, `last_login_ip`, `is_admin`) VALUES (9, 'test', '$2y$10$KZnWAJFpo/d4XXPLgzSuDOBv2Y7SQLcKwYbFZKQggCnawytQ4DSLK', '测试', 'cs', '', '', 15, 1, 1615864955, 'https://zos.alipayobjects.com/rmsportal/ODTLcjxAfvqbxHnVXCYX.png', 0, '', 0);
-INSERT INTO `light_user` (`id`, `username`, `password`, `realname`, `pinyin`, `phone`, `email`, `dept_id`, `status`, `create_time`, `avatar`, `last_login_time`, `last_login_ip`, `is_admin`) VALUES (10, 'test2', '$2y$10$89LxsExrBliqqCW/PrOBgOeubhHJUI5tmQkZJ2dBht8ltF/puI6a.', '测试2', 'cs', '', '', 16, 1, 1615865516, '', 0, '', 0);
-INSERT INTO `light_user` (`id`, `username`, `password`, `realname`, `pinyin`, `phone`, `email`, `dept_id`, `status`, `create_time`, `avatar`, `last_login_time`, `last_login_ip`, `is_admin`) VALUES (11, 'yunweu', '$2y$10$Zvbnq8TC7TavN/t/CriXC.g0d89XK4UaBiOYHOSctlwmjD2HLmdYu', '运维管理', 'ywgl', '', '', 17, 1, 1616059337, 'https://gw.alipayobjects.com/zos/antfincdn/XAosXuNZyF/BiazfanxmamNRoxxVxka.png', 0, '', 0);
-INSERT INTO `light_user` (`id`, `username`, `password`, `realname`, `pinyin`, `phone`, `email`, `dept_id`, `status`, `create_time`, `avatar`, `last_login_time`, `last_login_ip`, `is_admin`) VALUES (19, 'www', '$2y$10$SFlICzdZZMZy/2VxS4tMIODzQxcoYV40TkCbS48eTYwnvZEJJAd8u', '王五', 'ww', '', '', 7, 1, 1617182546, '', 0, '', 0);
-INSERT INTO `light_user` (`id`, `username`, `password`, `realname`, `pinyin`, `phone`, `email`, `dept_id`, `status`, `create_time`, `avatar`, `last_login_time`, `last_login_ip`, `is_admin`) VALUES (20, 'yang', '$2y$10$g1oVhKY1SXZmAl20SDo0xOAivYFaB4GbtDzzEjw..AcC0iNEQ/Yp2', '杨六', 'yl', '', '', 4, 1, 1645673069, '', 0, '', 0);
-INSERT INTO `light_user` (`id`, `username`, `password`, `realname`, `pinyin`, `phone`, `email`, `dept_id`, `status`, `create_time`, `avatar`, `last_login_time`, `last_login_ip`, `is_admin`) VALUES (21, 'lishi', '$2y$10$e9cdcQEFEb7k9sdixmwXnuO/GD1bRN8C1xw6b1nfbPjuXxEfvP2FS', '李四', 'ls', '', '', 4, 1, 1645673088, '', 0, '', 0);
-INSERT INTO `light_user` (`id`, `username`, `password`, `realname`, `pinyin`, `phone`, `email`, `dept_id`, `status`, `create_time`, `avatar`, `last_login_time`, `last_login_ip`, `is_admin`) VALUES (22, 'zhangs', '$2y$10$cl6yeliFDXHnfQ7accy4fOO3l7Jelcao9k3IdAka2hewcoZwiKAb2', '张三', 'zs', '', '', 8, 1, 1651917072, '', 0, '', 0);
-INSERT INTO `light_user` (`id`, `username`, `password`, `realname`, `pinyin`, `phone`, `email`, `dept_id`, `status`, `create_time`, `avatar`, `last_login_time`, `last_login_ip`, `is_admin`) VALUES (23, 'wang', '$2y$10$ec8Ln1cnCH0wOGkeWJnJm.68.eue7d/0c2oGWQ25yynxvkOHL6SLK', '王安', 'wa', '', '', 7, 1, 1748939339, '', 0, '', 0);
-COMMIT;
-
--- ----------------------------
--- Table structure for light_user_role
--- ----------------------------
-DROP TABLE IF EXISTS `light_user_role`;
-CREATE TABLE `light_user_role` (
-  `id` int(11) NOT NULL AUTO_INCREMENT,
-  `user_id` int(11) NOT NULL DEFAULT '0',
-  `role_id` int(11) NOT NULL,
-  PRIMARY KEY (`id`) USING BTREE
-) ENGINE=InnoDB AUTO_INCREMENT=160 DEFAULT CHARSET=utf8mb4 ROW_FORMAT=DYNAMIC COMMENT='用户角色关联表';
-
--- ----------------------------
--- Records of light_user_role
--- ----------------------------
-BEGIN;
-INSERT INTO `light_user_role` (`id`, `user_id`, `role_id`) VALUES (27, 14, 3);
-INSERT INTO `light_user_role` (`id`, `user_id`, `role_id`) VALUES (28, 13, 3);
-INSERT INTO `light_user_role` (`id`, `user_id`, `role_id`) VALUES (46, 12, 3);
-INSERT INTO `light_user_role` (`id`, `user_id`, `role_id`) VALUES (83, 15, 3);
-INSERT INTO `light_user_role` (`id`, `user_id`, `role_id`) VALUES (108, 1, 1);
-INSERT INTO `light_user_role` (`id`, `user_id`, `role_id`) VALUES (110, 2, 2);
-INSERT INTO `light_user_role` (`id`, `user_id`, `role_id`) VALUES (126, 19, 2);
-INSERT INTO `light_user_role` (`id`, `user_id`, `role_id`) VALUES (130, 24, 1);
-INSERT INTO `light_user_role` (`id`, `user_id`, `role_id`) VALUES (131, 24, 3);
-INSERT INTO `light_user_role` (`id`, `user_id`, `role_id`) VALUES (132, 18, 1);
-INSERT INTO `light_user_role` (`id`, `user_id`, `role_id`) VALUES (133, 18, 2);
-INSERT INTO `light_user_role` (`id`, `user_id`, `role_id`) VALUES (134, 18, 3);
-INSERT INTO `light_user_role` (`id`, `user_id`, `role_id`) VALUES (137, 22, 3);
-INSERT INTO `light_user_role` (`id`, `user_id`, `role_id`) VALUES (138, 23, 2);
-INSERT INTO `light_user_role` (`id`, `user_id`, `role_id`) VALUES (140, 10, 3);
-INSERT INTO `light_user_role` (`id`, `user_id`, `role_id`) VALUES (153, 11, 2);
-INSERT INTO `light_user_role` (`id`, `user_id`, `role_id`) VALUES (154, 11, 5);
-INSERT INTO `light_user_role` (`id`, `user_id`, `role_id`) VALUES (155, 9, 2);
-INSERT INTO `light_user_role` (`id`, `user_id`, `role_id`) VALUES (156, 20, 2);
-INSERT INTO `light_user_role` (`id`, `user_id`, `role_id`) VALUES (157, 20, 3);
-INSERT INTO `light_user_role` (`id`, `user_id`, `role_id`) VALUES (158, 21, 2);
-INSERT INTO `light_user_role` (`id`, `user_id`, `role_id`) VALUES (159, 21, 3);
+INSERT INTO `light_user` (`id`, `username`, `password`, `realname`, `pinyin`, `phone`, `email`, `status`, `create_time`, `avatar`, `last_login_time`, `last_login_ip`, `is_admin`) VALUES (1, 'admin', '$2y$10$mH5jYh4WxS8HjqTN9Q1tu.SUyMMezQthe6.LDkZjPu7sABJTyprn6', 'admin', '', '18899996666', '', 1, 1748939339, '', 1750173840, '', 1);
+INSERT INTO `light_user` (`id`, `username`, `password`, `realname`, `pinyin`, `phone`, `email`, `status`, `create_time`, `avatar`, `last_login_time`, `last_login_ip`, `is_admin`) VALUES (2, 'demo', '$2y$10$mH5jYh4WxS8HjqTN9Q1tu.SUyMMezQthe6.LDkZjPu7sABJTyprn6', 'demo', '', '', '', 1, 1748939339, '', 1750173831, '', 0);
+INSERT INTO `light_user` (`id`, `username`, `password`, `realname`, `pinyin`, `phone`, `email`, `status`, `create_time`, `avatar`, `last_login_time`, `last_login_ip`, `is_admin`) VALUES (9, 'test', '$2y$10$KZnWAJFpo/d4XXPLgzSuDOBv2Y7SQLcKwYbFZKQggCnawytQ4DSLK', '测试', 'cs', '', '', 1, 1615864955, 'https://zos.alipayobjects.com/rmsportal/ODTLcjxAfvqbxHnVXCYX.png', 0, '', 0);
+INSERT INTO `light_user` (`id`, `username`, `password`, `realname`, `pinyin`, `phone`, `email`, `status`, `create_time`, `avatar`, `last_login_time`, `last_login_ip`, `is_admin`) VALUES (10, 'test2', '$2y$10$89LxsExrBliqqCW/PrOBgOeubhHJUI5tmQkZJ2dBht8ltF/puI6a.', '测试2', 'cs', '', '', 1, 1615865516, '', 0, '', 0);
+INSERT INTO `light_user` (`id`, `username`, `password`, `realname`, `pinyin`, `phone`, `email`, `status`, `create_time`, `avatar`, `last_login_time`, `last_login_ip`, `is_admin`) VALUES (11, 'yunweu', '$2y$10$Zvbnq8TC7TavN/t/CriXC.g0d89XK4UaBiOYHOSctlwmjD2HLmdYu', '运维管理', 'ywgl', '', '', 1, 1616059337, 'https://gw.alipayobjects.com/zos/antfincdn/XAosXuNZyF/BiazfanxmamNRoxxVxka.png', 0, '', 0);
+INSERT INTO `light_user` (`id`, `username`, `password`, `realname`, `pinyin`, `phone`, `email`, `status`, `create_time`, `avatar`, `last_login_time`, `last_login_ip`, `is_admin`) VALUES (19, 'www', '$2y$10$SFlICzdZZMZy/2VxS4tMIODzQxcoYV40TkCbS48eTYwnvZEJJAd8u', '王五', 'ww', '', '', 1, 1617182546, '', 0, '', 0);
+INSERT INTO `light_user` (`id`, `username`, `password`, `realname`, `pinyin`, `phone`, `email`, `status`, `create_time`, `avatar`, `last_login_time`, `last_login_ip`, `is_admin`) VALUES (20, 'yang', '$2y$10$g1oVhKY1SXZmAl20SDo0xOAivYFaB4GbtDzzEjw..AcC0iNEQ/Yp2', '杨六', 'yl', '', '', 1, 1645673069, '', 0, '', 0);
+INSERT INTO `light_user` (`id`, `username`, `password`, `realname`, `pinyin`, `phone`, `email`, `status`, `create_time`, `avatar`, `last_login_time`, `last_login_ip`, `is_admin`) VALUES (21, 'lishi', '$2y$10$e9cdcQEFEb7k9sdixmwXnuO/GD1bRN8C1xw6b1nfbPjuXxEfvP2FS', '李四', 'ls', '', '', 1, 1645673088, '', 0, '', 0);
+INSERT INTO `light_user` (`id`, `username`, `password`, `realname`, `pinyin`, `phone`, `email`, `status`, `create_time`, `avatar`, `last_login_time`, `last_login_ip`, `is_admin`) VALUES (22, 'zhangs', '$2y$10$cl6yeliFDXHnfQ7accy4fOO3l7Jelcao9k3IdAka2hewcoZwiKAb2', '张三', 'zs', '', '', 1, 1651917072, '', 0, '', 0);
+INSERT INTO `light_user` (`id`, `username`, `password`, `realname`, `pinyin`, `phone`, `email`, `status`, `create_time`, `avatar`, `last_login_time`, `last_login_ip`, `is_admin`) VALUES (23, 'wang', '$2y$10$ec8Ln1cnCH0wOGkeWJnJm.68.eue7d/0c2oGWQ25yynxvkOHL6SLK', '王安', 'wa', '', '', 1, 1748939339, '', 0, '', 0);
 COMMIT;
 
 SET FOREIGN_KEY_CHECKS = 1;
