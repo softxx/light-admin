@@ -447,8 +447,33 @@
   @media (max-width: 767px) {
     :global(.user-dialog.el-dialog) {
       max-width: calc(100vw - 24px);
-      margin-top: 5vh !important;
-      margin-bottom: 5vh !important;
+      height: calc(100vh - 16px);
+      height: calc(100dvh - 16px);
+      max-height: calc(100vh - 16px);
+      max-height: calc(100dvh - 16px);
+      display: flex;
+      flex-direction: column;
+      margin-top: 8px !important;
+      margin-bottom: 8px !important;
+    }
+
+    :global(.user-dialog .el-dialog__header) {
+      flex: 0 0 auto;
+      padding: 16px 16px 8px;
+      margin-right: 0;
+    }
+
+    :global(.user-dialog .el-dialog__body) {
+      flex: 1 1 auto;
+      min-height: 0;
+      padding: 12px 16px;
+      overflow-y: auto;
+    }
+
+    :global(.user-dialog .el-dialog__footer) {
+      flex: 0 0 auto;
+      padding: 10px 16px 14px;
+      border-top: 1px solid var(--el-border-color-lighter);
     }
 
     .user-form :deep(.el-form-item) {
