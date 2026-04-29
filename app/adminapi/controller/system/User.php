@@ -45,14 +45,14 @@ class User extends BaseController
      */
     public function save()
     {
-        // 部门和角色已移除，新增用户只接收账号基础信息。
-        $data = $this->request->param([
-            'username',
-            'phone',
-            'email',
-            'realname',
-            'avatar'
-        ]);
+        // 部门和角色已移除，权限可随新增用户表单一并提交。
+        $params = $this->request->param();
+        $data = array_pick('username,phone,email,realname,avatar', $params);
+        $menuIds = $this->getPermissionPayload($params);
+        if ($menuIds !== null) {
+            $data['menu_id'] = $menuIds;
+        }
+
         validate(UserValidate::class)->scene('add')->check($data);
         $result = $this->service->save($data);
         $result ? $this->success('添加成功') : $this->error('添加失败');
@@ -78,14 +78,14 @@ class User extends BaseController
      */
     public function update($id)
     {
-        // 用户名只允许新增时设置；编辑时维护基础资料。
-        $data = $this->request->param([
-            'id',
-            'email',
-            'realname',
-            'phone',
-            'avatar'
-        ]);
+        // 用户名只允许新增时设置；编辑时维护基础资料和用户权限。
+        $params = $this->request->param();
+        $data = array_pick('id,email,realname,phone,avatar', $params);
+        $menuIds = $this->getPermissionPayload($params);
+        if ($menuIds !== null) {
+            $data['menu_id'] = $menuIds;
+        }
+
         validate(UserValidate::class)->scene('edit')->check($data);
         $result = $this->service->update($id, $data);
         $result ? $this->success('更新成功') : $this->error('更新失败');
@@ -184,5 +184,24 @@ class User extends BaseController
     {
         $data = $this->service->getUserInfo();
         $this->success($data);
+    }
+
+    /**
+     * 解析随用户表单提交的权限节点。
+     *
+     * @param array $params
+     * @return array|null
+     */
+    private function getPermissionPayload(array $params): ?array
+    {
+        if (!array_key_exists('menu_id', $params)) {
+            return null;
+        }
+
+        if (!auth_check('system:authAccess:save')) {
+            $this->error('无权限设置用户权限');
+        }
+
+        return $this->request->param('menu_id/a', []);
     }
 }

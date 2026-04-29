@@ -36,6 +36,19 @@ class AuthAccessService extends BaseService
     }
 
     /**
+     * 获取空权限树，用于新增用户时在用户表单内直接授权。
+     *
+     * @return array
+     */
+    public function getTree()
+    {
+        return [
+            'authNode' => MenuService::getRuleAll(),
+            'checked' => []
+        ];
+    }
+
+    /**
      * 保存用户权限。
      *
      * @param string|int $userId
@@ -49,28 +62,45 @@ class AuthAccessService extends BaseService
             throw new FailedException('管理员账号默认拥有全部权限，不允许维护');
         }
 
-        // 前端只提交勾选节点；后端补齐父级目录，保证路由树能正常展示。
-        $menuIds = $this->expandMenuIdsWithAncestors($menuIds);
-
         try {
             $this->startTrans();
-            // 直接按用户重建授权，避免保留已经取消勾选的旧权限。
-            AuthAccess::where('user_id', $user->id)->delete();
-
-            if (!empty($menuIds)) {
-                $rows = array_map(fn($menuId) => [
-                    'user_id' => $user->id,
-                    'menu_id' => $menuId,
-                ], $menuIds);
-                AuthAccess::insertAll($rows);
-            }
-
+            $this->replaceForUser($user, $menuIds);
             $this->commit();
             return true;
         } catch (\Exception $e) {
             $this->rollBack();
             return false;
         }
+    }
+
+    /**
+     * 重建指定用户的权限。调用方可把该方法放进已有事务里。
+     *
+     * @param User $user
+     * @param array $menuIds
+     * @return void
+     */
+    public function replaceForUser(User $user, array $menuIds): void
+    {
+        if ($this->isSuperAdminUser($user)) {
+            throw new FailedException('管理员账号默认拥有全部权限，不允许维护');
+        }
+
+        // 前端只提交勾选节点；后端补齐父级目录，保证路由树能正常展示。
+        $menuIds = $this->expandMenuIdsWithAncestors($menuIds);
+
+        // 直接按用户重建授权，避免保留已经取消勾选的旧权限。
+        AuthAccess::where('user_id', $user->id)->delete();
+
+        if (empty($menuIds)) {
+            return;
+        }
+
+        $rows = array_map(fn($menuId) => [
+            'user_id' => $user->id,
+            'menu_id' => $menuId,
+        ], $menuIds);
+        AuthAccess::insertAll($rows);
     }
 
     /**

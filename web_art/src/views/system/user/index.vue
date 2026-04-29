@@ -37,12 +37,8 @@
         v-model:visible="dialogVisible"
         :type="dialogType"
         :user-data="currentUserData"
+        :show-permission="canManagePermission"
         @success="handleDialogSuccess"
-      />
-
-      <UserPermissionDialog
-        v-model="permissionDialogVisible"
-        :user-data="currentUserData"
       />
     </ElCard>
   </div>
@@ -63,7 +59,6 @@
   import { buildDynamicTableFilterParams, createTableFilterFormModel } from '@/utils/table/filter'
   import UserDialog from './modules/user-dialog.vue'
   import { createUserFilterFields } from './modules/user-filter-fields'
-  import UserPermissionDialog from './modules/user-permission-dialog.vue'
   import UserSearch from './modules/user-search.vue'
   import { ElAvatar, ElMessage, ElMessageBox, ElSwitch } from 'element-plus'
 
@@ -74,13 +69,13 @@
 
   const { hasAuth } = useAuth()
   const canDeleteUser = hasAuth('system:user:delete')
-  // 权限设置已从角色页移到用户管理，按钮权限也按用户直接判断。
-  const canManagePermission = hasAuth('system:authAccess:save')
+  // 权限设置收进新增/编辑用户弹窗，读取和保存权限都需要授权。
+  const canManagePermission =
+    hasAuth('system:authAccess:index') && hasAuth('system:authAccess:save')
   const PROTECTED_USER_MESSAGE = '管理员账号不允许操作'
 
   const tableRef = ref()
   const dialogVisible = ref(false)
-  const permissionDialogVisible = ref(false)
   const dialogType = ref<DialogType>('add')
   const currentUserData = ref<Partial<UserListItem>>({})
   const selectedRows = ref<UserListItem[]>([])
@@ -187,22 +182,10 @@
         {
           prop: 'operation',
           label: '操作',
-          width: 220,
+          width: 180,
           fixed: 'right',
           formatter: (row: UserListItem) => {
             const buttons = []
-
-            if (canManagePermission && !isAdminAccount(row)) {
-              // 用户权限入口替代原角色权限入口。
-              buttons.push(
-                h(ArtButtonTable, {
-                  icon: 'ri:shield-keyhole-line',
-                  iconClass: 'bg-info/12 text-info',
-                  tooltip: '权限设置',
-                  onClick: () => openPermissionDialog(row)
-                })
-              )
-            }
 
             if (hasAuth('system:user:update') && !isAdminAccount(row)) {
               buttons.push(
@@ -259,16 +242,6 @@
     dialogVisible.value = true
   }
 
-  const openPermissionDialog = (row: UserListItem) => {
-    if (isAdminAccount(row)) {
-      ElMessage.warning(PROTECTED_USER_MESSAGE)
-      return
-    }
-
-    currentUserData.value = row
-    permissionDialogVisible.value = true
-  }
-
   const handleSearch = (params: TableFilterFormModel) => {
     replaceSearchParams(buildDynamicTableFilterParams(params, filterFields.value))
     getData()
@@ -306,15 +279,11 @@
       return
     }
 
-    await ElMessageBox.confirm(
-      `确定删除用户“${row.realname || row.username}”吗？`,
-      '删除确认',
-      {
-        type: 'warning',
-        confirmButtonText: '确定',
-        cancelButtonText: '取消'
-      }
-    )
+    await ElMessageBox.confirm(`确定删除用户“${row.realname || row.username}”吗？`, '删除确认', {
+      type: 'warning',
+      confirmButtonText: '确定',
+      cancelButtonText: '取消'
+    })
 
     await fetchDeleteUser(row.id)
     await refreshRemove()

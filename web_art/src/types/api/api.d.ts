@@ -161,6 +161,7 @@ declare namespace Api {
       phone?: string
       email?: string
       avatar?: string
+      menu_id?: Array<number | string>
     }
 
     interface MenuListItem {

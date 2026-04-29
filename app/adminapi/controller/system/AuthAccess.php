@@ -29,7 +29,7 @@ class AuthAccess extends BaseController
     {
         // 获取指定用户的权限树和已勾选节点。
         $userId = $this->request->param('id');
-        $data = $this->service->getList($userId);
+        $data = $userId ? $this->service->getList($userId) : $this->service->getTree();
         $this->success($data);
     }
 

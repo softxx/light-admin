@@ -238,15 +238,10 @@ export function fetchGetUserPermission(id: number | string) {
   })
 }
 
-export function fetchSaveUserPermission(userId: number | string, menuIds: Array<number | string>) {
-  // 角色已移除，权限保存时直接提交 user_id + menu_id[]。
-  return request.post<void>({
-    url: '/authAccess',
-    params: {
-      user_id: userId,
-      menu_id: menuIds
-    },
-    showSuccessMessage: true
+export function fetchGetPermissionTree() {
+  // 新增用户时没有用户 ID，只需要权限树和空勾选状态。
+  return request.post<Api.Backend.AuthAccessResponse>({
+    url: '/authAccess/index'
   })
 }
 

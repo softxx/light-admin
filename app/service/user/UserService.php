@@ -3,6 +3,7 @@
 namespace app\service\user;
 
 use app\model\system\{AuthAccess, Menu, User};
+use app\service\system\permission\AuthAccessService;
 use core\base\BaseService;
 use core\exception\FailedException;
 
@@ -117,8 +118,28 @@ class UserService extends BaseService
      */
     public function save(array $data)
     {
+        $menuIds = $this->pullMenuIds($data);
         $data['password'] = config('system.def_password');
-        return $this->model->storeBy($data);
+
+        try {
+            return $this->transaction(function () use ($data, $menuIds) {
+                $userId = $this->model->storeBy($data);
+                if (!$userId) {
+                    return false;
+                }
+
+                if ($menuIds !== null) {
+                    $user = User::find($userId);
+                    app()->make(AuthAccessService::class)->replaceForUser($user, $menuIds);
+                }
+
+                return $userId;
+            });
+        } catch (FailedException $e) {
+            throw $e;
+        } catch (\Throwable $e) {
+            return false;
+        }
     }
 
     /**
@@ -141,7 +162,24 @@ class UserService extends BaseService
      */
     public function update($id, array $data)
     {
-        return $this->model->updateBy($id, $data);
+        $menuIds = $this->pullMenuIds($data);
+
+        try {
+            return $this->transaction(function () use ($id, $data, $menuIds) {
+                $result = $this->model->updateBy($id, $data);
+
+                if ($menuIds !== null) {
+                    $user = User::find($id);
+                    app()->make(AuthAccessService::class)->replaceForUser($user, $menuIds);
+                }
+
+                return $result || $menuIds !== null;
+            });
+        } catch (FailedException $e) {
+            throw $e;
+        } catch (\Throwable $e) {
+            return false;
+        }
     }
 
     /**
@@ -231,5 +269,19 @@ class UserService extends BaseService
     {
         return (int) ($user->is_admin ?? 0) === 1
             || (string) $user->id === (string) config('system.super_admin_id');
+    }
+
+    /**
+     * 提取并移除随用户表单提交的权限节点。
+     */
+    private function pullMenuIds(array &$data): ?array
+    {
+        if (!array_key_exists('menu_id', $data)) {
+            return null;
+        }
+
+        $menuIds = is_array($data['menu_id']) ? $data['menu_id'] : [];
+        unset($data['menu_id']);
+        return $menuIds;
     }
 }
