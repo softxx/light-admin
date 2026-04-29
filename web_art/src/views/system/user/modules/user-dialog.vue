@@ -2,13 +2,20 @@
   <ElDialog
     v-model="visible"
     :title="props.type === 'add' ? '新增用户' : '编辑用户'"
-    width="700px"
+    class="system-user-dialog system-form-dialog"
+    width="min(700px, calc(100vw - 32px))"
     align-center
     @closed="handleClosed"
   >
-    <ElForm ref="formRef" :model="form" :rules="rules" label-width="90px">
+    <ElForm
+      ref="formRef"
+      class="system-form-dialog__form"
+      :model="form"
+      :rules="rules"
+      label-width="90px"
+    >
       <ElRow :gutter="16">
-        <ElCol :span="12">
+        <ElCol :xs="24" :sm="24" :md="12">
           <ElFormItem label="用户名" prop="username">
             <ElInput
               v-model="form.username"
@@ -18,25 +25,25 @@
           </ElFormItem>
         </ElCol>
 
-        <ElCol :span="12">
+        <ElCol :xs="24" :sm="24" :md="12">
           <ElFormItem label="姓名" prop="realname">
             <ElInput v-model="form.realname" placeholder="请输入姓名" />
           </ElFormItem>
         </ElCol>
 
-        <ElCol :span="12">
+        <ElCol :xs="24" :sm="24" :md="12">
           <ElFormItem label="手机号" prop="phone">
             <ElInput v-model="form.phone" placeholder="请输入手机号" />
           </ElFormItem>
         </ElCol>
 
-        <ElCol :span="12">
+        <ElCol :xs="24" :sm="24" :md="12">
           <ElFormItem label="邮箱" prop="email">
             <ElInput v-model="form.email" placeholder="请输入邮箱" />
           </ElFormItem>
         </ElCol>
 
-        <ElCol :span="12">
+        <ElCol :xs="24" :sm="24" :md="12">
           <ElFormItem label="角色" prop="roles">
             <ElSelect v-model="form.roles" multiple placeholder="请选择角色" style="width: 100%">
               <ElOption
@@ -49,7 +56,7 @@
           </ElFormItem>
         </ElCol>
 
-        <ElCol :span="12">
+        <ElCol :xs="24" :sm="24" :md="12">
           <ElFormItem label="部门" prop="dept_id">
             <ElTreeSelect
               v-model="form.dept_id"
@@ -251,3 +258,72 @@
     }
   )
 </script>
+
+<style lang="scss">
+  .system-user-dialog.el-dialog {
+    display: flex;
+    flex-direction: column;
+    max-height: calc(100dvh - 32px);
+  }
+
+  .system-user-dialog.el-dialog .el-dialog__body {
+    flex: 1;
+    min-height: 0;
+    padding: 20px 24px !important;
+    overflow-x: hidden;
+    overflow-y: auto;
+  }
+
+  .system-user-dialog.el-dialog .el-dialog__footer {
+    flex-shrink: 0;
+  }
+
+  .system-user-dialog {
+    .system-form-dialog__form {
+      min-width: 0;
+    }
+  }
+
+  @media screen and (max-width: 768px) {
+    .system-user-dialog.el-dialog {
+      width: calc(100vw - 24px) !important;
+      max-height: calc(100dvh - 24px);
+    }
+
+    .system-user-dialog.el-dialog .el-dialog__body {
+      padding: 16px !important;
+    }
+
+    .system-user-dialog {
+      .el-form-item {
+        display: block;
+      }
+
+      .el-form-item__label {
+        justify-content: flex-start;
+        width: 100% !important;
+        height: auto !important;
+        margin-bottom: 8px;
+        line-height: 20px !important;
+        text-align: left;
+      }
+
+      .el-form-item__content {
+        width: 100%;
+        margin-left: 0 !important;
+      }
+
+      .backend-image-upload,
+      .backend-image-upload__trigger,
+      .backend-image-upload__footer {
+        width: 100%;
+      }
+
+      .backend-image-upload__footer {
+        align-items: flex-start;
+        flex-direction: column;
+        gap: 6px;
+      }
+    }
+  }
+</style>

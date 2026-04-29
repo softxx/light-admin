@@ -2,11 +2,18 @@
   <ElDialog
     v-model="visible"
     :title="form.id ? '编辑菜单' : '新增菜单'"
-    width="760px"
+    class="system-menu-dialog system-form-dialog"
+    width="min(760px, calc(100vw - 32px))"
     align-center
     @closed="handleClosed"
   >
-    <ElForm ref="formRef" :model="form" :rules="rules" label-width="100px">
+    <ElForm
+      ref="formRef"
+      class="system-form-dialog__form"
+      :model="form"
+      :rules="rules"
+      label-width="100px"
+    >
       <ElRow :gutter="16">
         <ElCol :span="24">
           <ElFormItem label="上级菜单" prop="pid">
@@ -43,13 +50,13 @@
           </ElFormItem>
         </ElCol>
 
-        <ElCol :span="12">
+        <ElCol :xs="24" :sm="24" :md="12">
           <ElFormItem label="菜单名称" prop="title">
             <ElInput v-model="form.title" placeholder="请输入菜单名称" />
           </ElFormItem>
         </ElCol>
 
-        <ElCol v-if="form.type !== 2" :span="12">
+        <ElCol v-if="form.type !== 2" :xs="24" :sm="24" :md="12">
           <ElFormItem label="路由地址" prop="path">
             <ElInput
               v-model="form.path"
@@ -58,43 +65,43 @@
           </ElFormItem>
         </ElCol>
 
-        <ElCol v-if="form.type !== 2 && form.open_type === 0" :span="12">
+        <ElCol v-if="form.type !== 2 && form.open_type === 0" :xs="24" :sm="24" :md="12">
           <ElFormItem label="路由组件" prop="component">
             <ElInput v-model="form.component" placeholder="请输入路由组件" />
           </ElFormItem>
         </ElCol>
 
-        <ElCol v-if="form.type === 2" :span="12">
+        <ElCol v-if="form.type === 2" :xs="24" :sm="24" :md="12">
           <ElFormItem label="权限节点" prop="rules">
             <ElInput v-model="form.rules" placeholder="如：system:user:update" />
           </ElFormItem>
         </ElCol>
 
-        <ElCol v-if="form.type !== 2 && form.open_type === 1" :span="12">
+        <ElCol v-if="form.type !== 2 && form.open_type === 1" :xs="24" :sm="24" :md="12">
           <ElFormItem label="内链地址" prop="link_url">
             <ElInput v-model="form.link_url" placeholder="请输入内链地址" />
           </ElFormItem>
         </ElCol>
 
-        <ElCol v-if="form.type !== 2" :span="12">
+        <ElCol v-if="form.type !== 2" :xs="24" :sm="24" :md="12">
           <ElFormItem label="菜单图标" prop="icon">
             <ElInput v-model="form.icon" placeholder="请输入图标名称" />
           </ElFormItem>
         </ElCol>
 
-        <ElCol v-if="form.type !== 2 && form.open_type === 0" :span="12">
+        <ElCol v-if="form.type !== 2 && form.open_type === 0" :xs="24" :sm="24" :md="12">
           <ElFormItem label="高亮导航" prop="active_key">
             <ElInput v-model="form.active_key" placeholder="请输入高亮导航路径" />
           </ElFormItem>
         </ElCol>
 
-        <ElCol :span="12">
+        <ElCol :xs="24" :sm="24" :md="12">
           <ElFormItem label="排序" prop="sort">
             <ElInputNumber v-model="sortValue" :min="1" :max="9999" style="width: 100%" />
           </ElFormItem>
         </ElCol>
 
-        <ElCol v-if="form.type !== 2" :span="12">
+        <ElCol v-if="form.type !== 2" :xs="24" :sm="24" :md="12">
           <ElFormItem label="是否显示" prop="hidden">
             <ElRadioGroup v-model="form.hidden">
               <ElRadio :value="0">显示</ElRadio>
@@ -103,7 +110,7 @@
           </ElFormItem>
         </ElCol>
 
-        <ElCol v-if="form.type !== 2 && form.open_type === 0" :span="12">
+        <ElCol v-if="form.type !== 2 && form.open_type === 0" :xs="24" :sm="24" :md="12">
           <ElFormItem label="隐藏子菜单" prop="hide_children">
             <ElRadioGroup v-model="form.hide_children">
               <ElRadio :value="0">否</ElRadio>
@@ -368,3 +375,69 @@
     }
   )
 </script>
+
+<style lang="scss">
+  .system-menu-dialog.el-dialog {
+    display: flex;
+    flex-direction: column;
+    max-height: calc(100dvh - 32px);
+  }
+
+  .system-menu-dialog.el-dialog .el-dialog__body {
+    flex: 1;
+    min-height: 0;
+    padding: 20px 24px !important;
+    overflow-x: hidden;
+    overflow-y: auto;
+  }
+
+  .system-menu-dialog.el-dialog .el-dialog__footer {
+    flex-shrink: 0;
+  }
+
+  .system-menu-dialog {
+    .system-form-dialog__form {
+      min-width: 0;
+    }
+
+    .el-radio-group {
+      flex-wrap: wrap;
+      row-gap: 8px;
+    }
+
+    .el-radio {
+      margin-right: 18px;
+    }
+  }
+
+  @media screen and (max-width: 768px) {
+    .system-menu-dialog.el-dialog {
+      width: calc(100vw - 24px) !important;
+      max-height: calc(100dvh - 24px);
+    }
+
+    .system-menu-dialog.el-dialog .el-dialog__body {
+      padding: 16px !important;
+    }
+
+    .system-menu-dialog {
+      .el-form-item {
+        display: block;
+      }
+
+      .el-form-item__label {
+        justify-content: flex-start;
+        width: 100% !important;
+        height: auto !important;
+        margin-bottom: 8px;
+        line-height: 20px !important;
+        text-align: left;
+      }
+
+      .el-form-item__content {
+        width: 100%;
+        margin-left: 0 !important;
+      }
+    }
+  }
+</style>

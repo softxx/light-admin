@@ -70,6 +70,7 @@
   import { createUserFilterFields } from './modules/user-filter-fields'
   import UserSearch from './modules/user-search.vue'
   import { ElAvatar, ElMessage, ElMessageBox, ElSwitch, ElTag } from 'element-plus'
+  import { useWindowSize } from '@vueuse/core'
 
   defineOptions({ name: 'User' })
 
@@ -88,6 +89,8 @@
   const currentUserData = ref<Partial<UserListItem>>({})
   const selectedRows = ref<UserListItem[]>([])
   const searchForm = ref<TableFilterFormModel>(createTableFilterFormModel())
+  const { width } = useWindowSize()
+  const isCompactTable = computed(() => width.value <= 1180)
 
   // The page adapter only needs the shared field schema to serialize filters.
   const filterFields = computed(() =>
@@ -111,7 +114,8 @@
     refreshData,
     refreshCreate,
     refreshRemove,
-    refreshUpdate
+    refreshUpdate,
+    updateColumn
   } = useTable({
     core: {
       apiFn: fetchGetUserList,
@@ -125,7 +129,7 @@
               {
                 type: 'selection' as const,
                 width: 55,
-                fixed: 'left' as const,
+                fixed: isCompactTable.value ? undefined : ('left' as const),
                 disabled: true,
                 selectable: (row: UserListItem) => !isAdminAccount(row)
               }
@@ -133,9 +137,10 @@
           : []),
         {
           type: 'globalIndex',
+          prop: 'globalIndex',
           label: '序号',
           width: 70,
-          fixed: 'left'
+          fixed: isCompactTable.value ? undefined : 'left'
         },
         {
           prop: 'username',
@@ -217,7 +222,7 @@
           prop: 'operation',
           label: '操作',
           width: 180,
-          fixed: 'right',
+          fixed: isCompactTable.value ? undefined : 'right',
           formatter: (row: UserListItem) => {
             const buttons = []
 
@@ -256,6 +261,18 @@
       ]
     }
   })
+
+  watch(
+    isCompactTable,
+    (compact) => {
+      updateColumn?.([
+        { prop: '__selection__', updates: { fixed: compact ? undefined : 'left' } },
+        { prop: 'globalIndex', updates: { fixed: compact ? undefined : 'left' } },
+        { prop: 'operation', updates: { fixed: compact ? undefined : 'right' } }
+      ])
+    },
+    { immediate: true }
+  )
 
   const { batchDeleting, hasSelection, handleSelectionChange, handleBatchDelete } =
     useBatchDelete<UserListItem>({

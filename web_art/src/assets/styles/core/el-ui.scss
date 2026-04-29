@@ -209,10 +209,18 @@ html.dark .el-card {
 }
 
 // 处理移动端组件兼容性
+@media screen and (max-width: 1180px) {
+  .el-message-box,
+  .el-dialog:not(.is-fullscreen) {
+    max-width: calc(100vw - 32px) !important;
+  }
+}
+
 @media screen and (max-width: 640px) {
   .el-message-box,
   .el-dialog {
     width: calc(100% - 24px) !important;
+    max-width: calc(100vw - 24px) !important;
   }
 
   .el-date-picker.has-sidebar.has-time {

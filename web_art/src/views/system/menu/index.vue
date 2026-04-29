@@ -52,6 +52,7 @@
   import { fetchDeleteMenu, fetchGetMenuList } from '@/api/system-manage'
   import MenuDialog from './modules/menu-dialog.vue'
   import { ElMessageBox, ElTag } from 'element-plus'
+  import { useWindowSize } from '@vueuse/core'
 
   defineOptions({ name: 'Menus' })
 
@@ -64,6 +65,8 @@
   const tableRef = ref()
   const dialogVisible = ref(false)
   const currentMenuData = ref<Partial<MenuListItem> | null>(null)
+  const { width } = useWindowSize()
+  const isCompactTable = computed(() => width.value <= 1180)
 
   const filters = reactive({
     title: '',
@@ -160,7 +163,7 @@
     return Number(row.hidden) === 1 ? 'warning' : 'success'
   }
 
-  const { columnChecks, columns } = useTableColumns(() => [
+  const { columnChecks, columns, updateColumn } = useTableColumns(() => [
     {
       prop: 'title',
       label: '菜单名称',
@@ -208,7 +211,7 @@
       prop: 'operation',
       label: '操作',
       width: 180,
-      fixed: 'right',
+      fixed: isCompactTable.value ? undefined : 'right',
       formatter: (row: MenuListItem) => {
         const buttons = []
 
@@ -244,6 +247,14 @@
       }
     }
   ])
+
+  watch(
+    isCompactTable,
+    (compact) => {
+      updateColumn('operation', { fixed: compact ? undefined : 'right' })
+    },
+    { immediate: true }
+  )
 
   const getMenuList = async () => {
     loading.value = true

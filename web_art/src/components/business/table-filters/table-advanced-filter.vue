@@ -84,7 +84,9 @@
   const dialogVisible = ref(false)
   const draftFilters = ref<TableFilterGroup[]>([])
 
-  const normalizedGroups = computed(() => normalizeTableFilterGroups(props.modelValue, props.fields))
+  const normalizedGroups = computed(() =>
+    normalizeTableFilterGroups(props.modelValue, props.fields)
+  )
   const normalizedDraftGroups = computed(() =>
     normalizeTableFilterGroups(draftFilters.value, props.fields)
   )
@@ -264,16 +266,24 @@
     width: 100%;
   }
 
-  :deep(.table-advanced-filter-dialog) {
-    .el-dialog {
-      max-width: calc(100vw - 48px);
-      margin-bottom: 0;
-      border-radius: 20px;
-    }
+  :global(.table-advanced-filter-dialog.el-dialog) {
+    display: flex;
+    flex-direction: column;
+    width: min(1180px, calc(100vw - 32px)) !important;
+    max-height: calc(100dvh - 32px);
+    margin-bottom: 0;
+    border-radius: 20px;
+  }
 
-    .el-dialog__body {
-      padding-top: 14px;
-    }
+  :global(.table-advanced-filter-dialog.el-dialog .el-dialog__body) {
+    flex: 1;
+    min-height: 0;
+    padding-top: 14px;
+    overflow: hidden;
+  }
+
+  :global(.table-advanced-filter-dialog.el-dialog .el-dialog__footer) {
+    flex-shrink: 0;
   }
 
   @media (width <= 900px) {
@@ -302,6 +312,20 @@
 
     .dialog-footer :deep(.el-button) {
       flex: 1;
+    }
+
+    :global(.table-advanced-filter-dialog.el-dialog) {
+      width: calc(100vw - 24px) !important;
+      max-height: calc(100dvh - 24px);
+    }
+
+    :global(.table-advanced-filter-dialog.el-dialog .el-dialog__body) {
+      padding-right: 16px !important;
+      padding-left: 16px !important;
+    }
+
+    .dialog-content {
+      max-height: calc(100dvh - 300px);
     }
   }
 </style>
