@@ -1,14 +1,22 @@
 <template>
   <ElDialog
     v-model="visible"
-    :title="props.type === 'add' ? '新增用户' : '编辑用户'"
-    width="760px"
+    :title="dialogTitle"
+    class="user-dialog"
+    width="min(760px, calc(100vw - 24px))"
     align-center
     @closed="handleClosed"
   >
-    <ElForm ref="formRef" v-loading="loading" :model="form" :rules="rules" label-width="90px">
+    <ElForm
+      ref="formRef"
+      v-loading="loading"
+      class="user-form"
+      :model="form"
+      :rules="rules"
+      label-width="90px"
+    >
       <ElRow :gutter="16">
-        <ElCol :span="12">
+        <ElCol :xs="24" :sm="12">
           <ElFormItem label="用户名" prop="username">
             <ElInput
               v-model="form.username"
@@ -18,19 +26,19 @@
           </ElFormItem>
         </ElCol>
 
-        <ElCol :span="12">
+        <ElCol :xs="24" :sm="12">
           <ElFormItem label="姓名" prop="realname">
             <ElInput v-model="form.realname" placeholder="请输入姓名" />
           </ElFormItem>
         </ElCol>
 
-        <ElCol :span="12">
+        <ElCol :xs="24" :sm="12">
           <ElFormItem label="手机号" prop="phone">
             <ElInput v-model="form.phone" placeholder="请输入手机号" />
           </ElFormItem>
         </ElCol>
 
-        <ElCol :span="12">
+        <ElCol :xs="24" :sm="12">
           <ElFormItem label="邮箱" prop="email">
             <ElInput v-model="form.email" placeholder="请输入邮箱" />
           </ElFormItem>
@@ -49,10 +57,6 @@
         </ElCol>
       </ElRow>
     </ElForm>
-
-    <div v-if="props.type === 'add'" class="text-sm text-[var(--el-color-warning)]">
-      默认初始密码为 `123456`
-    </div>
 
     <template v-if="props.showPermission">
       <ElDivider content-position="left">权限设置</ElDivider>
@@ -167,6 +171,10 @@
     get: () => props.visible,
     set: (value) => emit('update:visible', value)
   })
+
+  const dialogTitle = computed(() =>
+    props.type === 'add' ? '新增用户（默认密码：123456）' : '编辑用户'
+  )
 
   const treeProps = {
     label: 'title',
@@ -430,5 +438,25 @@
     gap: 8px;
     justify-content: flex-end;
     margin-bottom: 8px;
+  }
+
+  .user-form :deep(.el-input) {
+    width: 100%;
+  }
+
+  @media (max-width: 767px) {
+    :global(.user-dialog.el-dialog) {
+      max-width: calc(100vw - 24px);
+      margin-top: 5vh !important;
+      margin-bottom: 5vh !important;
+    }
+
+    .user-form :deep(.el-form-item) {
+      margin-bottom: 16px;
+    }
+
+    .user-form :deep(.el-form-item__content) {
+      min-width: 0;
+    }
   }
 </style>
