@@ -141,9 +141,9 @@
 
   .summary-bar {
     display: flex;
+    gap: 10px;
     align-items: center;
     justify-content: space-between;
-    gap: 10px;
     min-height: 32px;
     padding: 0 0 0 12px;
     background:
@@ -154,26 +154,26 @@
 
   .summary-content {
     display: flex;
-    align-items: center;
-    gap: 10px;
-    min-width: 0;
     flex: 1;
+    gap: 10px;
+    align-items: center;
+    min-width: 0;
   }
 
   .summary-label {
     flex-shrink: 0;
-    color: var(--el-text-color-secondary);
     font-size: 12px;
     font-weight: 600;
+    color: var(--el-text-color-secondary);
   }
 
   .summary-text {
     min-width: 0;
-    color: var(--el-text-color-primary);
-    font-size: 13px;
-    white-space: nowrap;
     overflow: hidden;
+    font-size: 13px;
+    color: var(--el-text-color-primary);
     text-overflow: ellipsis;
+    white-space: nowrap;
   }
 
   .summary-actions {
@@ -204,34 +204,42 @@
     display: flex;
     flex-direction: column;
     gap: 16px;
-    margin: 0 auto;
     padding: 4px 0 0;
+    margin: 0 auto;
   }
 
   .dialog-hero {
     display: flex;
     flex-wrap: wrap;
+    gap: 12px;
     align-items: center;
     justify-content: space-between;
-    gap: 12px;
     padding: 18px 20px;
     background:
-      radial-gradient(circle at top left, rgb(56 189 248 / 10%), transparent 40%),
-      linear-gradient(135deg, rgb(255 255 255 / 96%), rgb(248 250 252 / 94%));
+      radial-gradient(
+        circle at top left,
+        color-mix(in srgb, var(--el-color-primary) 12%, transparent),
+        transparent 40%
+      ),
+      linear-gradient(
+        135deg,
+        color-mix(in srgb, var(--el-bg-color) 96%, var(--el-color-primary) 4%),
+        color-mix(in srgb, var(--el-bg-color) 94%, var(--el-fill-color-light))
+      );
     border: 1px solid var(--el-border-color-lighter);
     border-radius: 18px;
   }
 
   .hero-title {
-    color: var(--el-text-color-primary);
     font-size: 18px;
     font-weight: 700;
+    color: var(--el-text-color-primary);
   }
 
   .hero-description {
     margin-top: 6px;
-    color: var(--el-text-color-secondary);
     font-size: 13px;
+    color: var(--el-text-color-secondary);
   }
 
   .hero-metrics {
@@ -245,12 +253,12 @@
     align-items: center;
     height: 32px;
     padding: 0 12px;
-    color: #0f766e;
-    background: rgb(20 184 166 / 10%);
-    border: 1px solid rgb(20 184 166 / 18%);
-    border-radius: 999px;
     font-size: 12px;
     font-weight: 600;
+    color: var(--el-color-success);
+    background: color-mix(in srgb, var(--el-color-success) 12%, transparent);
+    border: 1px solid color-mix(in srgb, var(--el-color-success) 24%, transparent);
+    border-radius: 999px;
   }
 
   .dialog-content {
@@ -261,8 +269,8 @@
 
   .dialog-footer {
     display: flex;
-    justify-content: flex-end;
     gap: 10px;
+    justify-content: flex-end;
     width: 100%;
   }
 
@@ -289,8 +297,8 @@
   @media (width <= 900px) {
     .summary-bar,
     .dialog-hero {
-      align-items: flex-start;
       flex-direction: column;
+      align-items: flex-start;
     }
 
     .summary-bar {
