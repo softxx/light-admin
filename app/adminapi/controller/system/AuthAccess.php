@@ -6,9 +6,9 @@ use app\service\system\permission\AuthAccessService;
 use core\base\BaseController;
 
 /**
- * 用户权限控制器。
+ * 管理员权限控制器。
  *
- * auth_access 已从角色授权改为用户授权，这里的 id/user_id 都表示用户 ID。
+ * auth_access 已从角色授权改为管理员授权，这里的 id/user_id 都表示管理员账号 ID。
  */
 class AuthAccess extends BaseController
 {
@@ -27,7 +27,7 @@ class AuthAccess extends BaseController
      */
     public function index()
     {
-        // 获取指定用户的权限树和已勾选节点。
+        // 获取指定管理员的权限树和已勾选节点。
         $userId = $this->request->param('id');
         $data = $userId ? $this->service->getList($userId) : $this->service->getTree();
         $this->success($data);
@@ -40,7 +40,7 @@ class AuthAccess extends BaseController
      */
     public function save()
     {
-        // 保存指定用户的菜单和按钮权限。
+        // 保存指定管理员的菜单和按钮权限。
         $userId = $this->request->param('user_id');
         $menuIds = $this->request->param('menu_id/a', []);
         $result = $this->service->save($userId, $menuIds);

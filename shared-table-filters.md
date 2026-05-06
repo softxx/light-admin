@@ -6,7 +6,7 @@
 
 - 操作日志
 - 登录日志
-- 用户管理
+- 管理员管理
 - 角色管理
 
 当前不包含树表格页面，树表格后续如需接入，建议按页面特点单独评估，只复用过滤协议和部分 UI 能力，不强行统一整套交互。
@@ -152,8 +152,7 @@ protected function getDynamicFilterFieldConfigs(): array
 
 - 操作日志的 `user_id`
 - 登录日志的 `realname`
-- 用户管理的 `roles`
-- 用户管理的 `dept_id`
+- 管理员管理的账号、姓名、手机号、状态和创建时间筛选
 
 ## 5. 前端请求协议
 
@@ -231,13 +230,13 @@ quick_filter={"field":"username","operator":"contains","value":"admin"}
 - `web_art/src/views/system/logs/login-log/index.vue`
 - `app/model/system/search/LoginLogSearch.php`
 
-### 6.3 用户管理
+### 6.3 管理员管理
 
 状态：
 
 - 已接入公共快捷过滤 / 高级过滤
 - 页面字段 schema 已抽离
-- 支持角色、部门、状态、创建时间等过滤
+- 支持账号名、姓名、手机号、状态、创建时间等过滤
 
 相关文件：
 

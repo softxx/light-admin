@@ -8,10 +8,10 @@ use core\base\BaseService;
 use core\exception\FailedException;
 
 /**
- * 用户服务。
+ * 管理员服务。
  *
- * 当前版本去掉部门、角色和数据权限，用户列表只维护账号基础信息；
- * 菜单和按钮权限通过 auth_access 直接挂到用户身上。
+ * 当前版本去掉部门、角色和数据权限，管理员列表只维护账号基础信息；
+ * 菜单和按钮权限通过 auth_access 直接挂到管理员账号身上。
  */
 class UserService extends BaseService
 {
@@ -21,7 +21,7 @@ class UserService extends BaseService
     }
 
     /**
-     * 获取用户列表。
+     * 获取管理员列表。
      *
      * @return array
      */
@@ -35,7 +35,7 @@ class UserService extends BaseService
     }
 
     /**
-     * 获取启用用户。
+     * 获取启用管理员。
      *
      * @return array
      */
@@ -100,7 +100,7 @@ class UserService extends BaseService
     }
 
     /**
-     * 根据 id 获取用户。
+     * 根据 id 获取管理员。
      *
      * @param array $ids
      * @return array
@@ -111,7 +111,7 @@ class UserService extends BaseService
     }
 
     /**
-     * 保存用户。
+     * 保存管理员。
      *
      * @param array $data
      * @return bool|int
@@ -154,7 +154,7 @@ class UserService extends BaseService
     }
 
     /**
-     * 修改用户。
+     * 修改管理员。
      *
      * @param int $id
      * @param array $data
@@ -230,7 +230,7 @@ class UserService extends BaseService
     }
 
     /**
-     * 删除用户。
+     * 删除管理员。
      *
      * @param int $id
      * @return bool
@@ -239,7 +239,7 @@ class UserService extends BaseService
     {
         $user = $this->model->find($id);
         if (!$user) {
-            throw new FailedException('用户不存在');
+            throw new FailedException('管理员不存在');
         }
 
         if (
@@ -252,7 +252,7 @@ class UserService extends BaseService
 
         try {
             $this->transaction(function () use ($id, $user) {
-                // 删除用户时同步清理用户权限，避免 auth_access 残留孤儿数据。
+                // 删除管理员时同步清理管理员权限，避免 auth_access 残留孤儿数据。
                 AuthAccess::where('user_id', $user->id)->delete();
                 $this->model->deleteBy($id);
             });
@@ -272,7 +272,7 @@ class UserService extends BaseService
     }
 
     /**
-     * 提取并移除随用户表单提交的权限节点。
+     * 提取并移除随管理员表单提交的权限节点。
      */
     private function pullMenuIds(array &$data): ?array
     {

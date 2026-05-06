@@ -256,7 +256,7 @@
     },
     "system": {
       "title": "系统管理",
-      "user": "用户管理",
+      "user": "管理员管理",
       "userCenter": "个人中心",
       "menu": "菜单管理"
     }

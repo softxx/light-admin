@@ -256,7 +256,7 @@
     },
     "system": {
       "title": "System Settings",
-      "user": "User Manage",
+      "user": "Admin Management",
       "userCenter": "User Center",
       "menu": "Menu Manage"
     }

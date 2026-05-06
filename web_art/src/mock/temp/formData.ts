@@ -15,7 +15,7 @@ export interface User {
   avatar: string
 }
 
-// 用户列表 mock 数据，已移除部门和角色字段。
+// 管理员列表 mock 数据，已移除部门和角色字段。
 export const ACCOUNT_TABLE_DATA: User[] = [
   {
     id: 1,

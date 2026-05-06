@@ -38,7 +38,7 @@
     set: (value) => emit('update:modelValue', value)
   })
 
-  // 搜索项与用户字段保持一致，不再包含部门或角色条件。
+  // 搜索项与管理员字段保持一致，不再包含部门或角色条件。
   const filterFields = computed(() => createUserFilterFields())
 
   const formItems = computed(() => [

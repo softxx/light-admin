@@ -7,15 +7,15 @@ use core\base\BaseService;
 use core\exception\FailedException;
 
 /**
- * 用户权限服务。
+ * 管理员权限服务。
  *
  * 部门和角色移除后，auth_access 表直接维护 user_id 与 menu_id 的关系。
- * 这里集中处理权限树回显、用户授权保存，以及新增菜单时给管理员补授权。
+ * 这里集中处理权限树回显、管理员授权保存，以及新增菜单时给管理员补授权。
  */
 class AuthAccessService extends BaseService
 {
     /**
-     * 获取用户权限树和已勾选节点。
+     * 获取管理员权限树和已勾选节点。
      *
      * @param string|int $userId
      * @return array
@@ -36,7 +36,7 @@ class AuthAccessService extends BaseService
     }
 
     /**
-     * 获取空权限树，用于新增用户时在用户表单内直接授权。
+     * 获取空权限树，用于新增管理员时在管理员表单内直接授权。
      *
      * @return array
      */
@@ -49,7 +49,7 @@ class AuthAccessService extends BaseService
     }
 
     /**
-     * 保存用户权限。
+     * 保存管理员权限。
      *
      * @param string|int $userId
      * @param array $menuIds
@@ -74,7 +74,7 @@ class AuthAccessService extends BaseService
     }
 
     /**
-     * 重建指定用户的权限。调用方可把该方法放进已有事务里。
+     * 重建指定管理员的权限。调用方可把该方法放进已有事务里。
      *
      * @param User $user
      * @param array $menuIds
@@ -89,7 +89,7 @@ class AuthAccessService extends BaseService
         // 前端只提交勾选节点；后端补齐父级目录，保证路由树能正常展示。
         $menuIds = $this->expandMenuIdsWithAncestors($menuIds);
 
-        // 直接按用户重建授权，避免保留已经取消勾选的旧权限。
+        // 直接按管理员账号重建授权，避免保留已经取消勾选的旧权限。
         AuthAccess::where('user_id', $user->id)->delete();
 
         if (empty($menuIds)) {
@@ -231,13 +231,13 @@ class AuthAccessService extends BaseService
     }
 
     /**
-     * 查询用户，不存在时抛错。
+     * 查询管理员账号，不存在时抛错。
      */
     private function findUserOrFail($userId): User
     {
         $user = User::find($userId);
         if (!$user) {
-            throw new FailedException('用户不存在');
+            throw new FailedException('管理员不存在');
         }
 
         return $user;

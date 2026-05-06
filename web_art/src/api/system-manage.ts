@@ -231,7 +231,7 @@ export function fetchGetVersionTasks(limit = 20) {
 }
 
 export function fetchGetUserPermission(id: number | string) {
-  // 用户权限配置：后端按用户 ID 返回权限树和已勾选节点。
+  // 管理员权限配置：后端按管理员账号 ID 返回权限树和已勾选节点。
   return request.post<Api.Backend.AuthAccessResponse>({
     url: '/authAccess/index',
     params: { id }
@@ -239,7 +239,7 @@ export function fetchGetUserPermission(id: number | string) {
 }
 
 export function fetchGetPermissionTree() {
-  // 新增用户时没有用户 ID，只需要权限树和空勾选状态。
+  // 新增管理员时没有管理员账号 ID，只需要权限树和空勾选状态。
   return request.post<Api.Backend.AuthAccessResponse>({
     url: '/authAccess/index'
   })

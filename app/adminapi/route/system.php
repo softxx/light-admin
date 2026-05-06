@@ -79,7 +79,7 @@ Route::group(function () {
     Route::group(function () {
         Route::post('user/list', 'system.user/index');
         Route::post('user/:id/edit', 'system.user/edit');
-        // 用户权限配置：权限不再挂角色，直接按用户读取和保存菜单节点。
+        // 管理员权限配置：权限不再挂角色，直接按管理员账号读取和保存菜单节点。
         Route::post('authAccess/index', 'system.authAccess/index');
         Route::post('dict/list', 'system.dict/index');
         Route::post('menu/list', 'system.menu/index');

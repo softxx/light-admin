@@ -27,7 +27,7 @@
 
 典型参考页面：
 
-- 用户管理：`web_art/src/views/system/user`
+- 管理员管理：`web_art/src/views/system/user`
 - 角色管理：`web_art/src/views/system/role`
 - 菜单管理：`web_art/src/views/system/menu`
 - 部门管理：`web_art/src/views/system/department`
@@ -409,7 +409,7 @@
 
 这个范式已经在以下页面验证过：
 
-- 用户管理
+- 管理员管理
 - 角色管理
 - 菜单管理
 - 登录日志

@@ -50,7 +50,7 @@ class AuthService extends BaseService
             $this->loginCaptcha->validate($captchaId, $captchaCode);
         }
 
-        // 登录只校验用户状态；角色已移除，不再按角色状态拦截登录。
+        // 登录只校验账号状态；角色已移除，不再按角色状态拦截登录。
         $user = User::field('status,id,password')->getByUsername($username);
 
         if (!$user || !password_verify($password, $user->password)) {

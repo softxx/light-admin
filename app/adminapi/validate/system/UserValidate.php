@@ -6,9 +6,9 @@ use app\model\system\User;
 use core\base\BaseValidate;
 
 /**
- * 用户校验。
+ * 管理员校验。
  *
- * 部门和角色字段已移除，用户保存只校验账号基础信息。
+ * 部门和角色字段已移除，管理员保存只校验账号基础信息。
  */
 class UserValidate extends BaseValidate
 {
@@ -48,13 +48,13 @@ class UserValidate extends BaseValidate
     }
 
     /**
-     * 校验用户是否允许操作。
+     * 校验管理员是否允许操作。
      */
     public function checkAdmin($value)
     {
         $user = User::find($value);
         if (!$user) {
-            return '用户不存在';
+            return '管理员不存在';
         }
 
         if ($user->is_admin) {

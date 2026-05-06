@@ -6,7 +6,7 @@
       <ArtTableHeader v-model:columns="columnChecks" :loading="loading" @refresh="refreshData">
         <template #left>
           <ElButton v-auth="'system:user:save'" @click="openDialog('add')" v-ripple>
-            新增用户
+            新增管理员
           </ElButton>
           <ElButton
             v-if="canDeleteUser"
@@ -69,10 +69,10 @@
 
   const { hasAuth } = useAuth()
   const canDeleteUser = hasAuth('system:user:delete')
-  // 权限设置收进新增/编辑用户弹窗，读取和保存权限都需要授权。
+  // 权限设置收进新增/编辑管理员弹窗，读取和保存权限都需要授权。
   const canManagePermission =
     hasAuth('system:authAccess:index') && hasAuth('system:authAccess:save')
-  const PROTECTED_USER_MESSAGE = '管理员账号不允许操作'
+  const PROTECTED_ADMIN_MESSAGE = '管理员账号不允许操作'
 
   const tableRef = ref()
   const dialogVisible = ref(false)
@@ -83,7 +83,7 @@
 
   const filterFields = computed(() => createUserFilterFields())
 
-  // 管理员默认拥有全部权限，不允许在用户列表里编辑、删除或单独授权。
+  // 超级管理员默认拥有全部权限，不允许在管理员列表里编辑、删除或单独授权。
   const isAdminAccount = (row?: Partial<UserListItem>) =>
     Number(row?.is_admin || 0) === 1 || String(row?.username || '').toLowerCase() === 'admin'
 
@@ -129,7 +129,7 @@
         },
         {
           prop: 'username',
-          label: '用户信息',
+          label: '管理员信息',
           minWidth: 220,
           formatter: (row: UserListItem) =>
             h('div', { class: 'flex items-center gap-3' }, [
@@ -258,7 +258,7 @@
 
   const handleResetPassword = async (row: UserListItem) => {
     await ElMessageBox.confirm(
-      `确定重置用户“${row.realname || row.username}”的密码吗？`,
+      `确定重置管理员“${row.realname || row.username}”的密码吗？`,
       '重置密码',
       {
         type: 'warning',
@@ -275,11 +275,11 @@
 
   const handleDelete = async (row: UserListItem) => {
     if (isAdminAccount(row)) {
-      ElMessage.warning(PROTECTED_USER_MESSAGE)
+      ElMessage.warning(PROTECTED_ADMIN_MESSAGE)
       return
     }
 
-    await ElMessageBox.confirm(`确定删除用户“${row.realname || row.username}”吗？`, '删除确认', {
+    await ElMessageBox.confirm(`确定删除管理员“${row.realname || row.username}”吗？`, '删除确认', {
       type: 'warning',
       confirmButtonText: '确定',
       cancelButtonText: '取消'

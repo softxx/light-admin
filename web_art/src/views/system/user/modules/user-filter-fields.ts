@@ -1,7 +1,7 @@
 import type { TableFilterFieldSchema } from '@/types'
 
 export function createUserFilterFields(): TableFilterFieldSchema[] {
-  // 部门/角色筛选已移除，权限现在直接维护在用户上。
+  // 部门/角色筛选已移除，权限现在直接维护在管理员账号上。
   return [
     {
       label: '用户名',
@@ -22,7 +22,7 @@ export function createUserFilterFields(): TableFilterFieldSchema[] {
       placeholder: '请输入手机号'
     },
     {
-      label: '用户状态',
+      label: '管理员状态',
       value: 'status',
       type: 'select',
       operators: ['eq', 'neq'],
@@ -30,7 +30,7 @@ export function createUserFilterFields(): TableFilterFieldSchema[] {
         { label: '启用', value: 1 },
         { label: '禁用', value: 2 }
       ],
-      placeholder: '请选择用户状态'
+      placeholder: '请选择管理员状态'
     },
     {
       label: '创建时间',

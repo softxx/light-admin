@@ -26,7 +26,7 @@ trait UserSearch
 
     protected function getDynamicFilterFieldConfigs(): array
     {
-        // 部门/角色筛选已移除，用户列表只保留账号基础字段过滤。
+        // 部门/角色筛选已移除，管理员列表只保留账号基础字段过滤。
         return [
             'username' => ['type' => 'text'],
             'realname' => ['type' => 'text'],

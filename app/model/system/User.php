@@ -7,9 +7,9 @@ use core\base\BaseModel;
 use core\facade\Util;
 
 /**
- * 用户模型。
+ * 管理员模型。
  *
- * 当前版本不再维护部门和角色关系，用户只保留账号基础字段。
+ * 当前版本不再维护部门和角色关系，管理员只保留账号基础字段。
  */
 class User extends BaseModel
 {

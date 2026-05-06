@@ -173,7 +173,7 @@
   })
 
   const dialogTitle = computed(() =>
-    props.type === 'add' ? '新增用户（默认密码：123456）' : '编辑用户'
+    props.type === 'add' ? '新增管理员（默认密码：123456）' : '编辑管理员'
   )
 
   const treeProps = {
@@ -182,7 +182,7 @@
     disabled: 'disabled'
   }
 
-  // 部门和角色字段已移除，新增/编辑用户维护基础信息和直接挂到用户的权限。
+  // 部门和角色字段已移除，新增/编辑管理员维护基础信息和直接挂到管理员账号的权限。
   const form = reactive<
     Api.SystemManage.UserPayload & {
       username: string
