@@ -2,9 +2,16 @@
 
 # Light Admin
 
-  <p>
-  一个基于 
-  <a href="https://github.com/atseps/speed-admin" target="_blank">SpeedAdmin</a> 的后端能力和 <a href="https://github.com/Daymychen/art-design-pro" target="_blank">Art Design Pro</a> 前端特性的现代化后台管理系统
+<p>
+  <strong>English</strong> ·
+  <a href="./README.zh-CN.md">简体中文</a>
+</p>
+
+<p>
+  A modern admin dashboard system that combines the backend capabilities of
+  <a href="https://github.com/atseps/speed-admin" target="_blank">SpeedAdmin</a>
+  with the frontend features of
+  <a href="https://github.com/Daymychen/art-design-pro" target="_blank">Art Design Pro</a>.
 </p>
 <p>
   <img src="https://img.shields.io/badge/PHP-8.2%2B-777BB4?style=flat-square&logo=php&logoColor=white" alt="PHP 8.2+" />
@@ -16,77 +23,77 @@
 
 </div>
 
-## 介绍
+## Introduction
 
-> Light Admin 面向企业管理后台、权限控制、基础资料维护、日志审计和系统配置等常见场景，适合直接作为中后台项目脚手架进行二次开发。
+> Light Admin is designed for common enterprise admin scenarios, including management dashboards, access control, master data maintenance, audit logs, and system configuration. It can be used directly as a scaffold for building admin and back-office applications.
 
-项目采用前后端分层结构：
+The project uses a layered frontend and backend architecture:
 
-| 模块       | 路径        | 说明                                                                  |
-| ---------- | ----------- | --------------------------------------------------------------------- |
-| 后端服务   | `./` 根目录 | 基于 ThinkPHP 8，负责接口服务、权限体系、业务逻辑、系统配置与数据处理 |
-| 前端管理台 | `./web_art` | 基于 Vue 3 + TypeScript，负责管理界面、菜单路由、状态管理与交互展示   |
+| Module          | Path           | Description                                                                                             |
+| --------------- | -------------- | ------------------------------------------------------------------------------------------------------- |
+| Backend service | `./` root      | Built with ThinkPHP 8; handles API services, permissions, business logic, system settings, and data     |
+| Admin frontend  | `./web_art`    | Built with Vue 3 + TypeScript; handles admin pages, menu routes, state management, and user interaction |
 
-如果你希望快速搭建一套具备权限管理、组织结构管理、日志记录、系统配置以及基础管理界面的后台系统，Light Admin 可以作为一个清晰、轻量且易于扩展的起点。
+If you need to quickly build a backend system with permission management, organization management, logs, system settings, and common admin pages, Light Admin provides a clear, lightweight, and extensible starting point.
 
-## 技术栈
+## Tech Stack
 
-| 层级 | 技术方案                                                                                               |
-| ---- | ------------------------------------------------------------------------------------------------------ |
-| 后端 | PHP 8.2+、ThinkPHP 8、Think ORM 3、JWT                                                                 |
-| 前端 | Vue 3、TypeScript、Vite 7、Vue Router 4、Pinia、Element Plus、Tailwind CSS 4、Axios、Vue I18n、ECharts |
+| Layer    | Technologies                                                                                             |
+| -------- | -------------------------------------------------------------------------------------------------------- |
+| Backend  | PHP 8.2+, ThinkPHP 8, Think ORM 3, JWT                                                                   |
+| Frontend | Vue 3, TypeScript, Vite 7, Vue Router 4, Pinia, Element Plus, Tailwind CSS 4, Axios, Vue I18n, ECharts   |
 
-## 主要特性
+## Key Features
 
-| 能力模块 | 说明                                                                 |
-| -------- | -------------------------------------------------------------------- |
-| 权限体系 | 提供 RBAC 权限管理能力，支持角色、菜单、权限控制等后台核心功能       |
-| 基础管理 | 内置用户、角色、部门、字典等常见后台基础模块                         |
-| 日志审计 | 支持登录日志、操作日志等审计能力，便于问题追踪与运维排查             |
-| 系统配置 | 提供系统设置相关能力，便于统一管理平台基础配置                       |
-| 前端工程 | 提供独立的前端管理端工程，支持前后端分层开发与部署                   |
-| 页面能力 | 前端基于 Vue 3 + Element Plus 构建，适合快速扩展后台页面与业务模块   |
-| 常用扩展 | 支持状态管理、国际化、图表展示、富文本编辑、文件处理等常见管理端能力 |
-| 架构设计 | 采用服务层与模型层分离方式，目录清晰，便于维护与业务沉淀             |
+| Feature Area       | Description                                                                                 |
+| ------------------ | ------------------------------------------------------------------------------------------- |
+| Access control     | Provides RBAC capabilities for roles, menus, permissions, and other core admin requirements |
+| Core management    | Includes common admin modules such as users, roles, departments, and dictionaries           |
+| Audit logs         | Supports login logs and operation logs for troubleshooting and operational auditing          |
+| System settings    | Provides platform configuration capabilities for centralized system management               |
+| Frontend project   | Includes an independent admin frontend project for layered development and deployment        |
+| Page development   | Built with Vue 3 + Element Plus, making it suitable for extending admin and business pages   |
+| Common extensions  | Supports state management, internationalization, charts, rich text editing, and file tools   |
+| Architecture       | Separates service and model layers with a clear directory structure for long-term maintenance |
 
-## 目录结构
+## Directory Structure
 
 ```text
 light-admin/
-├─ app/                 后端应用目录
-├─ config/              后端配置目录
-├─ core/                核心扩展与公共能力
-├─ public/              Web 入口目录
-├─ route/               路由定义
-├─ sql/                 数据库脚本
-├─ web_art/             前端管理台工程
+├─ app/                 Backend application directory
+├─ config/              Backend configuration directory
+├─ core/                Core extensions and shared capabilities
+├─ public/              Web entry directory
+├─ route/               Route definitions
+├─ sql/                 Database scripts
+├─ web_art/             Admin frontend project
 │  ├─ src/
-│  │  ├─ api/           接口封装
-│  │  ├─ components/    公共组件
-│  │  ├─ router/        路由配置
-│  │  ├─ store/         状态管理
-│  │  ├─ utils/         工具方法
-│  │  └─ views/         页面视图
-│  └─ package.json      前端依赖与脚本
-├─ composer.json        后端依赖定义
+│  │  ├─ api/           API wrappers
+│  │  ├─ components/    Shared components
+│  │  ├─ router/        Route configuration
+│  │  ├─ store/         State management
+│  │  ├─ utils/         Utility functions
+│  │  └─ views/         Page views
+│  └─ package.json      Frontend dependencies and scripts
+├─ composer.json        Backend dependency definition
 └─ README.md
 ```
 
-## 快速开始
+## Quick Start
 
-### 后端准备
+### Backend Setup
 
 ```bash
 composer install
 php think run
 ```
 
-后端启动前建议完成以下准备：
+Before starting the backend, complete the following setup:
 
-- 配置 `.env` 与数据库连接信息
-- 导入 `sql/` 目录中的初始化脚本
+- Configure `.env` and database connection settings
+- Import the initialization scripts from the `sql/` directory
 
-### 前端开发
+### Frontend Development
 
 ```bash
 cd web_art
@@ -94,30 +101,30 @@ pnpm install
 pnpm dev
 ```
 
-### 前端构建
+### Frontend Build
 
 ```bash
 cd web_art
 pnpm build
 ```
 
-## 页面模块
+## Page Modules
 
-当前前端工程已包含以下典型后台页面分区：
+The frontend project currently includes these typical admin page areas:
 
-- `auth`：登录与认证相关页面
-- `dashboard`：工作台与概览面板
-- `system`：系统管理类页面
-- `exception`：异常页与错误页面
-- `portal`、`outside`、`index`：门户页、外部页面与基础入口页面
+- `auth`: Login and authentication pages
+- `dashboard`: Workspace and overview dashboards
+- `system`: System management pages
+- `exception`: Exception and error pages
+- `portal`, `outside`, `index`: Portal pages, external pages, and base entry pages
 
-## 许可证
+## License
 
-本项目采用 [MIT License](./LICENSE) 开源许可证，详细内容请查看 [LICENSE](./LICENSE) 文件。
+This project is open-sourced under the [MIT License](./LICENSE). See the [LICENSE](./LICENSE) file for details.
 
-## 特别鸣谢
+## Credits
 
-排名不分先后
+In no particular order:
 
 - [SpeedAdmin](https://github.com/atseps/speed-admin)
 - [Art Design Pro](https://github.com/Daymychen/art-design-pro)
