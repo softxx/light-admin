@@ -1,99 +1,103 @@
 <template>
-  <div class="table-quick-filter">
-    <ElSelect
-      class="field-select"
-      :model-value="normalizedValue.field"
-      clearable
-      filterable
-      placeholder="请选择过滤字段"
-      @update:model-value="handleFieldChange"
-    >
-      <ElOption
-        v-for="field in fields"
-        :key="field.value"
-        :label="field.label"
-        :value="field.value"
+  <div class="table-quick-filter-shell">
+    <div class="table-quick-filter">
+      <ElSelect
+        class="field-select"
+        :model-value="normalizedValue.field"
+        clearable
+        filterable
+        placeholder="请选择过滤字段"
+        @update:model-value="handleFieldChange"
+      >
+        <ElOption
+          v-for="field in fields"
+          :key="field.value"
+          :label="field.label"
+          :value="field.value"
+        />
+      </ElSelect>
+
+      <div class="operator-stack">
+        <ElSelect
+          class="operator-select"
+          :model-value="normalizedValue.operator"
+          :disabled="!normalizedValue.field"
+          placeholder="请选择操作符"
+          @update:model-value="handleOperatorChange"
+        >
+          <ElOption
+            v-for="option in getOperatorOptions(normalizedValue.field)"
+            :key="option.value"
+            :label="option.label"
+            :value="option.value"
+          />
+        </ElSelect>
+      </div>
+
+      <ElInput
+        v-if="getValueMode(normalizedValue) === 'input'"
+        class="value-input"
+        :model-value="normalizeInputValue(normalizedValue.value)"
+        clearable
+        :placeholder="getValuePlaceholder(normalizedValue)"
+        @update:model-value="handleValueChange"
       />
-    </ElSelect>
 
-    <ElSelect
-      class="operator-select"
-      :model-value="normalizedValue.operator"
-      :disabled="!normalizedValue.field"
-      placeholder="请选择操作符"
-      @update:model-value="handleOperatorChange"
-    >
-      <ElOption
-        v-for="option in getOperatorOptions(normalizedValue.field)"
-        :key="option.value"
-        :label="option.label"
-        :value="option.value"
+      <ElInputNumber
+        v-else-if="getValueMode(normalizedValue) === 'number'"
+        class="value-input"
+        :model-value="normalizeNumberValue(normalizedValue.value)"
+        controls-position="right"
+        :placeholder="getValuePlaceholder(normalizedValue)"
+        @update:model-value="handleValueChange"
       />
-    </ElSelect>
 
-    <ElInput
-      v-if="getValueMode(normalizedValue) === 'input'"
-      class="value-input"
-      :model-value="normalizeInputValue(normalizedValue.value)"
-      clearable
-      :placeholder="getValuePlaceholder(normalizedValue)"
-      @update:model-value="handleValueChange"
-    />
-
-    <ElInputNumber
-      v-else-if="getValueMode(normalizedValue) === 'number'"
-      class="value-input"
-      :model-value="normalizeNumberValue(normalizedValue.value)"
-      controls-position="right"
-      :placeholder="getValuePlaceholder(normalizedValue)"
-      @update:model-value="handleValueChange"
-    />
-
-    <ElDatePicker
-      v-else-if="getValueMode(normalizedValue) === 'date'"
-      class="value-input"
-      :model-value="normalizeInputValue(normalizedValue.value)"
-      clearable
-      :placeholder="getValuePlaceholder(normalizedValue)"
-      v-bind="getDatePickerProps(normalizedValue)"
-      @update:model-value="handleValueChange"
-    />
-
-    <ElTreeSelect
-      v-else-if="getValueMode(normalizedValue) === 'tree-select'"
-      class="value-input"
-      :model-value="normalizedValue.value"
-      clearable
-      filterable
-      check-strictly
-      default-expand-all
-      node-key="value"
-      :data="getFieldOptions(normalizedValue)"
-      :props="treeSelectProps"
-      :placeholder="getValuePlaceholder(normalizedValue)"
-      @update:model-value="handleValueChange"
-    />
-
-    <ElSelect
-      v-else-if="getValueMode(normalizedValue) === 'select'"
-      class="value-input"
-      :model-value="normalizedValue.value"
-      clearable
-      :filterable="isSpecialSelectField(normalizedValue.field)"
-      :placeholder="getValuePlaceholder(normalizedValue)"
-      @update:model-value="handleValueChange"
-    >
-      <ElOption
-        v-for="option in getFieldOptions(normalizedValue)"
-        :key="option.value"
-        :label="option.label"
-        :value="option.value"
+      <ElDatePicker
+        v-else-if="getValueMode(normalizedValue) === 'date'"
+        class="value-input"
+        :model-value="normalizeInputValue(normalizedValue.value)"
+        clearable
+        :placeholder="getValuePlaceholder(normalizedValue)"
+        v-bind="getDatePickerProps(normalizedValue)"
+        @update:model-value="handleValueChange"
       />
-    </ElSelect>
 
-    <div v-else class="value-placeholder">当前操作符无需填写筛选值</div>
+      <ElTreeSelect
+        v-else-if="getValueMode(normalizedValue) === 'tree-select'"
+        class="value-input"
+        :model-value="normalizedValue.value"
+        clearable
+        filterable
+        check-strictly
+        default-expand-all
+        node-key="value"
+        :data="getFieldOptions(normalizedValue)"
+        :props="treeSelectProps"
+        :placeholder="getValuePlaceholder(normalizedValue)"
+        @update:model-value="handleValueChange"
+      />
 
-    <ElButton class="clear-button" :disabled="!hasAnyValue" @click="clearFilter">清空</ElButton>
+      <ElSelect
+        v-else-if="getValueMode(normalizedValue) === 'select'"
+        class="value-input"
+        :model-value="normalizedValue.value"
+        clearable
+        :filterable="isSpecialSelectField(normalizedValue.field)"
+        :placeholder="getValuePlaceholder(normalizedValue)"
+        @update:model-value="handleValueChange"
+      >
+        <ElOption
+          v-for="option in getFieldOptions(normalizedValue)"
+          :key="option.value"
+          :label="option.label"
+          :value="option.value"
+        />
+      </ElSelect>
+
+      <div v-else class="value-placeholder">当前操作符无需填写筛选值</div>
+
+      <ElButton class="clear-button" :disabled="!hasAnyValue" @click="clearFilter">清空</ElButton>
+    </div>
   </div>
 </template>
 
@@ -146,8 +150,8 @@
   const hasAnyValue = computed(() =>
     Boolean(
       normalizedValue.value.field ||
-        normalizedValue.value.operator ||
-        hasTableFilterValue(normalizedValue.value.value)
+      normalizedValue.value.operator ||
+      hasTableFilterValue(normalizedValue.value.value)
     )
   )
 
@@ -176,7 +180,8 @@
   const getFieldOptions = (condition: TableFilterCondition) =>
     getFieldConfig(condition.field)?.options || []
 
-  const isSpecialSelectField = (fieldKey?: string) => getFieldConfig(fieldKey)?.type === 'special-select'
+  const isSpecialSelectField = (fieldKey?: string) =>
+    getFieldConfig(fieldKey)?.type === 'special-select'
 
   const normalizeInputValue = (value: TableFilterCondition['value']) =>
     normalizeTableFilterInputValue(value)
@@ -219,18 +224,37 @@
 </script>
 
 <style lang="scss" scoped>
+  .table-quick-filter-shell {
+    width: 100%;
+    min-width: 0;
+    container-type: inline-size;
+    container-name: table-quick-filter;
+  }
+
   .table-quick-filter {
     display: grid;
-    grid-template-columns: minmax(150px, 1fr) minmax(140px, 0.9fr) minmax(220px, 1.2fr) auto;
+    grid-template-columns: minmax(150px, 1fr) minmax(120px, 160px) minmax(220px, 1.2fr) max-content;
     gap: 10px;
     align-items: center;
     width: 100%;
+    min-width: 0;
   }
 
   .field-select,
-  .operator-select,
+  .operator-stack,
   .value-input {
     width: 100%;
+    min-width: 0;
+  }
+
+  .operator-stack {
+    display: flex;
+    align-items: center;
+  }
+
+  .operator-select {
+    width: 100%;
+    min-width: 0;
   }
 
   .value-placeholder {
@@ -245,13 +269,20 @@
   }
 
   .clear-button {
+    width: fit-content;
     height: 34px;
-    padding: 0 14px;
+    padding: 0 12px;
     color: var(--el-color-danger);
     background: var(--el-color-danger-light-9);
     border: 1px solid var(--el-color-danger-light-7);
     border-radius: 8px;
     box-shadow: 0 6px 14px rgb(245 108 108 / 10%);
+  }
+
+  @container table-quick-filter (max-width: 560px) {
+    .table-quick-filter {
+      grid-template-columns: 1fr;
+    }
   }
 
   :deep(.el-input-number) {
@@ -262,15 +293,11 @@
     width: 100%;
   }
 
-  @media (width <= 900px) {
-    .table-quick-filter {
-      grid-template-columns: 1fr 1fr;
-    }
-  }
-
-  @media (width <= 768px) {
-    .table-quick-filter {
-      grid-template-columns: 1fr;
+  @supports not (container-type: inline-size) {
+    @media (width <= 560px) {
+      .table-quick-filter {
+        grid-template-columns: 1fr;
+      }
     }
   }
 </style>
