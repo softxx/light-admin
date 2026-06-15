@@ -7,6 +7,14 @@ use PhpOffice\PhpSpreadsheet\IOFactory;
 use core\exception\FailedException;
 class Excel
 {
+    /**
+     * 只允许业务导入明确支持的本地表格格式，避免 IOFactory 解析远程 wrapper 或异常文件类型。
+     */
+    protected const IMPORT_EXTENSIONS = [
+        'csv' => true,
+        'xls' => true,
+        'xlsx' => true,
+    ];
 
     protected $spreadsheet = null;
 
@@ -58,28 +66,29 @@ class Excel
 
     /**
      * 导入
-     * @param $file 文件
+     * @param string|object $file 本地文件路径，或包含 getRealPath 的上传文件对象
      * @param bool $delFirstRow 是否删除第一行
-     * @return Reader
+     * @return Excel
+     * @throws FailedException 当文件不存在、类型不支持或读取失败时抛出
      */
     public function import($file, bool $delFirstRow = true): Excel
     {
+        $filePath = $this->resolveImportFilePath($file);
 
         try {
-            $reader = IOFactory::createReaderForFile($file);
+            $reader = IOFactory::createReaderForFile($filePath);
+            // 设置只读，导入场景只需要单元格数据，避免解析多余格式内容。
+            $reader->setReadDataOnly(true);
+
+            // 支持中文
+            if (method_exists($reader, 'setInputEncoding')) {
+                $reader->setInputEncoding('GBK');
+            }
+
+            $spreadsheet = $reader->load($filePath);
         } catch (\PhpOffice\PhpSpreadsheet\Reader\Exception $e) {
             throw new FailedException($e->getMessage());
         }
-
-        // 设置只读
-        $reader->setReadDataOnly(true);
-
-        // 支持中文
-        if (method_exists($reader, 'setInputEncoding')) {
-            $reader->setInputEncoding('GBK');
-        }
-
-        $spreadsheet = $reader->load($file);
 
         if ($this->currentActive) {
             $this->sheetsData = $spreadsheet->getActiveSheet()->toArray();
@@ -93,6 +102,43 @@ class Excel
         }
 
         return $this;
+    }
+
+    /**
+     * 解析导入文件的真实本地路径。
+     *
+     * PhpSpreadsheet 会根据传入路径探测读取器，这里先拒绝远程协议、异常路径和不支持的
+     * 扩展名，降低解析恶意文件时触发 SSRF、XXE 或路径穿越类问题的风险。
+     *
+     * @param string|object $file 本地文件路径，或包含 getRealPath 的上传文件对象
+     * @return string 规范化后的本地真实路径
+     * @throws FailedException 当文件不可读或类型不在白名单时抛出
+     */
+    protected function resolveImportFilePath($file): string
+    {
+        $path = is_object($file) && method_exists($file, 'getRealPath')
+            ? (string) $file->getRealPath()
+            : (string) $file;
+
+        if ($path === '' || preg_match('/^[a-z][a-z0-9+\-.]*:\/\//i', $path)) {
+            throw new FailedException('Excel 导入文件路径无效');
+        }
+
+        $realPath = realpath($path);
+        if ($realPath === false || !is_file($realPath) || !is_readable($realPath)) {
+            throw new FailedException('Excel 导入文件不存在或不可读');
+        }
+
+        $extension = strtolower(pathinfo($realPath, PATHINFO_EXTENSION));
+        if ($extension === '' && is_object($file) && method_exists($file, 'getOriginalExtension')) {
+            $extension = strtolower((string) $file->getOriginalExtension());
+        }
+
+        if (!isset(self::IMPORT_EXTENSIONS[$extension])) {
+            throw new FailedException('仅支持导入 xls、xlsx 或 csv 文件');
+        }
+
+        return $realPath;
     }
 
 
