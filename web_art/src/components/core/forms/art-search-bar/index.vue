@@ -510,6 +510,8 @@
 <style lang="scss" scoped>
   .art-search-bar {
     padding: 15px 20px 0;
+    container-type: inline-size;
+    container-name: art-search-bar;
 
     .action-column {
       flex: 1;
@@ -558,7 +560,14 @@
   }
 
   // 响应式优化
-  @media (width <= 1200px) {
+  @container art-search-bar (max-width: 1400px) {
+    :deep(.search-item-column--custom) {
+      flex: 0 0 100%;
+      max-width: 100%;
+    }
+  }
+
+  @media (width <= 1400px) {
     .art-search-bar {
       :deep(.search-item-column--custom) {
         flex: 0 0 100%;
