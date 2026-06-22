@@ -574,11 +574,16 @@
         },
         {
             "name": "guzzlehttp/psr7",
-            "version": "2.11.0",
+            "version": "2.12.1",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/guzzle/psr7.git",
+                "reference": "172ef2f4e9824c1e058b7f30be8ae25a02c0f2b7"
+            },
             "dist": {
                 "type": "zip",
-                "url": "https://mirrors.cloud.tencent.com/repository/composer/guzzlehttp/psr7/2.11.0/guzzlehttp-psr7-2.11.0.zip",
-                "reference": "bbb5e61349fa5cb822b3e87842b951088b76b81f",
+                "url": "https://api.github.com/repos/guzzle/psr7/zipball/172ef2f4e9824c1e058b7f30be8ae25a02c0f2b7",
+                "reference": "172ef2f4e9824c1e058b7f30be8ae25a02c0f2b7",
                 "shasum": ""
             },
             "require": {
@@ -614,6 +619,7 @@
                     "GuzzleHttp\\Psr7\\": "src/"
                 }
             },
+            "notification-url": "https://packagist.org/downloads/",
             "license": [
                 "MIT"
             ],
@@ -667,9 +673,23 @@
             ],
             "support": {
                 "issues": "https://github.com/guzzle/psr7/issues",
-                "source": "https://github.com/guzzle/psr7/tree/2.11.0"
+                "source": "https://github.com/guzzle/psr7/tree/2.12.1"
             },
-            "time": "2026-06-02T12:30:48+00:00"
+            "funding": [
+                {
+                    "url": "https://github.com/GrahamCampbell",
+                    "type": "github"
+                },
+                {
+                    "url": "https://github.com/Nyholm",
+                    "type": "github"
+                },
+                {
+                    "url": "https://tidelift.com/funding/github/packagist/guzzlehttp/psr7",
+                    "type": "tidelift"
+                }
+            ],
+            "time": "2026-06-18T09:49:37+00:00"
         },
         {
             "name": "guzzlehttp/uri-template",
@@ -2150,9 +2170,14 @@
         {
             "name": "psr/http-factory",
             "version": "1.1.0",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/php-fig/http-factory.git",
+                "reference": "2b4765fddfe3b508ac62f829e852b1501d3f6e8a"
+            },
             "dist": {
                 "type": "zip",
-                "url": "https://mirrors.cloud.tencent.com/repository/composer/psr/http-factory/1.1.0/psr-http-factory-1.1.0.zip",
+                "url": "https://api.github.com/repos/php-fig/http-factory/zipball/2b4765fddfe3b508ac62f829e852b1501d3f6e8a",
                 "reference": "2b4765fddfe3b508ac62f829e852b1501d3f6e8a",
                 "shasum": ""
             },
@@ -2171,6 +2196,7 @@
                     "Psr\\Http\\Message\\": "src/"
                 }
             },
+            "notification-url": "https://packagist.org/downloads/",
             "license": [
                 "MIT"
             ],
@@ -2199,9 +2225,14 @@
         {
             "name": "psr/http-message",
             "version": "2.0",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/php-fig/http-message.git",
+                "reference": "402d35bcb92c70c026d1a6a9883f06b2ead23d71"
+            },
             "dist": {
                 "type": "zip",
-                "url": "https://mirrors.cloud.tencent.com/repository/composer/psr/http-message/2.0/psr-http-message-2.0.zip",
+                "url": "https://api.github.com/repos/php-fig/http-message/zipball/402d35bcb92c70c026d1a6a9883f06b2ead23d71",
                 "reference": "402d35bcb92c70c026d1a6a9883f06b2ead23d71",
                 "shasum": ""
             },
@@ -2219,6 +2250,7 @@
                     "Psr\\Http\\Message\\": "src/"
                 }
             },
+            "notification-url": "https://packagist.org/downloads/",
             "license": [
                 "MIT"
             ],
@@ -2452,9 +2484,14 @@
         {
             "name": "ralouphie/getallheaders",
             "version": "3.0.3",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/ralouphie/getallheaders.git",
+                "reference": "120b605dfeb996808c31b6477290a714d356e822"
+            },
             "dist": {
                 "type": "zip",
-                "url": "https://mirrors.cloud.tencent.com/repository/composer/ralouphie/getallheaders/3.0.3/ralouphie-getallheaders-3.0.3.zip",
+                "url": "https://api.github.com/repos/ralouphie/getallheaders/zipball/120b605dfeb996808c31b6477290a714d356e822",
                 "reference": "120b605dfeb996808c31b6477290a714d356e822",
                 "shasum": ""
             },
@@ -2471,6 +2508,7 @@
                     "src/getallheaders.php"
                 ]
             },
+            "notification-url": "https://packagist.org/downloads/",
             "license": [
                 "MIT"
             ],
@@ -2670,9 +2708,14 @@
         {
             "name": "symfony/deprecation-contracts",
             "version": "v3.7.0",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/symfony/deprecation-contracts.git",
+                "reference": "50f59d1f3ca46d41ac911f97a78626b6756af35b"
+            },
             "dist": {
                 "type": "zip",
-                "url": "https://mirrors.cloud.tencent.com/repository/composer/symfony/deprecation-contracts/v3.7.0/symfony-deprecation-contracts-v3.7.0.zip",
+                "url": "https://api.github.com/repos/symfony/deprecation-contracts/zipball/50f59d1f3ca46d41ac911f97a78626b6756af35b",
                 "reference": "50f59d1f3ca46d41ac911f97a78626b6756af35b",
                 "shasum": ""
             },
@@ -2694,6 +2737,7 @@
                     "function.php"
                 ]
             },
+            "notification-url": "https://packagist.org/downloads/",
             "license": [
                 "MIT"
             ],
@@ -2712,6 +2756,24 @@
             "support": {
                 "source": "https://github.com/symfony/deprecation-contracts/tree/v3.7.0"
             },
+            "funding": [
+                {
+                    "url": "https://symfony.com/sponsor",
+                    "type": "custom"
+                },
+                {
+                    "url": "https://github.com/fabpot",
+                    "type": "github"
+                },
+                {
+                    "url": "https://github.com/nicolas-grekas",
+                    "type": "github"
+                },
+                {
+                    "url": "https://tidelift.com/funding/github/packagist/symfony/symfony",
+                    "type": "tidelift"
+                }
+            ],
             "time": "2026-04-13T15:52:40+00:00"
         },
         {
@@ -3006,9 +3068,14 @@
         {
             "name": "symfony/polyfill-php80",
             "version": "v1.37.0",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/symfony/polyfill-php80.git",
+                "reference": "dfb55726c3a76ea3b6459fcfda1ec2d80a682411"
+            },
             "dist": {
                 "type": "zip",
-                "url": "https://mirrors.cloud.tencent.com/repository/composer/symfony/polyfill-php80/v1.37.0/symfony-polyfill-php80-v1.37.0.zip",
+                "url": "https://api.github.com/repos/symfony/polyfill-php80/zipball/dfb55726c3a76ea3b6459fcfda1ec2d80a682411",
                 "reference": "dfb55726c3a76ea3b6459fcfda1ec2d80a682411",
                 "shasum": ""
             },
@@ -3033,6 +3100,7 @@
                     "Resources/stubs"
                 ]
             },
+            "notification-url": "https://packagist.org/downloads/",
             "license": [
                 "MIT"
             ],
@@ -3061,6 +3129,24 @@
             "support": {
                 "source": "https://github.com/symfony/polyfill-php80/tree/v1.37.0"
             },
+            "funding": [
+                {
+                    "url": "https://symfony.com/sponsor",
+                    "type": "custom"
+                },
+                {
+                    "url": "https://github.com/fabpot",
+                    "type": "github"
+                },
+                {
+                    "url": "https://github.com/nicolas-grekas",
+                    "type": "github"
+                },
+                {
+                    "url": "https://tidelift.com/funding/github/packagist/symfony/symfony",
+                    "type": "tidelift"
+                }
+            ],
             "time": "2026-04-10T16:19:22+00:00"
         },
         {
