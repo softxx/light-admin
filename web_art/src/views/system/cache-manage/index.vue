@@ -21,6 +21,123 @@
     />
 
     <div class="grid gap-4 xl:grid-cols-2">
+      <ElCard class="cache-manage-card xl:col-span-2">
+        <template #header>
+          <div class="cache-manage-card__header">
+            <div>
+              <div class="cache-manage-card__title">缓存驱动</div>
+              <div class="cache-manage-card__desc">
+                默认使用文件缓存，切换 Redis 前会校验连接参数。
+              </div>
+            </div>
+            <div class="cache-manage-card__metrics">
+              <span>当前 {{ cacheSetting.driver || '-' }}</span>
+              <span :class="{ 'is-danger': !cacheSetting.health.available }">
+                {{ cacheSetting.health.available ? '可用' : '异常' }}
+              </span>
+            </div>
+          </div>
+        </template>
+
+        <div class="cache-manage-card__body">
+          <ElForm class="cache-setting-form" :model="cacheSetting" label-position="top">
+            <ElFormItem label="缓存驱动">
+              <ElRadioGroup v-model="cacheSetting.driver">
+                <ElRadioButton label="file">文件缓存</ElRadioButton>
+                <ElRadioButton label="redis">Redis</ElRadioButton>
+              </ElRadioGroup>
+            </ElFormItem>
+
+            <div v-if="cacheSetting.driver === 'redis'" class="cache-setting-form__grid">
+              <ElFormItem label="主机">
+                <ElInput v-model="cacheSetting.redis.host" placeholder="127.0.0.1" />
+              </ElFormItem>
+              <ElFormItem label="端口">
+                <ElInputNumber
+                  v-model="cacheSetting.redis.port"
+                  :min="1"
+                  :max="65535"
+                  controls-position="right"
+                />
+              </ElFormItem>
+              <ElFormItem label="数据库">
+                <ElInputNumber
+                  v-model="cacheSetting.redis.select"
+                  :min="0"
+                  :max="255"
+                  controls-position="right"
+                />
+              </ElFormItem>
+              <ElFormItem label="超时秒数">
+                <ElInputNumber
+                  v-model="cacheSetting.redis.timeout"
+                  :min="0"
+                  :max="60"
+                  controls-position="right"
+                />
+              </ElFormItem>
+              <ElFormItem label="Key 前缀">
+                <ElInput v-model="cacheSetting.redis.prefix" placeholder="light_cache:" />
+              </ElFormItem>
+              <ElFormItem label="默认有效期">
+                <ElInputNumber
+                  v-model="cacheSetting.redis.expire"
+                  :min="0"
+                  :max="315360000"
+                  controls-position="right"
+                />
+              </ElFormItem>
+              <ElFormItem label="密码">
+                <ElInput
+                  v-model="cacheSetting.redis.password"
+                  :disabled="cacheSetting.redis.clear_password"
+                  show-password
+                  placeholder="留空保留原密码"
+                />
+                <div v-if="cacheSetting.redis.password_set" class="cache-setting-form__hint">
+                  已配置密码
+                </div>
+              </ElFormItem>
+              <ElFormItem label="连接方式">
+                <div class="cache-setting-form__switches">
+                  <ElSwitch
+                    v-model="cacheSetting.redis.persistent"
+                    active-text="持久连接"
+                    inactive-text="短连接"
+                  />
+                  <ElCheckbox
+                    v-model="cacheSetting.redis.clear_password"
+                    :disabled="!cacheSetting.redis.password_set"
+                  >
+                    清空密码
+                  </ElCheckbox>
+                </div>
+              </ElFormItem>
+            </div>
+          </ElForm>
+
+          <div
+            v-if="!cacheSetting.health.available"
+            class="cache-manage-card__note cache-manage-card__note--danger"
+          >
+            {{ cacheSetting.health.message || '当前缓存驱动不可用，请检查配置。' }}
+          </div>
+
+          <div class="cache-manage-card__action">
+            <ElButton
+              class="cache-manage-card__button"
+              type="primary"
+              :loading="settingLoading"
+              v-auth="'system:cache:index'"
+              @click="handleSaveCacheSetting"
+              v-ripple
+            >
+              保存缓存配置
+            </ElButton>
+          </div>
+        </div>
+      </ElCard>
+
       <ElCard class="cache-manage-card">
         <template #header>
           <div class="cache-manage-card__header">
@@ -146,15 +263,40 @@
   import {
     fetchClearRuntimeCache,
     fetchGetCacheOverview,
-    fetchRefreshDictCache
+    fetchRefreshDictCache,
+    fetchSaveCacheSetting
   } from '@/api/system-manage'
   import { clearBrowserCacheAndLogout } from '@/utils/auth/session-actions'
 
   defineOptions({ name: 'CacheManage' })
 
   const loading = ref(false)
+  const settingLoading = ref(false)
   const dictLoading = ref(false)
   const runtimeLoading = ref(false)
+
+  const createDefaultCacheSetting = (): Api.SystemManage.CacheSetting => ({
+    driver: 'file',
+    drivers: ['file', 'redis'],
+    redis: {
+      host: '127.0.0.1',
+      port: 6379,
+      password: '',
+      password_set: false,
+      clear_password: false,
+      select: 0,
+      timeout: 3,
+      persistent: false,
+      prefix: 'light_cache:',
+      expire: 0
+    },
+    health: {
+      available: true,
+      message: ''
+    }
+  })
+
+  const cacheSetting = reactive<Api.SystemManage.CacheSetting>(createDefaultCacheSetting())
 
   const overview = reactive<Api.SystemManage.CacheOverview>({
     browser: {
@@ -171,13 +313,70 @@
       file_count: 0,
       size_bytes: 0,
       protected_file_count: 0
-    }
+    },
+    setting: createDefaultCacheSetting()
   })
 
   const assignOverview = (data: Api.SystemManage.CacheOverview) => {
     overview.browser = data.browser
     overview.dict = data.dict
     overview.runtime = data.runtime
+    overview.setting = data.setting
+    assignCacheSetting(data.setting)
+  }
+
+  const assignCacheSetting = (setting?: Api.SystemManage.CacheSetting) => {
+    const nextSetting = setting || createDefaultCacheSetting()
+
+    cacheSetting.driver = nextSetting.driver || 'file'
+    cacheSetting.drivers = nextSetting.drivers?.length ? nextSetting.drivers : ['file', 'redis']
+    cacheSetting.redis = {
+      ...createDefaultCacheSetting().redis,
+      ...nextSetting.redis,
+      password: '',
+      clear_password: false
+    }
+    cacheSetting.health = nextSetting.health || {
+      available: true,
+      message: ''
+    }
+  }
+
+  const buildCacheSettingPayload = (): Api.SystemManage.CacheSettingPayload => ({
+    driver: cacheSetting.driver,
+    redis: {
+      host: cacheSetting.redis.host,
+      port: cacheSetting.redis.port,
+      password: cacheSetting.redis.password,
+      clear_password: cacheSetting.redis.clear_password,
+      select: cacheSetting.redis.select,
+      timeout: cacheSetting.redis.timeout,
+      persistent: cacheSetting.redis.persistent,
+      prefix: cacheSetting.redis.prefix,
+      expire: cacheSetting.redis.expire
+    }
+  })
+
+  const handleSaveCacheSetting = async () => {
+    const message =
+      cacheSetting.driver === 'redis'
+        ? '保存前会先测试 Redis 连接，确认保存当前缓存配置吗？'
+        : '确认切换为文件缓存吗？'
+
+    await ElMessageBox.confirm(message, '保存缓存配置', {
+      type: 'warning',
+      confirmButtonText: '确定',
+      cancelButtonText: '取消'
+    })
+
+    settingLoading.value = true
+
+    try {
+      await fetchSaveCacheSetting(buildCacheSettingPayload())
+      await loadOverview()
+    } finally {
+      settingLoading.value = false
+    }
   }
 
   const formatBytes = (bytes: number) => {
@@ -340,6 +539,11 @@
       white-space: nowrap;
       background: color-mix(in srgb, var(--el-color-primary) 8%, transparent);
       border-radius: 999px;
+
+      &.is-danger {
+        color: var(--el-color-danger);
+        background: color-mix(in srgb, var(--el-color-danger) 10%, transparent);
+      }
     }
   }
 
@@ -366,6 +570,37 @@
     color: var(--art-gray-600);
     background: var(--el-fill-color-light);
     border-radius: 14px;
+  }
+
+  .cache-manage-card__note--danger {
+    color: var(--el-color-danger);
+    background: color-mix(in srgb, var(--el-color-danger) 10%, transparent);
+  }
+
+  .cache-setting-form {
+    :deep(.el-input-number) {
+      width: 100%;
+    }
+  }
+
+  .cache-setting-form__grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+    gap: 12px 16px;
+  }
+
+  .cache-setting-form__hint {
+    margin-top: 6px;
+    font-size: 12px;
+    color: var(--art-gray-500);
+  }
+
+  .cache-setting-form__switches {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 12px 18px;
+    align-items: center;
+    min-height: 32px;
   }
 
   .cache-manage-card__runtime-meta {

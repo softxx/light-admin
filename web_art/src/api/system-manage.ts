@@ -160,6 +160,14 @@ export function fetchClearRuntimeCache() {
   })
 }
 
+export function fetchSaveCacheSetting(params: Api.SystemManage.CacheSettingPayload) {
+  return request.post<Api.SystemManage.CacheSetting>({
+    url: '/cache/saveSetting',
+    params,
+    showSuccessMessage: true
+  })
+}
+
 // 版本管理中心：基于可切换发布源检查、下载、预检、升级、回滚和任务轮询。
 type VersionReleaseRequestParams = {
   source?: 'github' | 'gitlab' | 'gitee' | 'cnb' | string

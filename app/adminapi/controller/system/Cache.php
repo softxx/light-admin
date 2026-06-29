@@ -2,6 +2,7 @@
 
 namespace app\adminapi\controller\system;
 
+use app\adminapi\validate\system\CacheValidate;
 use app\service\system\CacheService;
 use core\base\BaseController;
 
@@ -37,5 +38,15 @@ class Cache extends BaseController
     public function clearRuntime()
     {
         $this->success($this->service->clearRuntimeCache(), '运行缓存清理完成');
+    }
+
+    /**
+     * 保存缓存驱动和 Redis 参数。
+     *
+     * 切换到 Redis 时服务层会先测试连接，避免错误配置影响后续缓存读写。
+     */
+    public function saveSetting(CacheValidate $validate)
+    {
+        $this->success($this->service->saveSetting($validate->validated()), '缓存配置已保存');
     }
 }
