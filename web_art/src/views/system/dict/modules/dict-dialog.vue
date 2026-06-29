@@ -24,7 +24,39 @@
       </ElFormItem>
 
       <ElFormItem v-else label="颜色" prop="color">
-        <ElInput v-model="form.color" placeholder="请输入颜色，如 #409EFF" />
+        <div class="dict-color-field">
+          <div class="dict-color-field__input">
+            <ElInput
+              v-model="form.color"
+              clearable
+              placeholder="请输入颜色，如 green、blue 或 #409EFF"
+            />
+            <ElColorPicker
+              v-model="pickerColor"
+              :predefine="DICT_COLOR_PICKER_PRESETS"
+              color-format="hex"
+              @change="handlePickerChange"
+            />
+          </div>
+
+          <div class="dict-color-field__presets">
+            <ElTag
+              v-for="preset in DICT_COLOR_PRESETS"
+              :key="preset.value"
+              class="dict-color-field__preset"
+              :effect="isColorPresetActive(preset.value) ? 'dark' : 'light'"
+              v-bind="resolveDictTagColorProps(preset.value)"
+              @click="selectColorPreset(preset.value)"
+            >
+              {{ preset.label }}
+            </ElTag>
+          </div>
+
+          <div class="dict-color-field__hint">
+            支持手工输入 primary/success/warning/danger/info、blue/green/red/yellow/orange/gray/grey
+            或 #RGB/#RRGGBB。
+          </div>
+        </div>
       </ElFormItem>
 
       <ElFormItem label="备注" prop="note">
@@ -42,6 +74,14 @@
 <script setup lang="ts">
   import type { FormInstance, FormRules } from 'element-plus'
   import { fetchSaveDict } from '@/api/system-manage'
+  import {
+    DICT_COLOR_PICKER_PRESETS,
+    DICT_COLOR_PRESETS,
+    isValidDictColor,
+    normalizeDictColor,
+    resolveDictColorPickerValue,
+    resolveDictTagColorProps
+  } from '@/utils/dict/tag-color'
 
   interface Props {
     modelValue: boolean
@@ -62,6 +102,7 @@
   const emit = defineEmits<Emits>()
   const formRef = ref<FormInstance>()
   const submitting = ref(false)
+  const pickerColor = ref(resolveDictColorPickerValue())
 
   const visible = computed({
     get: () => props.modelValue,
@@ -94,6 +135,19 @@
           callback()
         },
         trigger: 'change'
+      }
+    ],
+    color: [
+      {
+        validator: (_rule, value, callback) => {
+          if (!isDictType.value && !isValidDictColor(value)) {
+            callback(new Error('颜色仅支持语义色或 #RGB/#RRGGBB 格式'))
+            return
+          }
+
+          callback()
+        },
+        trigger: ['blur', 'change']
       }
     ]
   })
@@ -139,7 +193,8 @@
     submitting.value = true
     try {
       await fetchSaveDict({
-        ...form
+        ...form,
+        color: normalizeDictColor(form.color)
       })
       visible.value = false
       emit('success')
@@ -153,6 +208,18 @@
     resetForm()
   }
 
+  const handlePickerChange = (value: string | null) => {
+    form.color = value || ''
+  }
+
+  const selectColorPreset = (value: string) => {
+    form.color = value
+  }
+
+  const isColorPresetActive = (value: string) => {
+    return normalizeDictColor(form.color).toLowerCase() === value
+  }
+
   watch(
     () => props.modelValue,
     (value) => {
@@ -162,4 +229,46 @@
       }
     }
   )
+
+  watch(
+    () => form.color,
+    (value) => {
+      pickerColor.value = resolveDictColorPickerValue(value)
+    }
+  )
 </script>
+
+<style scoped>
+  .dict-color-field {
+    width: 100%;
+  }
+
+  .dict-color-field__input {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+
+  .dict-color-field__input :deep(.el-input) {
+    flex: 1;
+  }
+
+  .dict-color-field__presets {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    margin-top: 8px;
+  }
+
+  .dict-color-field__preset {
+    cursor: pointer;
+    user-select: none;
+  }
+
+  .dict-color-field__hint {
+    margin-top: 6px;
+    font-size: 12px;
+    line-height: 1.5;
+    color: var(--art-gray-500);
+  }
+</style>

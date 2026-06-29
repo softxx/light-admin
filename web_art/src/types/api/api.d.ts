@@ -345,6 +345,35 @@ declare namespace Api {
         size_bytes: number
         protected_file_count: number
       }
+      setting: CacheSetting
+    }
+
+    interface CacheRedisSetting {
+      host: string
+      port: number
+      password: string
+      password_set: boolean
+      clear_password: boolean
+      select: number
+      timeout: number
+      persistent: boolean
+      prefix: string
+      expire: number
+    }
+
+    interface CacheSetting {
+      driver: 'file' | 'redis' | string
+      drivers: string[]
+      redis: CacheRedisSetting
+      health: {
+        available: boolean
+        message: string
+      }
+    }
+
+    interface CacheSettingPayload {
+      driver: 'file' | 'redis' | string
+      redis: Partial<CacheRedisSetting>
     }
 
     interface DictCacheRefreshResult {

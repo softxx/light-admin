@@ -107,6 +107,7 @@
     fetchGetDictList,
     fetchUpdateDictCache
   } from '@/api/system-manage'
+  import { normalizeDictColor, resolveDictTagColorProps } from '@/utils/dict/tag-color'
   import DictDialog from './modules/dict-dialog.vue'
   import { ElMessageBox, ElTag } from 'element-plus'
 
@@ -164,6 +165,14 @@
     return actions
   }
 
+  const renderDictColor = (row: DictItem) => {
+    const color = normalizeDictColor(row.color)
+
+    return color === '-' || !color
+      ? '-'
+      : h(ElTag, { effect: 'light', ...resolveDictTagColorProps(color) }, () => color)
+  }
+
   const { columnChecks, columns } = useTableColumns(() => [
     ...(canDeleteDict
       ? [{ type: 'selection' as const, width: 55, fixed: 'left' as const, disabled: true }]
@@ -193,7 +202,7 @@
       prop: 'color',
       label: '颜色',
       width: 100,
-      formatter: (row: DictItem) => row.color || '-'
+      formatter: renderDictColor
     },
     {
       prop: 'status',

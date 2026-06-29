@@ -6,7 +6,7 @@
 
 return [
     // 默认缓存驱动
-    'default' => env('cache.driver', 'file'),
+    'default' => strtolower((string) env('cache.driver', 'file')),
 
     // 缓存连接方式配置
     'stores'  => [
@@ -24,6 +24,19 @@ return [
             // 序列化机制 例如 ['serialize', 'unserialize']
             'serialize'  => [],
         ],
-        // 更多的缓存连接
+        'redis' => [
+            // Redis 作为可选缓存驱动，默认仍由 file 兜底，只有后台切换后才启用。
+            'type'       => 'Redis',
+            'host'       => env('cache.redis_host', '127.0.0.1'),
+            'port'       => (int) env('cache.redis_port', 6379),
+            'password'   => env('cache.redis_password', ''),
+            'select'     => (int) env('cache.redis_select', 0),
+            'timeout'    => (int) env('cache.redis_timeout', 3),
+            'persistent' => (bool) env('cache.redis_persistent', false),
+            'prefix'     => env('cache.redis_prefix', 'light_cache:'),
+            'expire'     => (int) env('cache.redis_expire', 0),
+            'tag_prefix' => 'tag:',
+            'serialize'  => [],
+        ],
     ],
 ];

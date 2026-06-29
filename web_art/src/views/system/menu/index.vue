@@ -50,6 +50,8 @@
   import { useAuth } from '@/hooks'
   import { useTableColumns } from '@/hooks/core/useTableColumns'
   import { fetchDeleteMenu, fetchGetMenuList } from '@/api/system-manage'
+  import { resolveDictTagColorProps } from '@/utils/dict/tag-color'
+  import type { DictTagColorProps, DictTagType } from '@/utils/dict/tag-color'
   import MenuDialog from './modules/menu-dialog.vue'
   import { ElMessageBox, ElTag } from 'element-plus'
   import { useWindowSize } from '@vueuse/core'
@@ -114,29 +116,10 @@
     }
   ])
 
-  const getMenuTypeTag = (row: MenuListItem) => {
+  const getMenuTypeTag = (row: MenuListItem): DictTagType => {
     if (Number(row.type) === 2) return 'danger'
     if (Number(row.type) === 0) return 'info'
     return 'primary'
-  }
-
-  const getDictTagType = (color?: string) => {
-    switch (String(color || '').toLowerCase()) {
-      case 'green':
-        return 'success'
-      case 'blue':
-        return 'primary'
-      case 'red':
-        return 'danger'
-      case 'yellow':
-      case 'orange':
-        return 'warning'
-      case 'gray':
-      case 'grey':
-        return 'info'
-      default:
-        return ''
-    }
   }
 
   const getMenuTypeLabel = (typeText?: MenuTypeText) => {
@@ -151,12 +134,15 @@
     return typeText.name || '-'
   }
 
-  const resolveMenuTypeTag = (row: MenuListItem) => {
+  const resolveMenuTypeTagProps = (row: MenuListItem): DictTagColorProps => {
     if (row.type_text && typeof row.type_text !== 'string') {
-      return getDictTagType(row.type_text.color) || getMenuTypeTag(row)
+      const colorProps = resolveDictTagColorProps(row.type_text.color)
+      if (colorProps.type || colorProps.color) {
+        return colorProps
+      }
     }
 
-    return getMenuTypeTag(row)
+    return { type: getMenuTypeTag(row) }
   }
 
   const getStatusTag = (row: MenuListItem) => {
@@ -174,7 +160,9 @@
       label: '类型',
       width: 100,
       formatter: (row: MenuListItem) =>
-        h(ElTag, { type: resolveMenuTypeTag(row) }, () => getMenuTypeLabel(row.type_text))
+        h(ElTag, { effect: 'light', ...resolveMenuTypeTagProps(row) }, () =>
+          getMenuTypeLabel(row.type_text)
+        )
     },
     {
       prop: 'path',

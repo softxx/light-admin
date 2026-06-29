@@ -67,6 +67,7 @@ Route::group(function () {
         Route::post('overview', 'system.cache/index');
         Route::post('refreshDict', 'system.cache/refreshDict');
         Route::post('clearRuntime', 'system.cache/clearRuntime');
+        Route::post('saveSetting', 'system.cache/saveSetting');
     });
 
     Route::group('version', function () {
