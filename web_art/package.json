@@ -78,7 +78,7 @@
     "@wangeditor/editor-for-vue": "next",
     "axios": "^1.18.0",
     "crypto-js": "^4.2.0",
-    "echarts": "^6.0.0",
+    "echarts": "^6.1.0",
     "element-plus": "^2.11.2",
     "file-saver": "^2.0.5",
     "highlight.js": "^11.10.0",
